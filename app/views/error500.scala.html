@@ -1,0 +1,10 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.500"))("white") {
+  <meta name="document" content="error500">
+  <div id="document" class="container" style="">
+  	<h1>500 INTERNAL SERVER ERROR</h1>
+    <!-- FOOTER -->
+    @footer()
+  </div> <!-- /.container -->
+} 

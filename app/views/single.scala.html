@@ -1,0 +1,28 @@
+@(title: String)(color: String)(content: Html)(implicit request: RequestHeader, flash: Flash)
+
+@main(title) {
+
+<div id="single-page" class="@color hide">
+@content
+</div>
+
+} {
+  <link href="/assets/stylesheets/main.css" rel="stylesheet">
+  <meta name="animation" content="fadein"> 
+} {
+  <script src="/assets/javascripts/main.js"></script>
+  <script>
+
+@if(!flash.get("retry").getOrElse("").startsWith("true")){
+  @if(title.startsWith("Log in -")){
+    window.mint.waitForLoading = true
+    setTimeout(function(){
+      window.mint.waitForLoading = false
+    }, 1300)
+  }
+  @if(title.endsWith("MINTPRESSO Panel")){
+    window.mint.waitForLoading = true
+  }
+}
+  </script>
+}

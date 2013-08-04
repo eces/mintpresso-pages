@@ -1,0 +1,10 @@
+@(page: String)(content: Html)(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.document." + page))("white") {
+  <meta name="document" content="@page">
+  <div id="document" class="container" style="">
+  	@content
+    @footer()
+    <!-- FOOTER -->
+  </div> <!-- /.container -->
+} 

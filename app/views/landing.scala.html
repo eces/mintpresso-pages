@@ -1,0 +1,79 @@
+@(title: String)(content: Html)(implicit request: RequestHeader, flash: Flash)
+
+@active(menu: String) = @{
+  if(title.contains(menu)){
+    "active"
+  }else{
+    ""
+  }
+}
+@main(title) {
+
+<!-- NAVBAR
+================================================== -->
+<div class="navbar-wrapper">
+  <!-- Wrap the .navbar in .container to center it within the absolutely positioned parent. -->
+  <div class="container">
+
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <!-- Responsive Navbar Part 1: Button for triggering responsive navbar (not covered in tutorial). Include responsive CSS to utilize. -->
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="@routes.Application.index"><img src="@routes.Assets.at("images/logotype-black-h.png")" alt="MINTPRESSO" style="margin-top:-30px; margin-bottom:-18px;" /></a>
+        <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+        <div class="nav-collapse collapse">
+          <ul class="nav typo-capital">
+            <li class="@active("Overview")"><a href="@routes.Application.index">OVERVIEW</a></li>
+            <li class="@active("Features")"><a href="@routes.Application.features">PRODUCT</a></li>
+            <li class="@active("Pricing")"><a href="@routes.Application.plans">PLANS &amp; PRICING</a></li>
+            <li class="@active("Developers")"><a href="@routes.Application.developers">DEVELOPERS</a></li>
+            @Application.getOptionUser.map { u =>
+            <li class="">
+              <a href="#" style="background-color:#555; color:#fff">@u.name</a>
+            </li>
+            <li>
+              <a href="@routes.Users.logout" title="로그아웃 합니다." style="background-color: #369;"><i class="icon-signout"></i> SIGN OUT
+              </a>
+            </li>
+            }.getOrElse {
+            <li class="">
+              <a href="@routes.Application.login">LOGIN</a>
+            </li>
+            }
+            @*
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Jinhyuk Lee <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Go to Panel</a></li>
+                <li><a href="#">Sign out</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">My Account</li>
+                <li><a href="#">Transactions</a></li>
+                <li><a href="#">Billing</a></li>
+              </ul>
+            </li>
+            *@
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div><!-- /.navbar-inner -->
+    </div><!-- /.navbar -->
+
+  </div> <!-- /.container -->
+</div><!-- /.navbar-wrapper -->
+
+@content
+
+} {
+  <script type="text/javascript" src="//use.typekit.net/tld5vsy.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <link href="@routes.Assets.at("stylesheets/main.css")" rel="stylesheet">
+  <style>
+    body { background-image: none; }
+  </style>
+} {
+  <script src="@routes.Assets.at("javascripts/landing.js")"></script>
+}

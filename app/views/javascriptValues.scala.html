@@ -1,0 +1,6 @@
+@(kv: Map[String, String])(implicit request: RequestHeader, flash: Flash, lang: Lang)
+
+@for( (key, value) <- kv ){
+  _.@key = "@value"
+}
+_.locale = "@lang.language";

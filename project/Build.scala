@@ -9,13 +9,15 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     // Add your project dependencies here,
+    "com.github.julienrf" %% "play-jsmessages" % "1.5.0",
+    "com.typesafe" %% "play-plugins-mailer" % "2.1.0",
     jdbc,
     anorm
   )
-
-
+  
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here      
+    resolvers += "julienrf.github.com" at "http://julienrf.github.com/repo/",
+    lessEntryPoints := Nil, coffeescriptEntryPoints := Nil, javascriptEntryPoints := Nil
   )
 
 }

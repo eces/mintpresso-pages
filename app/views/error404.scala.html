@@ -1,0 +1,10 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.404"))("white") {
+  <meta name="document" content="error404">
+  <div id="document" class="container" style="">
+  	<h1>404 PAGE NOT FOUND</h1>
+    <!-- FOOTER -->
+    @footer()
+  </div> <!-- /.container -->
+} 

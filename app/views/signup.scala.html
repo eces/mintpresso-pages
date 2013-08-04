@@ -1,0 +1,64 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@valueAndClass(s: String, c: String) = {
+  @if(s == flash.get("subscription").getOrElse("")){
+    value="@s" class="@c active"
+  } else {
+    value="@s" class="@c"
+  }
+}
+@single(Messages("title.signup"))("black") {
+<form class="form-inline" action="@routes.Users.signup" method="POST" onsubmit="$('form input[name=subscription]').val($('form div.btn-group button.active').attr('value')); return true">
+  <div class="modal">
+    <div class="modal-header" style="text-align: center">
+      <a href="@routes.Application.index"><img src="@routes.Assets.at("images/logotype-white-v.png")" /></a>
+    </div>
+    <div class="modal-body">
+      <fieldset>
+        <div style="text-align: center">
+          <input type="text" name="email" id="inputEmail" placeholder="Email" value="@flash.get("email")" />
+          <input type="password" name="password" id="inputPassword" placeholder="Password" value="@flash.get("password")" />
+          <span class="help-block">
+            @flash.get("msg-basic").map { message =>
+              <span class="good">✔</span>
+            }
+            @flash.get("error-basic").map { message =>
+              @message
+            }.getOrElse {
+              기본 정보를 입력해주세요. 나중에 변경 가능합니다.
+            }
+          </span>
+          <hr />
+          <input type="text" name="name" id="inputName" placeholder="Company or Organization Name" value="@flash.get("name")" />
+          <div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" @valueAndClass("individual", "btn btn-primary")>개인</button>
+            <button type="button" @valueAndClass("startup", "btn btn-primary")>스타트업</button>
+            <button type="button" @valueAndClass("company", "btn btn-primary")>기업</button>
+          </div>
+          <input type="hidden" name="subscription" />
+          <span class="help-block">
+            @flash.get("error-detail").map { message =>
+              @message
+            }.getOrElse {
+              민트프레소에서 부르게 될 회사 또는 개인의 이름을 적어주세요.
+            }
+          </span>
+        </div>
+        <div style="text-align: left; ">
+          @*
+          <label class="checkbox">
+            <input type="checkbox"> Remember me for 2 weeks
+          </label>
+          *@
+        </div>
+      </fieldset>
+    </div>
+    <div class="modal-footer">
+      <a href="@routes.Application.login" class="btn">뒤로가기</a>
+      <button type="submit" class="btn btn-primary">회원가입</button>
+    </div>
+  </div>
+</form>
+  <!-- FOOTER -->
+  @footer()
+} 

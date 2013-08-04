@@ -1,0 +1,43 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.login"))("black") {
+<form class="form-inline" action="@routes.Users.login" method="POST">
+  <div class="modal">
+    <div class="modal-header" style="text-align: center">
+      <a href="@routes.Application.index"><img src="@routes.Assets.at("images/logotype-white-v.png")" /></a>
+    </div>
+    <div class="modal-body">
+      <fieldset>
+        <div style="text-align: center">
+          <input type="text" name="email" placeholder="Email" value="@flash.get("email")" />
+          <input type="password" name="password" placeholder="Password" />
+          <input type="hidden" name="redirect_url" value="@flash.get("redirect_url").getOrElse("")" />
+          <span class="help-block">
+            @flash.get("error").map { message =>
+              @message
+            }
+            @flash.get("msg").map { message =>
+              @message
+            }.getOrElse {
+              <a href="#">아이디나 비밀번호를 잊어버리셨나요? 회원정보 찾기</a>
+            }
+          </span>
+        </div>
+        <div style="text-align: right; ">
+          @*
+          <label class="checkbox">
+            <input type="checkbox"> Remember me for 2 weeks
+          </label>
+          *@
+        </div>
+      </fieldset>
+    </div>
+    <div class="modal-footer">
+      <a href="@routes.Application.signup" class="btn">회원가입</a>
+      <button type="submit" class="btn btn-primary">로그인</button>
+    </div>
+  </div>
+</form>
+  <!-- FOOTER -->
+  @footer()
+} 

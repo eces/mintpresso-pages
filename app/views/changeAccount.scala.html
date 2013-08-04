@@ -1,0 +1,26 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.changeAccount"))("black") {
+  <meta name="login" content="changeAccount">
+  <div class="modal">
+    <div class="modal-header" style="text-align: center">
+      <a href="@routes.Application.index"><img src="@routes.Assets.at("images/logotype-white-v.png")" /></a>
+    </div>
+    <div class="modal-body">
+      <fieldset>
+        <div style="text-align: center">
+          <code><a href="@flash.get("redirect_url").getOrElse("#")" id="link">@flash.get("redirect_url").getOrElse("")</a></code>
+          <br />해당 링크로 들어가려면 다른 아이디로 로그인 해야합니다.
+        </div>
+        <div style="text-align: right; ">
+        </div>
+      </fieldset>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="history.back(1)">뒤로가기</button>
+      <a href="@routes.Users.logout" class="btn btn-primary">로그아웃</a>
+    </div>
+  </div>
+  <!-- FOOTER -->
+  @footer()
+} 
