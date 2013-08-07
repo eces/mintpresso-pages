@@ -890,3 +890,6 @@ button.active span.label-number {
 .typo-number {
   font-family: "bebas-neue", "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
+.muted.small {
+  color: #ccc;
+}
