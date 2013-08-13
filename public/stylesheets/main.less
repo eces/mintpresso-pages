@@ -8,23 +8,26 @@
 
 html { height: 100%; }
 body {
-  //padding-bottom: 40px;
-  color: #5a5a5a;
+  color: @midnight-blue;
   background-image: url("@{imagePath}/gray_jean.png");
-
-  min-height: 700px; height: 103%;
-
-  margin: 0; padding: 0;
-  margin-top: -3%;
-  padding-top: 20px;
-}
-
-* {
-
 }
 
 a {
   text-decoration: none;
+  color: @nephritis;
+  // margin: 0 15px;
+  &:hover {
+    color: @nephritis;
+    text-decoration: underline;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  .typo-capital();
+}
+
+hr {
+  border-color: @clouds;
 }
 
 time {
@@ -109,27 +112,95 @@ span.seal {
   }
 }
 
+#trifold {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+#landing {
+  background-color: @midnight-blue;
+  color: @clouds;
+  div.container {
+    padding: 80px 0;
+    div.left {
+      h1 {
+        font-size: 60px;
+        .typo-capital();
+        // .bold();
+      }
+      h2 {
+        margin-top: 30px;
+        font-size: 24px;
+        line-height: 30px;
+        text-align: justify;
+        .typo-capital();
+        .light();
+      }
+    }
+    div.right {
+      button {
+        .typo-capital();
+        .bold7();
+      }
+    }
+  }
+}
+
+header {
+  div.container div.row {
+    line-height: 80px;
+    .typo-capital();
+    .bold();
+    div.left {
+      font-size: 40px;
+    }
+    div.right {
+      font-weight: normal;
+      a {
+        margin: 0 15px;
+        color: @midnight-blue;
+        &:hover {
+          color: @nephritis;
+          text-decoration: none;
+        }
+      }
+      .btn {
+        color: @midnight-blue;
+        font-weight: bold;
+        &:hover {
+          color: @wet-asphalt;
+        }
+      }
+    }
+  }
+}
+
 .code {
   font-family: consolas, inconsolas;
 }
+.right {
+  text-align: right;
+}
+.left {
+  text-align: left;
+}
+.center {
+  text-align: center;
+}
+.transparent {
+  .opacity(55);
+}
+.image {
+  .box-shadow(0px -5px 50px -15px rgba(0, 0, 0, 0.5));
+}
+
 
 footer {
-  height: 80px;
-  background-color: #444;
-  color: #fff;
-  padding: 0px 10%;
-  p {
-    line-height: 80px;
-    font-weight: 100;
-    letter-spacing: 1px;
-    font-size: 9pt;
-    margin-bottom: 0;
-  }
+  line-height: 80px;
+  border: solid 1px @clouds;
+  // color: @asbestos;
+  color: @concrete;
   a {
-    color: #fff;
-    &:hover {
-      color: #fff;
-    }
+    margin: 0 15px;
   }
 }
 
@@ -659,12 +730,20 @@ button {
 // }
 
 .icons {
+  padding-top: 50px;
   i.img-circle {
-    font-size: 130px;
-    padding: 50px;
-    color: #d4d4d4;
-    background-color: #f0f0f0;
-    margin-left: 120px;
+    font-size: 70px;
+    padding: 30px;
+    color: @concrete;
+    background-color: none;
+    border: solid @clouds 1px;
+    // margin-left: 120px;
+  }
+  h3 {
+    margin-top: 50px;
+  }
+  h4 {
+    .light3();
   }
 }
 
@@ -933,14 +1012,23 @@ button {
 
 }
 
+.bold {
+  font-weight: 900;
+}
+.bold5 {
+  font-weight: 500;
+}
+.bold7 {
+  font-weight: 700;
+}
+.light3 {
+  font-weight: 300;
+}
+.light {
+  font-weight: 100;
+}
 .typo-capital {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
-  &.bold {
-    font-weight: 900;
-  }
-  &.light {
-    font-weight: 100;
-  }
 }
 .typo-number {
   font-family: "bebas-neue", "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;

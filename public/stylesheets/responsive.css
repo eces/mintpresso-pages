@@ -29,7 +29,7 @@
 .input-block-level {
   display: block;
   width: 100%;
-  min-height: 40px;
+  min-height: 30px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -205,7 +205,7 @@
   .row-fluid [class*="span"] {
     display: block;
     width: 100%;
-    min-height: 40px;
+    min-height: 30px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -554,7 +554,7 @@
   .row-fluid [class*="span"] {
     display: block;
     width: 100%;
-    min-height: 40px;
+    min-height: 30px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -851,7 +851,7 @@
   .uneditable-input {
     display: block;
     width: 100%;
-    min-height: 40px;
+    min-height: 30px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -887,7 +887,7 @@
   }
   .page-header h1 small {
     display: block;
-    line-height: 30px;
+    line-height: 20px;
   }
   input[type="checkbox"],
   input[type="radio"] {
@@ -941,10 +941,10 @@
     position: static;
   }
   .navbar-fixed-top {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
   .navbar-fixed-bottom {
-    margin-top: 30px;
+    margin-top: 20px;
   }
   .navbar-fixed-top .navbar-inner,
   .navbar-fixed-bottom .navbar-inner {
@@ -964,7 +964,7 @@
   }
   .nav-collapse .nav {
     float: none;
-    margin: 0 0 15px;
+    margin: 0 0 10px;
   }
   .nav-collapse .nav > li {
     float: none;
@@ -991,9 +991,9 @@
   .nav-collapse .btn {
     padding: 4px 10px 4px;
     font-weight: normal;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
   }
   .nav-collapse .dropdown-menu li + li a {
     margin-bottom: 2px;
@@ -1053,8 +1053,8 @@
   .nav-collapse .navbar-form,
   .nav-collapse .navbar-search {
     float: none;
-    padding: 15px 15px;
-    margin: 15px 0;
+    padding: 10px 15px;
+    margin: 10px 0;
     border-top: 1px solid #f2f2f2;
     border-bottom: 1px solid #f2f2f2;
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);

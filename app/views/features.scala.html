@@ -26,12 +26,12 @@
   <div class="navbar-inner">
     <div class="container" style="width: auto;">
       <ul class="nav navbar-nav">
-        <li><a href="#storage">Storage</a></li>
-        <li><a href="#api">API &amp; Security</a></li>
+        <li><a href="#storage">Cloud Storage</a></li>
+        <li><a href="#api">Simple API</a></li>
         <li><a href="#pages">Pages</a></li>
-        <li><a href="#detail">Details</a></li>
-        <li><a href="#order">Order</a></li>
-        <li><a href="#pickup">Pick up</a></li>
+        <li><a href="#detail">Browser</a></li>
+        <li><a href="#order">Data Processing</a></li>
+        <li><a href="#pickup">Results</a></li>
         <li><a href="#integration">Integration</a></li>
         <li><a href="#support">Support</a></li>
       </ul>
@@ -53,62 +53,293 @@
 </div>
 *@
 <div class="container" id="features">
+  
+  <div class="featurette" style="text-align:center">
+    <h2 class="featurette-heading typo-capital bold">WELCOME TO MINTPRESSO</h2>
+    <br />
+    <br />
+    <hr style="width: 150px;border: solid 5px #1ABC9C; margin: 0 auto;" />
+    <br />
+    <br />
+    <h3 class="typo-capital light">THE SIMPLEST &amp; EASIEST WAY TO DATA-DRIVEN</h3>
+  </div>
 
-
+  <hr class="featurette-divider">
   <!-- START THE FEATURETTES -->
 
   <div id="storage" class="featurette" style="">
-    <h2 class="featurette-heading">Storage <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Cloud Storage <span class="muted">in a millisecond</span></h2>
+    <p>서비스와 비즈니스에서 발생하는 대규모의 다양한 데이터를 민트프레소에 저장하세요.</p>
+  
+  @*    
+    <br />
+    <h5 class="typo-capital">MODEL</h5>
+    <p>모델은 고유번호, 고유아이디, 생성날짜, 수정날짜, 이용된날짜, JSON이 담겨있습니다.</p>
+    <code>
+{
+  "user": {
+    "$no": 1000,
+    "$id": "support@@mintpresso.com",
+    "name": "민트프레소"
+  }
+}
+    </code>
+    <br />
+
+    <br />
+    <h5 class="typo-capital">STATUS</h5>
+    <p>상태는 subject + verb + object를 담고 있습니다. 이를 바탕으로 모든 모델에 대해 모든 상태와 행동을 쉽게 기록하고 가져올 수 있습니다.</p>
+    <code>user(no: 1000) like music(no: 3000)</code>
+    <br />
+    <code>user(id: support@@mintpresso.com) view page(no: 2301)</code>
+    <br />
+    <code>user(...) post article(...)</code>
+    <br />
+    <code>user(...) purchase music(...)</code>
+    <br />
+    <code>user( ? ) purchase music(no: 3000)</code>
+    <br />
+    이 모든 것을 하는데 SQL과 Scheme 설계는 필요없습니다. 물론, 개발자로그와 데이터도구를 이용하여 편안하고 빠르게 개발 할 수 있습니다.
+    
+    @*
+    <button class="btn" data-toggle="openQuote">
+    <span class="typo-capital bold">QUESTION / </span>
+    지금 바로 데이터마이닝을 통해 고객분석과 매출증가, 비용절감에 도움이 될까요?
+    </button>
+    *@
+    @*
+
+    FAQ로 빼기
+
+    <blockquote><br />
+    <span class="typo-capital bold">QUESTION </span>
+    <br />
+    지금 바로 데이터마이닝을 통해 비즈니스 발전에 도움이 될까요?
+    <br />
+    <br />
+    <span class="typo-capital bold">ANSWER </span>
+    <br />
+    네, 도움이 됩니다. 다만 데이터를 통해 고객을 분석하고 비즈니스 지표를 예측하는 것은 오랜 과정과 학습이 필요합니다. 일반적으로 데이터 수집-분석-적용-판단 과정을 거쳐야하므로 최대한 빠른 시일내에 서비스와 제품의 모든 데이터를 수집하는 것이 매우 중요합니다. 그 이후로는 민트프레소를 통해 실시간 분석을 하고 적용할 수 있습니다. 서비스나 제품 성격에 따라 일정 기간(2주일, 1개월) 간격으로 이전 데이터와 새로운 데이터를 비교하는등, 여러가지 방법으로 실제 예측결과의 정확도를 끊임없이 높여갑니다.
+    <br />
+    전자결제(포인트) 거래내역을 감사(audit)하거나 현금흐름 분석(seasonal factor/effect analysis), 재고분석(flow maximization)을 성공적으로 처리하고 있습니다.
+
+    <br />
+    <br />
+    </blockquote>
+
+    <blockquote><br />
+    <span class="typo-capital bold">QUESTION </span>
+    <br />
+    데이터스토리지와 데이터마이닝 서버를 따로 만드려면 얼마가 들까요?
+    <br />
+    <br />
+    <span class="typo-capital bold">ANSWER </span>
+    <br />
+    데이터 수집은 자체적으로 할 수 있지만, 데이터베이스와 서버 구축을 직접해야하고 만일 매일매일 새로 생기는 데이터의 양이 적거나 클 경우 비어있는 저장공간(예산낭비) 또는 서버과부하(서비스 불안정)를 일으키게되며 백업 능력에 따른 데이터 유실이 예상됩니다.
+    <br />
+    최근 여러 빅데이터 오픈소스를 기반으로 데이터마이닝을 비교적 쉽게 할 수 있게 되었습니다. 하지만 모든 개발자의 오픈소스 프로젝트 학습을 위한 비용과 시간이 지출되며, 지속적인 분석을 위해서는 새로운 tier인 job queue와 cache server등을 따로 구축해야할 필요성이 있습니다. 이는 소프트웨어의 복잡성을 키우고, 관리의 어려움을 증대시킵니다.
+    <br />
+    위의 문제를 <strong>서비스</strong>형태로 제공하는 민트프레소는, 리스크를 줄이고 개발 일정을 단축시키기 때문에 많은 개발자들의 지지를 받고 있습니다.
+    <br />
+
+    <br />
+    <br />
+    </blockquote>
+    *@
   </div>
+
+  <h5 class="typo-capital">
+  Distributed Graph Storage
+  <br />
+  Auto Sharding
+  <br />
+  Iterative MapReduce
+  <br />
+  Amazon S3 Backup
+  <br />
+  RT Processing System<h5>
 
   <hr class="featurette-divider">
 
   <div id="api" class="featurette" style="">
-    <h2 class="featurette-heading">API <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Simple API <span class="muted">You may fall in love</span></h2>
+    <p>심지어 API 없이도, HTTP 요청으로 모든 것을 할 수 있습니다. 데이터 규모가 크더라도 일정한 응답속도를 보여줍니다.</p>
+    
+    @*
+    <br />
+    <h5 class="typo-capital">GET</h5>
+    <div class="row">
+      <div class="span3">
+        <code>GET /user/1000</code>
+      </div>
+      <div class="span6">
+        <p>1000번 사용자 불러오기</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span3">
+        <code>GET /user/support@@mintpresso.com</code>
+      </div>
+      <div class="span6">
+        <p>support@@mintpresso 아이디 가진 사용자를 불러오기</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span3">
+        <code>GET /user/like/music/bugs</code>
+      </div>
+      <div class="span6">
+        <p>bugs 타입을 가진 음악을 좋아하는 사람들 불러오기</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span3">
+        <code>GET /user/follow/user/1300</code>
+      </div>
+      <div class="span6">
+        <p>1300번 사용자를 팔로우한 사람들 불러오기</p>
+      </div>
+    </div>
+
+    <h5 class="typo-capital">POST</h5>
+    <div class="row">
+      <div class="span3">
+        <code>POST /user</code>
+      </div>
+      <div class="span6">
+        <p>user 타입의 새로운 모델을 추가</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span3">
+        <code>POST /user/뽀로로/follow/user/크롱</code>
+      </div>
+      <div class="span6">
+        <p>뽀로로가 크롱을 팔로우</p>
+      </div>
+    </div>
+    <br />
+    *@
   </div>
+
+  <h5 class="typo-capital">
+  RESTful API
+  <br />
+  GET, POST, PUT, DELETE, ROLLBACK
+  <br />
+  JSON filters
+  <br />
+  Newest, Oldest ordering
+  <br />
+  Multiple API Keys (Access)
+  <br />
+  Multiple Scopes (Permission)<h5>
 
   <hr class="featurette-divider">
 
   <div id="pages" class="featurette" style="">
-    <h2 class="featurette-heading">Pages <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Pages <span class="muted">full of awesome and fancy UI</span></h2>
+    <div class="row">
+      <div class="span6">
+        메인 스크린샷
+      </div>
+      <div class="span6">
+        개발자 로그
+      </div>
+    </div>
+    <div class="row">
+      <div class="span6">
+        자세히 보기
+      </div>
+      <div class="span6">
+        API 설정 + 결과물
+      </div>
+    </div>
   </div>
   <hr class="featurette-divider">
 
   <div id="detail" class="featurette" style="">
-    <h2 class="featurette-heading">Deatil <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Detail <span class="muted">views everything instantly</span></h2>
+    <p>언제나 쉽게 모델과 상태를 로그인하여 조회 할 수 있습니다.</p>
   </div>
   <hr class="featurette-divider">
 
   <div id="order" class="featurette" style="">
-    <h2 class="featurette-heading">Order <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Order <span class="muted">answers what you want to know</span></h2>
+    <p>언제든지 가지고 있는 데이터로 원하는 결과물을 만들 수 있습니다. 다양한 알고리즘을 쓸 수 있으며, 놀랍게도 데이터가 변하면 결과값도 실시간으로 변합니다.</p>
   </div>
+  <h5 class="typo-capital">
+  Sum, Average, Rank
+  <br />
+  Collaborative Filtering, Association Rules
+  <br />
+  K-Means (EM Clustering)
+  <br />
+  User-defined Factor Function
+  <br />
+  Predictive Analysis
+  <br />
+  Pattern Proving Iterations (A/B Tests)
+  @*
+  <br />
+  JavaScript Mining Plan <small>*will be soon in Beta 2</small>
+  *@
+  <h5>
+
   <hr class="featurette-divider">
 
   <div id="pickup" class="featurette" style="">
-    <h2 class="featurette-heading">Pick up Table <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Pickup <span class="muted">sends result to anywhere in realtime</span></h2>
+    <p>완성된 분석 자료를 실제 데이터에 포함시키거나 반영시키세요. 여러번의 연산을 동시에 진행할 수 있습니다.</p>
   </div>
+
+  <h5 class="typo-capital">
+  모델 JSON에 값을 넣기
+  <br />
+  모델과 모델에 새로운 상태를 넣기
+  <br />
+  상태 JSON에 값을 넣기 (weigth)
+  <br />
+  새로운 타입으로 모델 만들기
+  <h5>
+
   <hr class="featurette-divider">
 
   <div id="integration" class="featurette" style="">
-    <h2 class="featurette-heading">Integration <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Integration <span class="muted">with working product easily</span></h2>
+    <p>민트프레소가 지정한 서버와 주소로 완성된 분석 자료를 보내드립니다. 로컬에 있는 데이터처럼 바로 이용하세요.</p>
   </div>
+  
+  <h5 class="typo-capital">
+  JSON, XML, OpenGraph compatible
+  <br />
+  Email Reporting (이용자 통계를 이메일 발송)
+  <br />
+  Paper Reporting (사무실로 분석 자료 사본을 우편발송)
+  <br />
+  Push Notification (JavaScript에 바로 실시간 알림 적용 가능)
+  <br />
+  HTTP Webhook
+  <br />
+  Scheduled Messaging (관련 Server Logic을 주기적으로 활성화)
+  <h5>
+
   <hr class="featurette-divider">
 
   <div id="support" class="featurette" style="">
-    <h2 class="featurette-heading">Support <span class="muted">스토리지</span></h2>
-    <p>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</p>
+    <h2 class="featurette-heading typo-capital bold">Support <span class="muted">from hackers, data scientist and analysist</span></h2>
+    <p>개발자와 실무진의 의견을 최우선적으로 반영하겠습니다. 민트프레소는 국내외 데이터 전문가들과 오픈소스 기여자들과 네트워크를 형성하고 있습니다.</p>
   </div>
 
   <!-- /END THE FEATURETTES -->
 
+  <br />
+  <br />
+  <div style="text-align:center">
+    <a href="@routes.Application.login" class="btn btn-large btn-inverse">지금 바로 시작하세요</a>
+  </div>
 
+  <hr class="featurette-divider">
 
 </div><!-- /.container -->
 <!-- FOOTER -->
