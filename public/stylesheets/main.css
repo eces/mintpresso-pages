@@ -186,12 +186,15 @@ header div.container div.row div.right a:hover {
   color: #27ae60;
   text-decoration: none;
 }
-header div.container div.row div.right .btn {
+header div.container div.row div.right a.btn {
   color: #2c3e50;
   font-weight: bold;
 }
-header div.container div.row div.right .btn:hover {
+header div.container div.row div.right a.btn:hover {
   color: #34495e;
+}
+header div.container div.row div.right a:not(.btn) {
+  padding: 33px 0;
 }
 .code {
   font-family: consolas, inconsolas;
@@ -225,36 +228,41 @@ footer a {
 #single-page {
   width: 100%;
   height: 100%;
-  margin-top: -20px;
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
 #single-page.white footer {
   background-color: #f0f0f0;
   color: #444;
 }
-#single-page.white a {
-  color: #444;
-}
 #single-page.black {
+  position: fixed;
   background-color: #444;
 }
-#single-page.black footer {
+#single-page.black div.modal {
+  opacity: 0;
+  -webkit-transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+  -moz-transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+  -o-transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+#single-page.black div.modal .help-block a {
   color: #ccc;
 }
-#single-page.black a {
-  color: #ccc;
+#single-page.black div.modal .btn {
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
-#single-page footer {
+.single-page-footer.black footer {
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
   position: fixed;
-  width: 80%;
-  height: 80px;
-  bottom: 0px;
-  padding: 0px 10%;
+  bottom: 0;
+  width: 100%;
+  border: 0;
+  background-color: #333;
+  color: #fff;
+  opacity: 0.5;
 }
-#single-page footer p {
-  line-height: 80px;
-  font-weight: 100;
-  letter-spacing: 1px;
-  font-size: 9pt;
+.single-page-footer.black footer a {
+  color: #fff;
 }
 #animation-mask {
   width: 100%;
@@ -281,10 +289,16 @@ footer a {
   background-position: center center;
 }
 #animation-mask #logo.white {
-  background-image: url("/assets/images/logotype-white-v.png");
+  background-image: url("/assets/images/logotype-black-v.png");
 }
 #animation-mask #logo.black {
-  background-image: url("/assets/images/logotype-black-v.png");
+  background-image: url("/assets/images/logotype-black-h.png");
+}
+@media (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx) {
+  #animation-mask #logo.black {
+    background-image: url("/assets/images/logotype-black-h@2x.png");
+    background-size: 267.6666666666667px 56.666666666666664px;
+  }
 }
 #panel {
   height: 100%;

@@ -61,6 +61,8 @@ jQuery ->
   event =
     afterLoad: () ->
       logo = $('#animation-mask #logo')
+      html = $('html')
+      support = html.is('.csstransitions') && html.is('.opacity')
       if _.doneLoading is true
         if _.waitForLoading is true
           if logo.is(':hidden')
@@ -70,11 +72,16 @@ jQuery ->
             setTimeout event.afterLoad, 500
         else
           logo.hide()
-          $('#single-page div.modal').animate {marginTop: '15.5px'}, 1000, 'easeOutQuint'
-          $('#animation-mask').fadeOut {
-            duration: 1000
-            easing: 'easeOutQuint'
-          }
+          if support
+            $('#single-page div.modal').css {marginTop: '15.5px', opacity: 1.0}
+            $('#animation-mask').hide()
+            $('footer').parent().show()
+          else
+            $('#single-page div.modal').animate {marginTop: '15.5px'}, 1000, 'easeOutQuint'
+            $('#animation-mask').fadeOut {
+              duration: 1000
+              easing: 'easeInQuint'
+            }
       else
         if logo.is(':hidden')
           logo.fadeIn 1000, 'easeInQuint', (e) ->
@@ -91,12 +98,6 @@ jQuery ->
   if $meta.length > 0 and $meta isnt undefined
     content = $meta[0].getAttribute('content')
     if content is "fadein"
-      color = if $('#single-page').is('.white') then 'white' else 'black'
-      $body.append """
-        <div id="animation-mask" class="#{color}">
-          <div id="logo" class="hide #{color}"></div>
-        </div>
-      """
       $('#single-page').show()
       $(window).load (e) ->
         _.doneLoading = true
