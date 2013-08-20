@@ -29,7 +29,6 @@ object Global extends GlobalSettings {
   }
 
   override def onBadRequest(request: RequestHeader, error: String) = {
-    Logger.info( request + error )
     Results.Ok(views.html.error400()(request, request.flash))
   }
 }

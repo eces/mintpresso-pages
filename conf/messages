@@ -1,10 +1,11 @@
-title.overview=MINTPRESSO > Overview
-title.signup=MINTPRESSO > Sign up
-title.login=MINTPRESSO > Log in
-title.features=MINTPRESSO > Product
+title.overview=MINTPRESSO
+title.signup=Sign up to MINTPRESSO
+title.login=MINTPRESSO > Sign in
+title.features=MINTPRESSO > Features
 title.plans=MINTPRESSO > Plans & Pricing
 title.404=MINTPRESSO > 404 Page Not Found
 title.400=MINTPRESSO > 400 Bad Request
 title.500=MINTPRESSO > 500 Internal Server Error
-title.changeAccount==MINTPRESSO > Change account
-#title.
+title.changeAccount=Change account
+
+form.empty=Please fill the form

@@ -13,46 +13,46 @@ trait Secured {
   def getUser(implicit request: RequestHeader): User = {
     User(
       request.session.get("no").getOrElse("0").toLong,
-      request.session.get("id").getOrElse(""),
       request.session.get("email").getOrElse(""),
-      request.session.get("name").getOrElse("")
+      request.session.get("name").getOrElse(""),
+      request.session.get("url").getOrElse("")
     )
   }
   def getOptionUser(implicit request: RequestHeader): Option[User] = {
-    request.session.get("id").map { id =>
+    request.session.get("no").map { no =>
       Some(getUser)
     } getOrElse {
       None
     }
   }
   def signed(implicit request: RequestHeader): Boolean = {
-  	request.session.get("id").map { id =>
+  	request.session.get("no").map { no =>
   	  true
   	} getOrElse {
   	  false
   	}
   }
-  // def Signed(f: Request[AnyContent] => Result) = Action { implicit request =>
-  //   if(authenticated){
-  //     f(request)
-  //   }else{
-  //     Results.Redirect(routes.Application.login).flashing(
-  //       "msg" -> "해당 링크에 들어가려면 로그인 인증이 필요합니다.",
-  //       "redirect_url" -> request.path
-  //     )
-  //   }
-  // }
+  def Signed(f: Request[AnyContent] => User => Result) = Action { implicit request =>
+    if(signed){
+      f(request)(getUser)
+    }else{
+      Results.Redirect(routes.Application.signin).flashing(
+        "msg" -> "Permission required.",
+        "redirect_url" -> request.path
+      )
+    }
+  }
 
-  // def SignedAccount(accessId: Int)(f: Request[AnyContent] => Result) = Action { implicit request =>
-  //   if(getId == accessId){
-  //     f(request)
-  //   }else{
-  //     Results.Redirect(routes.Application.login).flashing(
-  //       "msg" -> "해당 링크에 들어가려면 로그인 인증이 필요합니다.",
-  //       "redirect_url" -> request.path,
-  //       "account_change" -> "true"
-  //     )
-  //   }
-  // }
+  def SignedUrl(url: String)(f: Request[AnyContent] => Result) = Action { implicit request =>
+    if(getUser.url == url){
+      f(request)
+    }else{
+      Results.Redirect(routes.Application.signin).flashing(
+        "msg" -> "Permission required.",
+        "redirect_url" -> request.path,
+        "account_change" -> "true"
+      )
+    }
+  }
 
 }

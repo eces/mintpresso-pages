@@ -220,16 +220,18 @@
 @navbarCollapseDesktopWidth:      @navbarCollapseWidth + 1;
 
 @navbarHeight:                    40px;
-@navbarBackgroundHighlight:       #ffffff;
-@navbarBackground:                darken(@navbarBackgroundHighlight, 5%);
+// @navbarBackgroundHighlight:       #ffffff;
+// @navbarBackground:                darken(@navbarBackgroundHighlight, 5%);
+@navbarBackgroundHighlight:       @wet-asphalt;
+@navbarBackground:                @midnight-blue;
 @navbarBorder:                    darken(@navbarBackground, 12%);
 
-@navbarText:                      #777;
-@navbarLinkColor:                 #777;
-@navbarLinkColorHover:            @grayDark;
-@navbarLinkColorActive:           @gray;
-@navbarLinkBackgroundHover:       transparent;
-@navbarLinkBackgroundActive:      darken(@navbarBackground, 5%);
+@navbarText:                      #f0f0f0;//#777;
+@navbarLinkColor:                 #f0f0f0;//#777;
+@navbarLinkColorHover:            #f0f0f0;//@grayDark;
+@navbarLinkColorActive:           #fff;//@gray;
+@navbarLinkBackgroundHover:       darken(@navbarBackground, 5%);//transparent;
+@navbarLinkBackgroundActive:      darken(@navbarBackground, 10%);//5%
 
 @navbarBrandColor:                @navbarLinkColor;
 

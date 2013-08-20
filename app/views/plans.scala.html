@@ -2,27 +2,22 @@
 
 @landing(Messages("title.plans")) {
 
-<div id="myCarousel" class="carousel slide">
-  <div class="carousel-inner" style="height: 300px;">
-    <div class="item active">
-      <img src="@routes.Assets.at("images/slide-03.jpg")" alt="">
-      <div class="container">
-        <div class="carousel-caption" style="margin-top:150px">
-          <h1 class="typo-capital bold">VIABLE PLANS &amp; PRICING</h1>
-          <p class="lead"></p>
-          <p class="lead"><small>베타 서비스 기간 동안은 무료입니다.</small></p>
-        </div>
-      </div>
-    </div>
+<div id="toc" class="navbar navbar-static">
+  <div class="navbar-inner">
+    <div class="container" style="">
+      <ul class="nav navbar-nav">
+        <li><a href="mailto:support@@mintpresso.com?subject=Direct Message to Billing Manager"><i class="icon-comments"></i> Contact us</a></li>
+      </ul>
     </div>
   </div>
-</div><!-- /.carousel -->
+</div>
 
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
-
-<div class="container">
+<div class="container" id="plans">
+  <h1>We're in beta service.</h1>
+  <p>Yet your feedback is necessarily important to our product. We'll offer redeem coupon to developers so please don't worry about unexpected charges.
+  <br />
+  Also, there are special offers to non-commercial users at almost free.
+  </p>
 <!-- Three columns of text below the carousel -->
   <div class="row icons" style="padding: 50px 0 100px 0">
     <div class="span4">
@@ -30,21 +25,28 @@
       <img class="img-circle" src="@routes.Assets.at("images/browser-icon-safari.png")">
       *@
       <i class="icon-rocket img-circle" style=""></i>
-      <h2 class="typo-number">Free</h2>
+      <h3>Developer Plan</h3>
+      <h4>$0 / mo</h4>
+      <hr />
       <p>Unlimited models</p>
       <p>Unlimited status</p>
       <p>50,000 requests <small>/ month</small></p>
       <p>5 concurrent orders</p>
       <p>Email Support <small>reply in 48 hours</small></p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <hr />
       <p><a class="btn btn-inverse" href="#">Subscribe &raquo;</a></p>
     </div><!-- /.span4 -->
-    <div class="span4" style="opacity:0.2;">
+    <div class="span4" style="opacity:1.0;">
       <img class="img-circle" data-src="holder.js/140x140">
       <i class="icon-cloud img-circle"></i>
-      @*
-      <h2 class="typo-number">$25/m</h2>
-      *@
-      <h2 class="typo-number">$00/m</h2>
+      <h3>Startup Plan</h3>
+      <h4>$00 / mo</h4>
+      <hr />
       <p>Unlimited models</p>
       <p>Unlimited status</p>
       <p>10,000 requests <small>/ $3</small></p>
@@ -53,14 +55,16 @@
       <p>Call Support</p>
       <p>SLA 99.9%</p>
       <p>Usage Report via Email</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <hr />
       <p><button class="btn btn-inverse" href="#" disabled="disabled">Subscribe &raquo;</button></p>
     </div><!-- /.span4 -->
-    <div class="span4" style="opacity:0.2;">
+    <div class="span4" style="opacity:1.0;">
       <i class="icon-tasks img-circle" style="color:#73BFAA"></i>
-      @*
-      <h2 class="typo-number">$800/m</h2>
-      *@
-      <h2 class="typo-number">$000/m</h2>
+      <h3>Business Plan</h3>
+      <h4>$000 / mo</h4>
+      <hr />
       <p>Unlimited models</p>
       <p>Unlimited status</p>
       <p>500,000 requests <small>/ $7</small></p>
@@ -70,7 +74,8 @@
       <p>SLA 99.9%</p>
       <p>Usage Report via Email and/or Post</p>
       <p>Office Support <small>12 hours per month</small></p>
-      <p>Support by <small>data scientist and analytics advisor</small></p>
+      <p>Human Support <small>data scientist and analytics advisor</small></p>
+      <hr />
       <p><button class="btn btn-inverse" href="#" disabled="disabled">Subscribe &raquo;</button></p>
     </div><!-- /.span4 -->
   </div><!-- /.row -->

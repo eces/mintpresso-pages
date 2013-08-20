@@ -61,8 +61,8 @@ jQuery ->
   event =
     afterLoad: () ->
       logo = $('#animation-mask #logo')
-      if mint.doneLoading is true
-        if mint.waitForLoading is true
+      if _.doneLoading is true
+        if _.waitForLoading is true
           if logo.is(':hidden')
             logo.fadeIn 1000, 'easeInQuint', (e) ->
               event.afterLoad()
@@ -83,9 +83,9 @@ jQuery ->
           setTimeout event.afterLoad, 500
       true
 
-  mint.waitForLoading = false if mint.waitForLoading is undefined
-  mint.doneLoading = false if mint.doneLoading is undefined
-  mint.loadingInterval = 60 * 3
+  _.waitForLoading = false if _.waitForLoading is undefined
+  _.doneLoading = false if _.doneLoading is undefined
+  _.loadingInterval = 60 * 3
 
   $meta = $('meta[name=animation]')
   if $meta.length > 0 and $meta isnt undefined
@@ -99,7 +99,7 @@ jQuery ->
       """
       $('#single-page').show()
       $(window).load (e) ->
-        mint.doneLoading = true
+        _.doneLoading = true
         event.afterLoad()
 
   onBlock = ($block) ->
@@ -143,7 +143,7 @@ jQuery ->
     onMenu $submenu, $menu
 
     state = $block.data('state')
-    if state is 0 or state < Math.round(Date.now()/1000) - mint.loadingInterval
+    if state is 0 or state < Math.round(Date.now()/1000) - _.loadingInterval
       callback $block
     else
       onBlock $block
@@ -167,7 +167,7 @@ jQuery ->
     $submenu.find('li').removeClass('active')
 
     state = $block.data('state')
-    if state is 0 or state < Math.round(Date.now()/1000) - mint.loadingInterval
+    if state is 0 or state < Math.round(Date.now()/1000) - _.loadingInterval
       callback $block
     else
       onBlock $block
@@ -184,7 +184,7 @@ jQuery ->
 
     if hash is undefined or hash.length is 0
       triggerIndex $content, ($block) ->
-        routes.controllers.Panel[menu + '_index'](mint.id)
+        routes.controllers.Panel[menu + '_index'](_.id)
           .ajax()
           .error( blockError($block) )
           .success (e) ->
@@ -199,7 +199,7 @@ jQuery ->
         console.log "Invalid data-menu='#{hash}' at method triggerHash"
         document.location.hash = '!/index' + $.getParameterHash()
         triggerIndex $content, ($block) ->
-          routes.controllers.Panel[menu + '_index'](mint.id)
+          routes.controllers.Panel[menu + '_index'](_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -241,15 +241,15 @@ jQuery ->
 
   $meta = $('meta[name=panel]')
   if $meta.length > 0 and $meta isnt undefined
-    mint.page = $meta[0].getAttribute('content')
+    _.page = $meta[0].getAttribute('content')
 
-    if mint.page is 'overview'
+    if _.page is 'overview'
       $submenu = $("#submenu")
       $content = $("#content")
 
       $submenu.find('[data-menu=usage]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.overview_usage(mint.id)
+          routes.controllers.Panel.overview_usage(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -258,7 +258,7 @@ jQuery ->
 
       $submenu.find('[data-menu=account]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.overview_account(mint.id)
+          routes.controllers.Panel.overview_account(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -267,7 +267,7 @@ jQuery ->
 
       $submenu.find('[data-menu=transaction]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.overview_transaction(mint.id)
+          routes.controllers.Panel.overview_transaction(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -276,14 +276,14 @@ jQuery ->
 
       $submenu.find('[data-menu=api]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.overview_api(mint.id)
+          routes.controllers.Panel.overview_api(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
               $block.html e
               $tbody = $block.find('table#tokens tbody')
-              # for token in mint._api
-              token = mint._api
+              # for token in _._api
+              token = _._api
               $tbody.prepend """
                 <tr>
                   <td>
@@ -331,7 +331,7 @@ jQuery ->
               $tbody.find('ul.dropdown-menu a').click (e) ->
                 $elem = $(this)
                 key = $elem.closest('tr').find('input[name=key]').val()
-                id = mint.id
+                id = _.id
 
                 if $elem.is('.api-js')
                   alert """
@@ -382,7 +382,7 @@ val mintpresso: Affogato = Affogato(
                       error: blockError($block)
 
                     routes.controllers.Panel.overview_api_set(
-                      mint.id,
+                      _.id,
                       $form.find('input[name=key]').val(),
                       $form.find('textarea[name=domain]').val(),
                       $form.find('input[name=name]').val()
@@ -393,23 +393,23 @@ val mintpresso: Affogato = Affogato(
               onBlock $block
 
       triggerHash $content, $submenu
-      mint.waitForLoading = false
-    else if mint.page is 'data'
+      _.waitForLoading = false
+    else if _.page is 'data'
       $submenu = $("#submenu")
       $content = $("#content")
 
       $submenu.find('[data-menu=log]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.data_log(mint.id)
+          routes.controllers.Panel.data_log(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
               $block.html e
 
-              mint._recents = 0
-              if mint._errors isnt undefined and mint._errors._length > 0
+              _._recents = 0
+              if _._errors isnt undefined and _._errors._length > 0
                 $tbody = $block.find('table#logs')
-                for e in mint._errors.edges
+                for e in _._errors.edges
                   d1 = moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss')
                   d2 = moment(e.createdAt).fromNow()
                   data = e.object.data
@@ -421,7 +421,7 @@ val mintpresso: Affogato = Affogato(
                   recentClass = ''
                   if Date.now() < (e.createdAt + 3600000)
                     recentClass = 'recents error'
-                    mint._recents++
+                    _._recents++
                   $tbody.append """
                     <tr class="errors #{recentClass}">
                       <td><i class="icon-frown"></i> #{msg}</td>
@@ -437,9 +437,9 @@ val mintpresso: Affogato = Affogato(
                     </tr>
                     """
               
-              if mint._warnings isnt undefined and mint._warnings._length > 0
+              if _._warnings isnt undefined and _._warnings._length > 0
                 $tbody = $block.find('table#logs')
-                for e in mint._warnings.edges
+                for e in _._warnings.edges
                   d1 = moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss')
                   d2 = moment(e.createdAt).fromNow()
                   data = e.object.data
@@ -449,7 +449,7 @@ val mintpresso: Affogato = Affogato(
                   recentClass = ''
                   if Date.now() < (e.createdAt + 3600000)
                     recentClass = 'recents warning'
-                    mint._recents++
+                    _._recents++
                   $tbody.append """
                     <tr class="warnings #{recentClass}">
                       <td><i class="icon-meh"></i> #{msg}</td>
@@ -465,9 +465,9 @@ val mintpresso: Affogato = Affogato(
                     </tr>
                     """
 
-              if mint._requests isnt undefined and mint._requests._length > 0
+              if _._requests isnt undefined and _._requests._length > 0
                 $tbody = $block.find('table#logs')
-                for e in mint._requests.edges
+                for e in _._requests.edges
                   d1 = moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss')
                   d2 = moment(e.createdAt).fromNow()
                   data = e.object.data
@@ -479,7 +479,7 @@ val mintpresso: Affogato = Affogato(
                   recentClass = ''
                   if Date.now() < (e.createdAt + 3600000)
                     recentClass = 'recents success'
-                    mint._recents++
+                    _._recents++
                   $tbody.append """
                     <tr class="requests #{recentClass}">
                       <td><i class="icon-smile"></i> #{msg}</td>
@@ -494,7 +494,7 @@ val mintpresso: Affogato = Affogato(
                       </td>
                     </tr>
                     """
-              if mint._errors isnt undefined and mint._warnings isnt undefined and mint._requests isnt undefined and (mint._errors._length + mint._warnings._length + mint._requests._length) is 0
+              if _._errors isnt undefined and _._warnings isnt undefined and _._requests isnt undefined and (_._errors._length + _._warnings._length + _._requests._length) is 0
                 $("""
 <div class="status-popup">
 <br />
@@ -517,10 +517,10 @@ val mintpresso: Affogato = Affogato(
                 $block.find('#selector div.btn-group button').each (k, v) ->
                   $this = $(v)
                   switch $this.data 'field'
-                    when 'recent'  then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), mint._recents ) if mint._recents > 0
-                    when 'error'   then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), mint._errors._length ) if mint._errors._length > 0
-                    when 'warning' then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), mint._warnings._length ) if mint._warnings._length > 0 
-                    when 'request' then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), mint._requests._length ) if mint._requests._length > 0 
+                    when 'recent'  then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), _._recents ) if _._recents > 0
+                    when 'error'   then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), _._errors._length ) if _._errors._length > 0
+                    when 'warning' then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), _._warnings._length ) if _._warnings._length > 0 
+                    when 'request' then $this.html """{0} <span class="typo-number label-number">{1}</span>""".format( $this.html(), _._requests._length ) if _._requests._length > 0 
 
                 switcher = (className) ->
                   $tbody.find('tbody tr').hide()
@@ -529,7 +529,7 @@ val mintpresso: Affogato = Affogato(
                 $popup = $block.find('#no-recents')
                 switcherForRecent = () ->
                   switcher 'recents'
-                  if mint._recents is 0
+                  if _._recents is 0
                     $popup.show()
 
                 $block.find('#selector div.btn-group button').click (e) ->
@@ -547,13 +547,13 @@ val mintpresso: Affogato = Affogato(
 
       $submenu.find('[data-menu=view]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.data_view(mint.id, $.getParameter('_filter'))
+          routes.controllers.Panel.data_view(_.id, $.getParameter('_filter'))
             .ajax()
             .error( blockError($block) )
             .success (e) ->
               $block.html e
-              $block.find('input[name=s]').typeahead { source: mint._types }
-              $block.find('input[name=o]').typeahead { source: mint._types }
+              $block.find('input[name=s]').typeahead { source: _._types }
+              $block.find('input[name=o]').typeahead { source: _._types }
               $block.find('#selector div.custom-filter a.add').tooltip {title: "Add new filter"}
 
               $revert = $block.find('#revert')
@@ -570,9 +570,9 @@ val mintpresso: Affogato = Affogato(
                 refreshContent $content, $submenu, 'view', ($block) ->
                   true
 
-              if mint._points isnt undefined and mint._points.points.length > 0
+              if _._points isnt undefined and _._points.points.length > 0
                 $tbody = $block.find('table#points')
-                for p in mint._points.points
+                for p in _._points.points
                   d1 = moment(p.createdAt).format('YYYY-MM-DD HH:mm:ss')
                   d2 = moment(p.createdAt).fromNow()
                   d = js_beautify JSON.stringify(p.data), { indent_size: 2 }
@@ -600,9 +600,9 @@ val mintpresso: Affogato = Affogato(
                     </tr>
                     """
                 $tbody.fadeIn()
-              else if mint._edges isnt undefined and mint._edges.edges.length > 0
+              else if _._edges isnt undefined and _._edges.edges.length > 0
                 $tbody = $block.find('table#edges')
-                for e in mint._edges.edges
+                for e in _._edges.edges
                   d1 = moment(e.createdAt).format('YYYY-MM-DD HH:mm:ss')
                   d2 = moment(e.createdAt).fromNow()
 
@@ -663,8 +663,8 @@ val mintpresso: Affogato = Affogato(
                 offContent $content
                 $block.find('table').hide()
 
-                `delete mint._points`
-                `delete mint._edges`
+                `delete _._points`
+                `delete _._edges`
 
                 query = {
                   s: $modelForm.find('input[name=s]').val()
@@ -683,7 +683,7 @@ val mintpresso: Affogato = Affogato(
 
       $submenu.find('[data-menu=filter]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.data_filter(mint.id)
+          routes.controllers.Panel.data_filter(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -692,13 +692,13 @@ val mintpresso: Affogato = Affogato(
 
       $submenu.find('[data-menu=import]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.data_import(mint.id)
+          routes.controllers.Panel.data_import(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
               $block.html e
               onBlock $block
-              $block.find('input[name=model]').typeahead { source: mint._sTypes }
+              $block.find('input[name=model]').typeahead { source: _._sTypes }
               $form = $block.find('form#model')
               $form.submit () ->
                 args =
@@ -721,7 +721,7 @@ val mintpresso: Affogato = Affogato(
                   return false
                 
                 offContent $content
-                routes.controllers.Panel.data_import_add(mint.id).ajax args
+                routes.controllers.Panel.data_import_add(_.id).ajax args
                 return false
               $block.find('time').each (k,v) ->
                 $time = $(v)
@@ -729,7 +729,7 @@ val mintpresso: Affogato = Affogato(
 
       $submenu.find('[data-menu=export]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.data_export(mint.id)
+          routes.controllers.Panel.data_export(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -737,22 +737,22 @@ val mintpresso: Affogato = Affogato(
               onBlock $block
 
       triggerHash $content, $submenu
-      mint.waitForLoading = false
-      mint.triggerContentWith = (name, json) ->
+      _.waitForLoading = false
+      _.triggerContentWith = (name, json) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel['data_' + name](mint.id, JSON.stringify(json))
+          routes.controllers.Panel['data_' + name](_.id, JSON.stringify(json))
             .ajax()
             .error( blockError($block) )
             .success (e) ->
               $block.html e
               onBlock $block
-    else if mint.page is 'support'
+    else if _.page is 'support'
       $submenu = $("#submenu")
       $content = $("#content")
 
       $submenu.find('[data-menu=conversation]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.support_conversation(mint.id)
+          routes.controllers.Panel.support_conversation(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -761,7 +761,7 @@ val mintpresso: Affogato = Affogato(
 
       $submenu.find('[data-menu=consulting]').click (e) ->
         triggerContent $content, $submenu, $(this), ($block) ->
-          routes.controllers.Panel.support_consulting(mint.id)
+          routes.controllers.Panel.support_consulting(_.id)
             .ajax()
             .error( blockError($block) )
             .success (e) ->
@@ -769,39 +769,39 @@ val mintpresso: Affogato = Affogato(
               onBlock $block
 
       triggerHash $content, $submenu
-      mint.waitForLoading = false
-    else if mint.page is 'order'
+      _.waitForLoading = false
+    else if _.page is 'order'
       $submenu = $("#submenu")
       $content = $("#content")
       triggerHash $content, $submenu
-      mint.waitForLoading = false
-    else if mint.page is 'pickup'
+      _.waitForLoading = false
+    else if _.page is 'pickup'
       $submenu = $("#submenu")
       $content = $("#content")
       triggerHash $content, $submenu
-      mint.waitForLoading = false
+      _.waitForLoading = false
     else
       alert("페이지를 불러올 수 없습니다. ")
 
   $meta = $('meta[name=document]')
   if $meta.length > 0 and $meta isnt undefined
-    mint.page = $meta[0].getAttribute('content')
+    _.page = $meta[0].getAttribute('content')
     $body = $('#document #body')
     $body.find('time.updatedAt').each (k,v) ->
       $this = $(v)
       $this.html moment($this.html(), "YYYY-MM-DD").fromNow()
 
-    if mint.page is 'javascript/api'
+    if _.page is 'javascript/api'
       $code = $('div#body textarea.code');
-      $code.val($code.val().replace("YOUR API KEY HERE", mint._api.token + '::' + mint.id))
+      $code.val($code.val().replace("YOUR API KEY HERE", _._api.token + '::' + _.id))
 
-    # if mint.page is 'javascript/test'}}
+    # if _.page is 'javascript/test'}}
 
   $meta = $('meta[name=login]')
   if $meta.length > 0 and $meta isnt undefined
-    mint.page = $meta[0].getAttribute('content')
+    _.page = $meta[0].getAttribute('content')
 
-    if mint.page is 'changeAccount'
+    if _.page is 'changeAccount'
       $link = $('#link')
       l = $link.html() + location.hash
       $link.html l

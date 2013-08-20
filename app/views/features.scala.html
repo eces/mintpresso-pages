@@ -2,60 +2,25 @@
 
 @landing(Messages("title.features")) {
 
-<div id="myCarousel" class="carousel slide">
-  <div class="carousel-inner">
-    <div class="item active">
-      <img src="@routes.Assets.at("images/slide-02.jpg")" alt="">
-      <div class="container">
-        <div class="carousel-caption">
-          <h1 class="typo-capital bold">PRACTICAL FEATURES</h1>
-          <p class="lead">서비스·프로덕트 개발의 어려움을 해결하고자 시작했습니다.</p>
-          <p class="lead"><small>우리는 '새로운 기능'이 아닌 고객의 '필요한 기능'을 선보입니다.</small></p>
-        </div>
-      </div>
-    </div>
-    </div>
-  </div>
-</div><!-- /.carousel -->
-
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
-
-<div id="submenu" class="navbar navbar-static">
+<div id="toc" class="navbar navbar-static">
   <div class="navbar-inner">
-    <div class="container" style="width: auto;">
+    <div class="container" style="">
       <ul class="nav navbar-nav">
-        <li><a href="#storage">Cloud Storage</a></li>
-        <li><a href="#api">Simple API</a></li>
-        <li><a href="#pages">Pages</a></li>
-        <li><a href="#detail">Browser</a></li>
-        <li><a href="#order">Data Processing</a></li>
-        <li><a href="#pickup">Results</a></li>
-        <li><a href="#integration">Integration</a></li>
-        <li><a href="#support">Support</a></li>
+        <li><a href="#_storage">Cloud Storage</a></li>
+        <li><a href="#_api">Simple API</a></li>
+        <li><a href="#_processing">Data Processing</a></li>
+        <li><a href="#_results">Results</a></li>
+        <li><a href="#_integration">Integration</a></li>
+        <li><a href="#_support">Support</a></li>
       </ul>
     </div>
   </div>
 </div>
-@*
-<div id="submenu">
-  <ul class="breadcrumb" style="padding: 15px 15px;">
-    <li><a href="#storage">Storage</a> <span class="divider">/</span></li>
-    <li><a href="#api">API &amp; Security</a> <span class="divider">/</span></li>
-    <li><a href="#pages"></a>Pages<span class="divider">/</span></li>
-    <li><a href="#detail">Detail</a> <span class="divider">/</span></li>
-    <li><a href="#order">Order</a> <span class="divider">/</span></li>
-    <li><a href="#pickup">Pick up</a> <span class="divider">/</span></li>
-    <li><a href="#integration">Integration</a> <span class="divider">/</span></li>
-    <li><a href="#support">Support</a>
-  </ul>
-</div>
-*@
+
+
 <div class="container" id="features">
-  
-  <div class="featurette" style="text-align:center">
-    <h2 class="featurette-heading typo-capital bold">WELCOME TO MINTPRESSO</h2>
+  <div id="_welcome" class="featurette" style="text-align:center">
+    <h2 class="featurette-heading typo-capital bold">PRACTICAL FEAUTRES</h2>
     <br />
     <br />
     <hr style="width: 150px;border: solid 5px #1ABC9C; margin: 0 auto;" />
@@ -65,12 +30,41 @@
   </div>
 
   <hr class="featurette-divider">
+
+  
+
+  @*
+  <h1 class="typo-capital bold">PRACTICAL FEATURES</h1>
+  <p class="lead">데이터 수집·분석·적용·판단·관리에 대한 어려움을 해결했습니다.</p>
+  
+
   <!-- START THE FEATURETTES -->
 
-  <div id="storage" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Cloud Storage <span class="muted">in a millisecond</span></h2>
-    <p>서비스와 비즈니스에서 발생하는 대규모의 다양한 데이터를 민트프레소에 저장하세요.</p>
-  
+  *@
+
+  <div id="_storage" style="">
+    <div class="row">
+      <div class="span6">
+        <h1 class="bold">CLOUD STORAGE</h1>
+        <p>We accept and store any data forms from your application as a <strong>Graph</strong> and pure <strong>JSON</strong>.
+        <br />
+        One line of code is need for logging user behavior, stat counts, or any interesting metrics.
+        </p>
+      </div>
+      <div class="span6">
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> Distributed Graph Storage
+        <br />
+        <i class="icon-li icon-ok"></i> Auto Sharding &amp; Scale-up
+        <br />
+        <i class="icon-li icon-ok"></i> Easy Graph Query
+        <br />
+        <i class="icon-li icon-ok"></i> Daily Amazon S3 Backup
+        <br />
+        <i class="icon-li icon-ok"></i> No Charges. Storage is Completely Free.
+      </div>
+    </div>
+    
   @*    
     <br />
     <h5 class="typo-capital">MODEL</h5>
@@ -148,22 +142,30 @@
     *@
   </div>
 
-  <h5 class="typo-capital">
-  Distributed Graph Storage
-  <br />
-  Auto Sharding
-  <br />
-  Iterative MapReduce
-  <br />
-  Amazon S3 Backup
-  <br />
-  RT Processing System<h5>
-
   <hr class="featurette-divider">
 
-  <div id="api" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Simple API <span class="muted">You may fall in love</span></h2>
-    <p>심지어 API 없이도, HTTP 요청으로 모든 것을 할 수 있습니다. 데이터 규모가 크더라도 일정한 응답속도를 보여줍니다.</p>
+  <div id="_api" class="" style="">
+    <div class="row">
+      <div class="span6">
+        <h1 class="bold">SIMPLE API</h1>
+        <p>We provide simple ways to CRUD your massive data.
+        <br />
+        Data size actually doesn't matter to us. All request and response will be stable.
+        </p>
+      </div>
+      <div class="span6">
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> RESTful API
+        <br />
+        <i class="icon-li icon-ok"></i> JSON filters
+        <br />
+        <i class="icon-li icon-ok"></i> Newest, Oldest ordering
+        <br />
+        <i class="icon-li icon-ok"></i> Control Access by API Keys
+        <br />
+        <i class="icon-li icon-ok"></i> Support Action-Scope for Each API Keys
+      </div>
+    </div>
     
     @*
     <br />
@@ -222,124 +224,122 @@
     *@
   </div>
 
-  <h5 class="typo-capital">
-  RESTful API
-  <br />
-  GET, POST, PUT, DELETE, ROLLBACK
-  <br />
-  JSON filters
-  <br />
-  Newest, Oldest ordering
-  <br />
-  Multiple API Keys (Access)
-  <br />
-  Multiple Scopes (Permission)<h5>
-
   <hr class="featurette-divider">
 
-  <div id="pages" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Pages <span class="muted">full of awesome and fancy UI</span></h2>
+  <div id="_processing" class="" style="">
     <div class="row">
       <div class="span6">
-        메인 스크린샷
+        <h1 class="bold">DATA PROCESSING</h1>
+        <p>All stored data can be directly transformed to a meaningful result even in realtime.
+        <br />
+        New data insertion will renew the result spontaneously.
+        </p>
       </div>
       <div class="span6">
-        개발자 로그
-      </div>
-    </div>
-    <div class="row">
-      <div class="span6">
-        자세히 보기
-      </div>
-      <div class="span6">
-        API 설정 + 결과물
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> Basic Statistics (Sum, Average, Rank)
+        <br />
+        <i class="icon-li icon-ok"></i> Item Recommendation (CF, AR)
+        <br />
+        <i class="icon-li icon-ok"></i> Customer Clustering (K-Means, EM Clustering)
+        <br />
+        <i class="icon-li icon-ok"></i> User-defined Factor Function
+        <br />
+        <i class="icon-li icon-ok"></i> Predictive Analysis
+        <br />
+        <i class="icon-li icon-ok"></i> Pattern Proving Iterations (A/B Tests)
       </div>
     </div>
   </div>
-  <hr class="featurette-divider">
-
-  <div id="detail" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Detail <span class="muted">views everything instantly</span></h2>
-    <p>언제나 쉽게 모델과 상태를 로그인하여 조회 할 수 있습니다.</p>
-  </div>
-  <hr class="featurette-divider">
-
-  <div id="order" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Order <span class="muted">answers what you want to know</span></h2>
-    <p>언제든지 가지고 있는 데이터로 원하는 결과물을 만들 수 있습니다. 다양한 알고리즘을 쓸 수 있으며, 놀랍게도 데이터가 변하면 결과값도 실시간으로 변합니다.</p>
-  </div>
-  <h5 class="typo-capital">
-  Sum, Average, Rank
-  <br />
-  Collaborative Filtering, Association Rules
-  <br />
-  K-Means (EM Clustering)
-  <br />
-  User-defined Factor Function
-  <br />
-  Predictive Analysis
-  <br />
-  Pattern Proving Iterations (A/B Tests)
-  @*
-  <br />
-  JavaScript Mining Plan <small>*will be soon in Beta 2</small>
-  *@
-  <h5>
 
   <hr class="featurette-divider">
 
-  <div id="pickup" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Pickup <span class="muted">sends result to anywhere in realtime</span></h2>
-    <p>완성된 분석 자료를 실제 데이터에 포함시키거나 반영시키세요. 여러번의 연산을 동시에 진행할 수 있습니다.</p>
+  <div id="_results" class="" style="">
+    <div class="row">
+      <div class="span6">
+        <h1 class="bold">RESULTS</h1>
+        <p>Data evolution and migration is ready. 
+        <br />
+        Save new model or status, merge and update existing data.
+        </p>
+      </div>
+      <div class="span6">
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> Appending JSON to model
+        <br />
+        <i class="icon-li icon-ok"></i> Adding Relationship between models
+        <br />
+        <i class="icon-li icon-ok"></i> Appending JSON to status
+        <br />
+        <i class="icon-li icon-ok"></i> Creating new by-product model
+      </div>
+    </div>
   </div>
 
-  <h5 class="typo-capital">
-  모델 JSON에 값을 넣기
-  <br />
-  모델과 모델에 새로운 상태를 넣기
-  <br />
-  상태 JSON에 값을 넣기 (weigth)
-  <br />
-  새로운 타입으로 모델 만들기
-  <h5>
-
   <hr class="featurette-divider">
 
-  <div id="integration" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Integration <span class="muted">with working product easily</span></h2>
-    <p>민트프레소가 지정한 서버와 주소로 완성된 분석 자료를 보내드립니다. 로컬에 있는 데이터처럼 바로 이용하세요.</p>
+  <div id="_integration" class="" style="">
+    <div class="row">
+      <div class="span6">
+        <h1 class="bold">INTEGRATION</h1>
+        <p>No obstacles to apply results in real world production.
+        <br />
+        We also provide Webhook, Push Notification.
+        </p>
+      </div>
+      <div class="span6">
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> Static URL for Result
+        <br />
+        <i class="icon-li icon-ok"></i> Private URL for Internal Use
+        <br />
+        <i class="icon-li icon-ok"></i> Email Reporting
+        <br />
+        <i class="icon-li icon-ok"></i> Paper Reporting
+        <br />
+        <i class="icon-li icon-ok"></i> Server Logic Trigger
+      </div>
+    </div>
   </div>
   
-  <h5 class="typo-capital">
-  JSON, XML, OpenGraph compatible
-  <br />
-  Email Reporting (이용자 통계를 이메일 발송)
-  <br />
-  Paper Reporting (사무실로 분석 자료 사본을 우편발송)
-  <br />
-  Push Notification (JavaScript에 바로 실시간 알림 적용 가능)
-  <br />
-  HTTP Webhook
-  <br />
-  Scheduled Messaging (관련 Server Logic을 주기적으로 활성화)
-  <h5>
-
   <hr class="featurette-divider">
 
-  <div id="support" class="featurette" style="">
-    <h2 class="featurette-heading typo-capital bold">Support <span class="muted">from hackers, data scientist and analysist</span></h2>
-    <p>개발자와 실무진의 의견을 최우선적으로 반영하겠습니다. 민트프레소는 국내외 데이터 전문가들과 오픈소스 기여자들과 네트워크를 형성하고 있습니다.</p>
+  <div id="_support" class="" style="">
+    <div class="row">
+      <div class="span6">
+        <h1 class="bold">SUPPORT</h1>
+        <p>Lead developers, data scientist, and analysist are ahead for your barrier.
+        <br />
+        We're trying to accept true feedback as a primary issue.
+        </p>
+      </div>
+      <div class="span6">
+        <h5 class="">
+        <i class="icon-li icon-ok"></i> Email Support
+        <br />
+        <i class="icon-li icon-ok"></i> Call Support
+        <br />
+        <i class="icon-li icon-ok"></i> In-person Support
+        <br />
+        <i class="icon-li icon-ok"></i> Architecture Mentoring
+        <br />
+        <i class="icon-li icon-ok"></i> Business Solution Development
+      </div>
+    </div>
   </div>
 
   <!-- /END THE FEATURETTES -->
 
+  <hr class="featurette-divider">
   <br />
   <br />
   <div style="text-align:center">
-    <a href="@routes.Application.login" class="btn btn-large btn-inverse">지금 바로 시작하세요</a>
+    <a href="@routes.Application.plans" class="btn btn-large">Pricing &amp; Plans</a>
+    <a href="@routes.Application.signin" class="btn btn-large btn-inverse">Subscribe Free Plan</a>
   </div>
+  <br />
+  <br />
 
-  <hr class="featurette-divider">
 
 </div><!-- /.container -->
 <!-- FOOTER -->

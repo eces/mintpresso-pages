@@ -1,0 +1,49 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@landing(Messages("title.privacy")) {
+
+<div id="landing">
+  <div class="container">
+    <div class="row">
+      <div class="span8 left">
+        <h1>Status: Good</h1>
+        <h2>Latest comment: 
+        </h2>
+      </div>
+      <div class="span3 offset1 right">
+        <h3>History</h3>
+        Scheduled maintainance at Aug 18th.
+        <br />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="featurette" style="text-align:center">
+  <h2 class="typo-capital bold">APP SERVER</h2>
+  <br />
+  <hr style="width: 150px;border: solid 3px #1ABC9C; margin: 0 auto;" />
+  <br />
+</div>
+
+<div class="container">
+  <div id="trifold" class="row icons center">
+    <div class="span4">
+      <h1 class="muted typo-capital bold">N/A</h1>
+      API Response Time (mean)
+    </div>
+    <div class="span4">
+      <h1 class="muted typo-capital bold">N/A</h1>
+      API Error Rate (error, warning)
+    </div>
+    <div class="span4">
+      <h1 class="muted typo-capital bold">N/A</h1>
+      Request per Minute
+    </div>
+  </div>
+</div>
+
+<hr />
+
+@footer()
+}

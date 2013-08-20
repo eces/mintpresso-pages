@@ -1,7 +1,7 @@
 @()(implicit request: RequestHeader, flash: Flash)
 
 @single(Messages("title.login"))("black") {
-<form class="form-inline" action="@routes.Users.login" method="POST">
+<form class="form-inline" action="@routes.Users.signin" method="POST">
   <div class="modal">
     <div class="modal-header" style="text-align: center">
       <a href="@routes.Application.index"><img src="@routes.Assets.at("images/logotype-white-v.png")" /></a>

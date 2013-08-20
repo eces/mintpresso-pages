@@ -1,15 +1,24 @@
 GET     /                           controllers.Application.index
 GET     /product                    controllers.Application.features
 GET     /plans                      controllers.Application.plans
-GET     /developers                 controllers.Application.developers
 
-GET     /login                      controllers.Application.login
-POST    /login                      controllers.Users.login
-GET     /logout                     controllers.Users.logout
+GET     /terms                      controllers.Application.terms
+GET     /privacy                    controllers.Application.privacy
+GET     /security                   controllers.Application.security
+GET     /status                     controllers.Application.status
+GET     /about                      controllers.Application.about
+GET     /faq                        controllers.Application.faq
+
+GET     /signin                     controllers.Application.signin
+POST    /signin                     controllers.Users.signin
+GET     /signout                    controllers.Users.signout
 GET     /signup                     controllers.Application.signup
 POST    /signup                     controllers.Users.signup
 
 GET     /jsValues                   controllers.Application.javascriptValues
 GET     /jsRoutes                   controllers.Application.javascriptRoutes
 GET     /jsMessages                 controllers.Application.javascriptMessages
+
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+GET     /:url                       controllers.Pages.index(url: String)

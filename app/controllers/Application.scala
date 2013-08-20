@@ -18,13 +18,33 @@ object Application extends Controller with Secured {
     Ok(views.html.plans())
   }
 
-  def developers = TODO
-
-  def login = TODO
+  def signin = Action { implicit request =>
+    Ok(views.html.login())
+  }
 
   def signup = TODO
 
-  def company = TODO
+  def faq = TODO
+
+  def terms = Action { implicit request =>
+    Ok(views.html.terms())
+  }
+
+  def privacy = Action { implicit request =>
+    Ok(views.html.privacy())
+  }
+
+  def security = Action { implicit request =>
+    Ok(views.html.security())
+  }
+
+  def status = Action { implicit request =>
+    Ok(views.html.status())
+  }
+
+  def about = Action { implicit request =>
+    Ok(views.html.about())
+  }
 
   def javascriptMessages = Action { implicit request =>
     val messages = new jsmessages.api.JsMessages

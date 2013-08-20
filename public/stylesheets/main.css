@@ -134,6 +134,9 @@ span.seal::-moz-selection {
 
   color: #d4d4d4;
 }
+#features {
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
+}
 #trifold {
   margin-top: 50px;
   margin-bottom: 50px;
@@ -141,6 +144,9 @@ span.seal::-moz-selection {
 #landing {
   background-color: #2c3e50;
   color: #ecf0f1;
+}
+#landing.landing-about {
+  background-color: #16a085;
 }
 #landing div.container {
   padding: 80px 0;
@@ -739,17 +745,42 @@ button.active span.label-number {
   border-bottom-width: 7px;
   margin: 90px 80px 15px 80px;
 }
-#submenu {
+.logotype {
+  color: #2c3e50;
+}
+.logotype:hover {
+  color: #2c3e50;
+  text-decoration: none;
+}
+#toc {
   width: 100%;
-  margin-top: -60px;
-  margin-bottom: 0;
+  top: 0;
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
-#submenu.affix {
-  margin-top: 0px;
-  top: 0px;
+#toc div.navbar-inner {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
 }
-#submenu ul {
-  margin-bottom: 0;
+#toc.affix + div.container {
+  padding-top: 70px;
+}
+#features hr.featurette-divider {
+  margin: 0px auto;
+}
+#features #_welcome {
+  margin-bottom: 80px;
+}
+#features #_storage,
+#features #_api,
+#features #_processing,
+#features #_results,
+#features #_integration,
+#features #_support {
+  margin: 80px 0;
+}
+#plans {
+  font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
@@ -793,7 +824,7 @@ button.active span.label-number {
 -------------------------------------------------- */
 /* Carousel base class */
 .carousel {
-  margin-bottom: 60px;
+  margin-bottom: 0px;
 }
 .carousel .container {
   position: relative;

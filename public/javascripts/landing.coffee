@@ -5,16 +5,16 @@
 jQuery ->
   $('#myCarousel').carousel()
 
-  $submenu = $('#submenu')
-  if $submenu.length
-    $submenu.affix {
+  $toc = $('#toc')
+  if $toc.length
+    $toc.affix {
       offset: {
-        top: 480
+        top: 79
       }
     }
 
   $features = $('#features')
   if $features.length
     $('body').scrollspy {
-      target: '#submenu'
+      target: '#toc'
     }
