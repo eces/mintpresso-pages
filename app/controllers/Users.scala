@@ -28,21 +28,27 @@ object Users extends Controller with Secured {
         Async {
           Mintpresso(s"/user/${e}").get map { r1 =>
             if(r1.status == 200){
-              val u = (r1.json \ "user").as[JsObject]
-              if( (u \ "password").asOpt[String].getOrElse("") == Crypto.sign(p) ){
-                val email = (u \ "$id").as[String]
-                val url = email.replaceAll("[@.#]", "-")
-                Redirect(routes.Pages.index(url)).withSession(
-                  "no" -> (u \ "$no").as[String],
-                  "email" -> email,
-                  "name" -> (u \ "name").as[String],
+              val u = User( r1.json )
+              if( u.password == Crypto.sign(p) ){
+                val url = u.email.replaceAll("[@.#]", "-")
+
+                Accepted(url).withSession(
+                  "no" -> u.no.toString,
+                  "email" -> u.email,
+                  "name" -> u.name,
                   "url" -> url
+                  // "phone" -> u.phone,
+                  // "verified" -> u.verified,
+                  // "testmode" -> u.testmode,
+                  // "orderLimit" -> u.orderLimit,
+                  // "rateLimit" -> u.rateLimit,
+                  // "rateRemaining" -> u.rateRemaining,
                 )
               }else{
-                Ok("user.invalid")
+                Ok("user.invalid.password")
               }
             }else{
-              Ok("user.empty")
+              Ok("user.invalid.email")
             }
           }
         }
@@ -57,7 +63,7 @@ object Users extends Controller with Secured {
   def signup = Action { implicit request =>
     val form = Form( tuple( "username" -> nonEmptyText, "email" -> Forms.email, "password" -> nonEmptyText ) )
     form.bindFromRequest.fold (
-      formWithErrors => Ok("form.empty"),
+      formWithErrors => Ok("form.empty.invlid"),
       values => {
         val (u, e, p) = values
 
@@ -66,15 +72,12 @@ object Users extends Controller with Secured {
             if(r1.status == 404){
               Async {
                 Mintpresso(s"/user").withConnection { conn =>
-                  val user = Json.obj(
-                    "user" -> Json.obj(
-                      "$id" -> e,
-                      "password" -> Crypto.sign(p),
-                      "name" -> u,
-                      "url" -> e.replaceAll("[@.#]", "-")
-                    )
-                  )
-                  conn.post(user)
+                  val user = User.Empty(0)
+                  user.id = e
+                  user.email = e
+                  user.password = Crypto.sign(p)
+                  user.name = u
+                  conn.post(user.toTypedJson)
                 }.map { r2 =>
                   if(r2.status == 201){
                     Created

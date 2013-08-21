@@ -14,14 +14,14 @@
         </h2>
       </div>
       <div class="span3 offset1 right">
-        <form action="@routes.Users.signup" method="post" class="">
-          <input type="text" name="username" placeholder="Pick an username" class="input-block-level" />
+        <form action="@routes.Users.signup" method="post" data-bind="submit: signup">
+          <input type="text" name="username" data-bind="value: username" placeholder="Pick an username" class="input-block-level" required />
           <br />
-          <input type="email" name="email" placeholder="Your email to logged in" class="input-block-level" />
+          <input type="email" name="email" data-bind="value: email" placeholder="Your email to logged in" class="input-block-level" required />
           <br />
-          <input type="password" name="password" placeholder="Create a password" class="input-block-level" />
+          <input type="password" name="password" data-bind="value: password" placeholder="Create a password" class="input-block-level" required />
           <br />
-          <button type="submit" class="btn btn-large btn-success btn-block">Sign Up for MINTPRESSO</button>
+          <button type="submit" data-bind="html: signupButton" class="btn btn-large btn-success btn-block">Sign Up for MINTPRESSO</button>
           <br />
           <p class="left transparent">
           By clicking "Sign Up for MINTPRESSO", you agree to our <a href="#">terms of service</a> and <a href="#">privacy policy</a>.

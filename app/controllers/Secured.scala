@@ -12,10 +12,12 @@ import models.User
 trait Secured {
   def getUser(implicit request: RequestHeader): User = {
     User(
+      request.session.get("email").getOrElse(""),
       request.session.get("no").getOrElse("0").toLong,
+      "",
       request.session.get("email").getOrElse(""),
       request.session.get("name").getOrElse(""),
-      request.session.get("url").getOrElse("")
+      ""
     )
   }
   def getOptionUser(implicit request: RequestHeader): Option[User] = {
@@ -37,18 +39,18 @@ trait Secured {
       f(request)(getUser)
     }else{
       Results.Redirect(routes.Application.signin).flashing(
-        "msg" -> "Permission required.",
+        "msg" -> "Permission required",
         "redirect_url" -> request.path
       )
     }
   }
 
   def SignedUrl(url: String)(f: Request[AnyContent] => Result) = Action { implicit request =>
-    if(getUser.url == url){
+    if( request.session.get("url").getOrElse("") == url){
       f(request)
     }else{
       Results.Redirect(routes.Application.signin).flashing(
-        "msg" -> "Permission required.",
+        "msg" -> s"Permission override required",
         "redirect_url" -> request.path,
         "account_change" -> "true"
       )

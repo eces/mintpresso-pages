@@ -807,3 +807,37 @@ val mintpresso: Affogato = Affogato(
       l = $link.html() + location.hash
       $link.html l
       $link[0].href = l
+
+  pagesViewModel = () ->
+    self = this
+    
+    self.username = ''
+    self.email = ''
+    self.password = ''
+    
+    self.signin = (elem) ->
+      _.Users.signin().ajax
+        data:
+          email: self.email
+          password: self.password
+        success: (d, s, x) ->
+          if x.status is 202
+            location.href = _.Pages.index(d).url
+          else
+            Messenger().post {
+              message: _ d
+              type: 'error'
+              showCloseButton: true
+            }
+        error: (x, s, r) ->
+          Messenger().post {
+            message: _ r
+            type: 'error'
+            showCloseButton: true
+          }
+      false
+
+    true
+  ko.applyBindings new pagesViewModel()
+
+  true

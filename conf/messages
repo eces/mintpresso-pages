@@ -10,4 +10,14 @@ title.changeAccount=Change account
 title.pages=Pages
 title.pages.overview=Pages > Overview
 
+signup.button=Sign Up for MINTPRESSO
+signup.button.done=Signed <i class="icon-check-sign"></i>
+signup.done.redirect=Redirecting to sign in...
+
+email.duplicate=Email is already taken
+
 form.empty=Please fill the form
+form.empty.invalid=Form is invalid or empty
+
+user.invalid.email=Sorry, email not found
+user.invalid.password=Please check your password

@@ -19,6 +19,8 @@
     <![endif]-->
     <link href="/assets/stylesheets/responsive.css" rel="stylesheet" />
     <link href="/assets/stylesheets/main.css" rel="stylesheet" />
+    <link href="/assets/stylesheets/messenger.css" rel="stylesheet" />
+    <link href="/assets/stylesheets/messenger-theme-future.css" rel="stylesheet" />
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
       <script src="/assets/javascripts/html5shiv.js"></script>
@@ -32,6 +34,22 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script src="@routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
+    <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.min.js")"></script>
+    <script src="/assets/javascripts/jquery.placeholder.js"></script>
+    <script src="/assets/javascripts/jqBootstrapValidation.js"></script>
+    <script src="/assets/javascripts/bootstrap-2.3.1.min.js"></script>
+    <script src="/assets/javascripts/messenger.js"></script>
+    <script src="/assets/javascripts/messenger-theme-future.js"></script>
+    <script>
+Messenger.options = {
+  parentLocations: ['body'],
+  maxMessages: 9,
+  extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right messenger-theme-future'
+}
+    </script>
+    <script src="/assets/javascripts/knockout-2.3.0.js"></script>
+    <script src="/assets/javascripts/moment.js"></script>
     <script type="text/javascript" src="@routes.Application.javascriptMessages"></script>
     <script type="text/javascript" src="@routes.Application.javascriptValues"></script>
     <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
@@ -42,12 +60,6 @@
     @flash.get("error").map { error =>
     <script>_.error = '@error'</script>
     }
-    <script src="@routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
-    <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.min.js")"></script>
-    <script src="/assets/javascripts/bootstrap-2.3.1.min.js"></script>
-    <script src="/assets/javascripts/jquery.placeholder.js"></script>
-    <script src="/assets/javascripts/jqBootstrapValidation.js"></script>
-    <script src="/assets/javascripts/moment.js"></script>
     @script
   </body>
 </html>

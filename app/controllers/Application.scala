@@ -55,6 +55,10 @@ object Application extends Controller with Secured {
     import routes.javascript._
     Ok(
       Routes.javascriptRouter("routes")(
+        routes.javascript.Users.signup,
+        routes.javascript.Users.signin,
+        routes.javascript.Pages.index,
+        routes.javascript.Application.signin,
         routes.javascript.Application.javascriptRoutes,
         routes.javascript.Application.javascriptValues
       )
