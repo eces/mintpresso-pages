@@ -1,0 +1,33 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single("Data Cloud - MINTPRESSO Panel")("white") {
+  <meta name="panel" content="data">
+
+  <div id="panel">
+    @menu("account")
+    <div id="submenu">
+      <ul>
+        <li data-menu="view" data-parameter="">
+          <span>API Usage</span>
+          <p>Overview all requests today, this week, or last month.</p>
+        </li>
+        <li data-menu="log" data-parameter="">
+          <span>Plans and Billing</span>
+          <p>See your current plan, update billing information to purchase.</p>
+        </li>
+        <li data-menu="log" data-parameter="">
+          <span>API Key Management</span>
+          <p>Secure your application by issuing read-only key and revoking no more used keys.</p>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <div data-content="index" data-state="0"></div>
+      <div data-content="view" data-state="0" class="wide"></div>
+      <div data-content="log" data-state="0" class="wide"></div>
+      <div data-content="filter" data-state="0"></div>
+      <div data-content="import" data-state="0"></div>
+      <div data-content="export" data-state="0"></div>
+    </div>
+  </div>
+} 

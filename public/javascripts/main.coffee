@@ -814,8 +814,11 @@ val mintpresso: Affogato = Affogato(
     self.username = ''
     self.email = ''
     self.password = ''
+
+    self.signinButton = ko.observable _ 'signin'
     
     self.signin = (elem) ->
+      self.signinButton _ 'signin.progress'
       _.Users.signin().ajax
         data:
           email: self.email
@@ -829,12 +832,14 @@ val mintpresso: Affogato = Affogato(
               type: 'error'
               showCloseButton: true
             }
+            self.signinButton _ 'signin'
         error: (x, s, r) ->
           Messenger().post {
             message: _ r
             type: 'error'
             showCloseButton: true
           }
+          self.signinButton _ 'signin'
       false
 
     true

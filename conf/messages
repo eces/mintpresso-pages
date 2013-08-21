@@ -21,3 +21,6 @@ form.empty.invalid=Form is invalid or empty
 
 user.invalid.email=Sorry, email not found
 user.invalid.password=Please check your password
+
+signin=Sign in
+signin.progress=Signing in ...

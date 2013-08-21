@@ -16,6 +16,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 object Pages extends Controller with Secured {
   def index(url: String) = SignedUrl(url) { implicit request =>
-    Ok    
+    Ok(views.html.pages.index())    
   }
 }
