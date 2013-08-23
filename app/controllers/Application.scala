@@ -57,7 +57,12 @@ object Application extends Controller with Secured {
       Routes.javascriptRouter("routes")(
         routes.javascript.Users.signup,
         routes.javascript.Users.signin,
-        routes.javascript.Pages.index,
+        routes.javascript.Pages.account,
+        routes.javascript.Pages.account_usage,
+        routes.javascript.Pages.collect,
+        routes.javascript.Pages.order,
+        routes.javascript.Pages.pickup,
+        routes.javascript.Pages.support,
         routes.javascript.Application.signin,
         routes.javascript.Application.javascriptRoutes,
         routes.javascript.Application.javascriptValues
@@ -67,13 +72,13 @@ object Application extends Controller with Secured {
 
   def javascriptValues = Action { implicit request =>
     var kv: Map[String, String] = Map()
-    // getOptionUser map { user =>
-    //   kv += (("id" -> user.id.toString))
-    //   kv += (("email" -> user.email))
-    //   kv += (("name" -> user.name))
-    // } getOrElse {
-
-    // }
+    getOptionUser map { user =>
+      kv += (("id" -> user.id.toString))
+      kv += (("email" -> user.email))
+      kv += (("name" -> user.name))
+      kv += (("no" -> user.no.toString))
+      kv += (("url" -> request.session.get("url").getOrElse("")))
+    }
     Ok( views.html.javascriptValues(kv) ).as("text/javascript")
   }
 

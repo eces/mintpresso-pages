@@ -1,33 +1,29 @@
 @()(implicit request: RequestHeader, flash: Flash)
 
-@single("Data Cloud - MINTPRESSO Panel")("white") {
+@single(Messages("title.account"))("white") {
   <meta name="panel" content="data">
 
   <div id="panel">
     @menu("account")
     <div id="submenu">
+      <span data-bind="text: page"></span>
       <ul>
-        <li data-menu="view" data-parameter="">
+        <li data-bind="click: page.bind($data, 'usage'), css: { active: page == 'usage'}">
           <span>API Usage</span>
           <p>Overview all requests today, this week, or last month.</p>
         </li>
-        <li data-menu="log" data-parameter="">
+        <li data-bind="click: page.bind($data, 'plans-and-billing'), css: { active: page == 'plans-and-billing'}">
           <span>Plans and Billing</span>
           <p>See your current plan, update billing information to purchase.</p>
         </li>
-        <li data-menu="log" data-parameter="">
+        <li data-bind="click: page.bind($data, 'api-key'), css: { active: page == 'api-key'}">
           <span>API Key Management</span>
           <p>Secure your application by issuing read-only key and revoking no more used keys.</p>
         </li>
       </ul>
     </div>
     <div id="content">
-      <div data-content="index" data-state="0"></div>
-      <div data-content="view" data-state="0" class="wide"></div>
-      <div data-content="log" data-state="0" class="wide"></div>
-      <div data-content="filter" data-state="0"></div>
-      <div data-content="import" data-state="0"></div>
-      <div data-content="export" data-state="0"></div>
+      <div class="wide" data-bind="html: content"></div>
     </div>
   </div>
 } 

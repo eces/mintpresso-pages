@@ -21,4 +21,9 @@ GET     /jsMessages                 controllers.Application.javascriptMessages
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-GET     /:url                       controllers.Pages.index(url: String)
+GET     /:url/account/usage.json          controllers.Pages.account_usage(url: String)
+GET     /:url/account*path                controllers.Pages.account(url: String, path: String)
+GET     /:url/collect               controllers.Pages.collect(url: String)
+GET     /:url/order                 controllers.Pages.order(url: String)
+GET     /:url/pickup                controllers.Pages.pickup(url: String)
+GET     /:url/support               controllers.Pages.support(url: String)

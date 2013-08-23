@@ -15,7 +15,19 @@ import play.api.libs.ws.Response
 import play.api.libs.concurrent.Execution.Implicits._
 
 object Pages extends Controller with Secured {
-  def index(url: String) = SignedUrl(url) { implicit request =>
-    Ok(views.html.pages.index())    
+  def account(url: String, path: String) = SignedUrl(url) { implicit request =>
+    println("a")
+    Ok(views.html.pages.account())    
   }
+  def account_(url: String, path: String) = SignedUrl(url) { implicit request =>
+    println("b")
+    Ok(views.html.pages.account())    
+  }
+  def account_usage(url: String) = SignedUrl(url) { implicit request =>
+    Ok("HEY")
+  }
+  def collect(url: String) = TODO
+  def order(url: String) = TODO
+  def pickup(url: String) = TODO
+  def support(url: String) = TODO
 }

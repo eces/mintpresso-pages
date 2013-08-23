@@ -1,27 +1,20 @@
 @(selected: String)(implicit request: RequestHeader, flash: Flash)
 
-@dataAndClass(d: String, c: String) = {
-  @if(d == selected){
-    data-menu="@d" class="@c active"
-  } else {
-    data-menu="@d" class="@c"
-  }
-}
 <div id="menu">
   <ul>
-    <li @dataAndClass("account", "")>
+    <li data-bind="css: { active: menu == 'account' }">
       <a href="#"><i class="icon-desktop"></i><br />ACCOUNT</a>
     </li>
-    <li @dataAndClass("storage", "")>
+    <li data-bind="css: { active: menu == 'collect' }">
       <a href="#"><i class="icon-cloud-download"></i><br />COLLECT</a>
     </li>
-    <li @dataAndClass("order", "")>
+    <li data-bind="css: { active: menu == 'order' }">
       <a href="#"><i class="icon-code-fork"></i><br />ORDER</a>
     </li>
-    <li @dataAndClass("pickup", "")>
+    <li data-bind="css: { active: menu == 'pickup' }">
       <a href="#"><i class="icon-download-alt"></i><br />PICK UP</a>
     </li>
-    <li @dataAndClass("support", "")>
+    <li data-bind="css: { active: menu == 'support' }">
       <a href="#"><i class="icon-comments"></i><br />SUPPORT</a>
     </li>
     <li class="mintpresso" title="민트프레소 사이트로 이동합니다." onclick="location.href='/'"></li>
