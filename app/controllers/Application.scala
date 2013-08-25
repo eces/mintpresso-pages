@@ -19,7 +19,11 @@ object Application extends Controller with Secured {
   }
 
   def signin = Action { implicit request =>
-    Ok(views.html.login())
+    getOptionUser map { user =>
+      Redirect(routes.Pages.account(getUrl, ""))
+    } getOrElse {
+      Ok(views.html.login())
+    }
   }
 
   def signup = TODO
@@ -58,7 +62,9 @@ object Application extends Controller with Secured {
         routes.javascript.Users.signup,
         routes.javascript.Users.signin,
         routes.javascript.Pages.account,
-        routes.javascript.Pages.account_usage,
+        routes.javascript.Pages.accountUsage,
+        routes.javascript.Pages.accountPlansAndBilling,
+        routes.javascript.Pages.accountApiKey,
         routes.javascript.Pages.collect,
         routes.javascript.Pages.order,
         routes.javascript.Pages.pickup,

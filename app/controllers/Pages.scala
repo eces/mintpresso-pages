@@ -16,18 +16,20 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 object Pages extends Controller with Secured {
   def account(url: String, path: String) = SignedUrl(url) { implicit request =>
-    println("a")
     Ok(views.html.pages.account())    
   }
-  def account_(url: String, path: String) = SignedUrl(url) { implicit request =>
-    println("b")
-    Ok(views.html.pages.account())    
+  def accountUsage(url: String) = SignedUrl(url) { implicit request =>
+    Ok(Json.obj())
   }
-  def account_usage(url: String) = SignedUrl(url) { implicit request =>
-    Ok("HEY")
+  def accountPlansAndBilling(url: String) = SignedUrl(url) { implicit request =>
+    Ok(Json.obj())
   }
-  def collect(url: String) = TODO
-  def order(url: String) = TODO
-  def pickup(url: String) = TODO
-  def support(url: String) = TODO
+  def accountApiKey(url: String) = SignedUrl(url) { implicit request =>
+    InternalServerError
+    // Ok(Json.obj())
+  }
+  def collect(url: String, path: String) = TODO
+  def order(url: String, path: String) = TODO
+  def pickup(url: String, path: String) = TODO
+  def support(url: String, path: String) = TODO
 }

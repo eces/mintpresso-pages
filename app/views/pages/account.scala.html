@@ -6,24 +6,28 @@
   <div id="panel">
     @menu("account")
     <div id="submenu">
-      <span data-bind="text: page"></span>
       <ul>
-        <li data-bind="click: page.bind($data, 'usage'), css: { active: page == 'usage'}">
+        <li data-bind="click: page.bind($data, 'usage'), css: { active: page() == 'usage'}">
           <span>API Usage</span>
           <p>Overview all requests today, this week, or last month.</p>
         </li>
-        <li data-bind="click: page.bind($data, 'plans-and-billing'), css: { active: page == 'plans-and-billing'}">
+        <li data-bind="click: page.bind($data, 'plans-and-billing'), css: { active: page() == 'plans-and-billing'}">
           <span>Plans and Billing</span>
           <p>See your current plan, update billing information to purchase.</p>
         </li>
-        <li data-bind="click: page.bind($data, 'api-key'), css: { active: page == 'api-key'}">
+        <li data-bind="click: page.bind($data, 'api-key'), css: { active: page() == 'api-key'}">
           <span>API Key Management</span>
           <p>Secure your application by issuing read-only key and revoking no more used keys.</p>
         </li>
       </ul>
     </div>
-    <div id="content">
-      <div class="wide" data-bind="html: content"></div>
+    <div id="content" data-bind="">
+      <div class="" data-bind="visible: page() == 'usage', template: { name: 'usage-template', data: data.usage, if: data.usage() } "></div>
+      <div class="" data-bind="visible: page() == 'plans-and-billing', template: { name: 'plans-template', data: data.plansAndBilling, if: data.plansAndBilling() } "></div>
+      <div class="wide" data-bind="visible: page() == 'api-key', template: { name: 'api-key-template', data: data.apiKey, if: data.apiKey() } "></div>
     </div>
+    <script type="text/html" id="usage-template">@accountUsage()</script>
+    <script type="text/html" id="plans-template">@accountPlansAndBilling()</script>
+    <script type="text/html" id="api-key-template">@accountApiKey()</script>
   </div>
 } 

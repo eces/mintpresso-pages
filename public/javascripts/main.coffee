@@ -1,7 +1,8 @@
 ###
-  Author: Jinhyuk Lee
+Jinhyuk Lee at mintpresso.com
 ###
 
+# extends String endsWith, startsWith
 if String.prototype.format is undefined
   String.prototype.format = () ->
     _arguments = arguments
@@ -16,45 +17,6 @@ String.prototype.startsWith = (prefix) ->
 
 jQuery ->
   $('input, textarea').placeholder()
-
-  $.extend {
-    getParameters: () ->
-      vars = []
-      if window.location.hash.indexOf('?') is -1
-        return []
-      for hash in window.location.hash.slice(window.location.hash.indexOf('?') + 1).split('&')
-        continue if hash.length is 0
-        kv = hash.split('=')
-        vars.push kv[0]
-        vars[kv[0]] = kv[1]
-      return vars
-    getParameter: (name) ->
-      temp = $.getParameters()[name]
-      if temp is undefined
-        ""
-      else
-        temp
-
-    getParameterHash: () ->
-      if window.location.hash.indexOf('?') == -1 
-        return ""
-      else
-        window.location.hash.slice(window.location.hash.indexOf('?'))
-
-    setParameter: (key, value) ->
-      if $.getParameter(key) is undefined
-        if window.location.hash.indexOf('?') is -1
-          window.location.hash += "?"
-        window.location.hash += key + '=' + value + '&'
-      else
-        params = $.getParameters
-        temp = "?"
-        for p in params
-          temp += p + '=' + params[p] + '&'
-        temp += key + '=' + value + '&'
-        window.location.hash = window.location.hash.slice(0, window.location.hash.indexOf('?')) + temp
-      $('#submenu li.active').data('parameter', $.getParameterHash())
-  }
 
   $body = $('body')
 
@@ -106,31 +68,29 @@ jQuery ->
   pagesViewModel = () ->
     self = this
 
+    self.data =
+      usage: ko.observable()
+      plansAndBilling: ko.observable()
+      apiKey: ko.observable()
+
     self.menu = ko.observable()
-    self.content = ko.observable()
-    self._page = ''
+    self._page = ko.observable()
     self.page = ko.computed {
       read: () ->
-        return self._page
+        return this._page()
 
       write: (value) ->
-        if self._page isnt value
+        # do nothing if page isn't change, let's use non-self referring value '_page()'
+        if self._page() isnt value
           # update
-          self._page =  value
-          # change push state
-          History.pushState {}, _('title.' + self.menu() + '.' + self._page ), '/' + _.url + '/' + self.menu() + '/' + self._page
+          self._page value
+          # ignore when pointing none page like '/account'
+          if value.length > 0
+            # change push state
+            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + self._page() ), '/' + _.url + '/' + self.menu() + '/' + self._page()
         true
       owner: self
     }
-
-    # self.setPage = (value) ->
-    #   if self._page isnt value
-    #     # update
-    #     self._page =  value
-    #     # change push state
-    #     console.log 'pushState', value
-    #     # History.pushState {}, _('title.' + self.menu() + '.' + self.page() ), _.url + '/' + self.page()
-    #   true
     
     self.username = ''
     self.email = ''
@@ -146,7 +106,7 @@ jQuery ->
           password: self.password
         success: (d, s, x) ->
           if x.status is 202
-            location.href = _.Pages.account(d).url
+            location.href = _.Pages.account(d, "").url
           else
             Messenger().post {
               message: _ d
@@ -163,19 +123,32 @@ jQuery ->
           self.signinButton _ 'signin'
       false
 
-    # apply url to view model
-    parts = location.pathname.split '/'
-    self.menu parts[2] if parts.length > 2
-    self.page parts[3] if parts.length > 3
+    # apply url to view model, returns hasPropagation
+    self.applyUrl = () ->
+      parts = location.pathname.split '/'
+      self.menu parts[2] if parts.length > 2
+      if parts.length > 3
+        self.page parts[3]
+      else
+        self._page ''
+        false
+
+    self.applyUrl()
 
     # bind push state changes
-    History.Adapter.bind window, 'statechange', () ->
-      # state = History.getState();
+    History.Adapter.bind window, 'statechange', (e) ->
+      state = History.getState();
+
+      # not triggered by page.write, should be from history.back
+      if state.data.timestamp isnt moment().seconds()
+        if self.applyUrl() is false
+          return false
+
+      route = $.camelCase( self.menu() + '-' + self.page() )
 
       # check the page
-      if self.page() in _.Pages
-        console.log self.menu() + '_' + self.page() 
-        _.Pages[ self.menu() + '_' + self.page() ](_.url).ajax
+      if route of _.Pages
+        _.Pages[ route ](_.url).ajax
           success: (d, s, x) ->
             if x.status isnt 200
               Messenger().post {
@@ -183,9 +156,22 @@ jQuery ->
                 type: 'error'
                 showCloseButton: true
               }
-              console.log 'Go Back'
             else
-              self.content(d)
+              self.data[ $.camelCase(self.page()) ](d)
+          error: (x, s, r) ->
+            msg = Messenger().post {
+              message: r
+              type: 'error'
+              showCloseButton: true
+              actions:
+                retry:
+                  label: 'Retry Now'
+                  action: ->
+                    location.reload()
+                # cancel:
+                #   action: ->
+                #     do msg.cancel
+            }
       else
         Messenger().post {
           message: _ 'page.empty'
@@ -193,6 +179,8 @@ jQuery ->
           showCloseButton: true
         }
       true
+
+    $(window).trigger('statechange')
     true
   ko.applyBindings new pagesViewModel()  
   true

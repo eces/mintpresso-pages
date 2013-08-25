@@ -27,6 +27,9 @@ trait Secured {
       None
     }
   }
+  def getUrl(implicit request: RequestHeader): String = {
+    request.session.get("url").getOrElse("")
+  }
   def signed(implicit request: RequestHeader): Boolean = {
   	request.session.get("no").map { no =>
   	  true

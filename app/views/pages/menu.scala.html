@@ -1,22 +1,21 @@
 @(selected: String)(implicit request: RequestHeader, flash: Flash)
-
 <div id="menu">
   <ul>
     <li data-bind="css: { active: menu == 'account' }">
-      <a href="#"><i class="icon-desktop"></i><br />ACCOUNT</a>
+      <a href="@routes.Pages.account(Application.getUrl, "")"><i class="icon-desktop"></i><br />ACCOUNT</a>
     </li>
     <li data-bind="css: { active: menu == 'collect' }">
-      <a href="#"><i class="icon-cloud-download"></i><br />COLLECT</a>
+      <a href="@routes.Pages.collect(Application.getUrl, "")"><i class="icon-cloud-download"></i><br />COLLECT</a>
     </li>
     <li data-bind="css: { active: menu == 'order' }">
-      <a href="#"><i class="icon-code-fork"></i><br />ORDER</a>
+      <a href="@routes.Pages.order(Application.getUrl, "")"><i class="icon-code-fork"></i><br />ORDER</a>
     </li>
     <li data-bind="css: { active: menu == 'pickup' }">
-      <a href="#"><i class="icon-download-alt"></i><br />PICK UP</a>
+      <a href="@routes.Pages.pickup(Application.getUrl, "")"><i class="icon-download-alt"></i><br />PICK UP</a>
     </li>
     <li data-bind="css: { active: menu == 'support' }">
-      <a href="#"><i class="icon-comments"></i><br />SUPPORT</a>
+      <a href="@routes.Pages.support(Application.getUrl, "")"><i class="icon-comments"></i><br />SUPPORT</a>
     </li>
-    <li class="mintpresso" title="민트프레소 사이트로 이동합니다." onclick="location.href='/'"></li>
+    <a href="/" title="Go to mintpresso website"><li class="mintpresso"></li></a>
   </ul>
 </div>

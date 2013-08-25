@@ -10,6 +10,7 @@ html { height: 100%; }
 body {
   color: @midnight-blue;
   background-image: url("@{imagePath}/gray_jean.png");
+  .transition(none);
 }
 
 a {
@@ -334,11 +335,11 @@ footer {
         color: @white;
         font-size: 8pt;
         line-height: 10pt;
-        .transition(all 200ms);
+        .transition(background 200ms);
         &:hover {
           cursor: pointer;
           background-color: #333;
-          .transition(all 200ms);
+          .transition(background 200ms);
         }
         &.active {
           background-color: #000;
@@ -347,14 +348,32 @@ footer {
           }
         }
         &.mintpresso {
-          height: 150px;
-          .at2x("@{imagePath}/logotype-black-v.png", 170px/7, 803px/7);
           background-repeat: no-repeat;
           // background-image: url("@{imagePath}/logotype-black-v.png");
           // background-size: 60px;
           background-position: center;
           position: fixed;
           bottom: 0px;
+          .transition(none);
+          @media screen and (max-height: 700px) {
+            // able to show at top
+            // top: 0px;
+
+            // but we decided to hide it
+            display: none;
+          }
+          @media screen and (max-height: 799px) {
+            // .at2x("@{imagePath}/logotype-black-h.png", 803px/10, 170px/10);
+            background-image: url("@{imagePath}/logotype-black-h@2x.png");
+            background-size: 803px/10 170px/10;
+            height: 30px;
+          }
+          @media screen and (min-height: 800px) {
+            // .at2x("@{imagePath}/logotype-black-v.png", 170px/7, 803px/7);
+            background-image: url("@{imagePath}/logotype-black-v@2x.png");
+            background-size: 170px/7 803px/7;
+            height: 150px;
+          }
         }
       }
     }
@@ -382,12 +401,15 @@ footer {
         // color: @midnight-blue;
         font-size: 9pt;
         background-color: #f0f0f0;
-        .transition(all 300ms);
+        .transition(height 300ms);
+        &.ready {
+
+        }
         &:hover {
           cursor: pointer;
           background-color: #e4e4e4;
           // color: @wet-asphalt;
-          .transition(all 300ms);
+          .transition(background 300ms);
         }
         &.active {
           span {
@@ -421,7 +443,7 @@ footer {
   }
   #content {
     margin-left: 350px;
-    margin-top: -20px;
+    // margin-top: -20px;
     width: 800px; min-height: 800px; height: 100%;
     background-color: #fff;
     border-right: solid #e4e4e4 1px;
@@ -438,6 +460,16 @@ footer {
       //   min-height: 100px;
       //   height: 20%;
       // }
+    }
+    div.container {
+      width: 100%;
+      padding: 20px 30px 20px 30px;
+      h1 {
+        font-weight: 100;
+        // font-size: 12px * 3;
+        color: #444;
+        line-height: 12px * 6;
+      }
     }
     #selector {
       text-align: right;

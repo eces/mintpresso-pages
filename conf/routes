@@ -21,9 +21,20 @@ GET     /jsMessages                 controllers.Application.javascriptMessages
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-GET     /:url/account/usage.json          controllers.Pages.account_usage(url: String)
+GET     /:url/account/usage.json controllers.Pages.accountUsage(url: String)
+GET     /:url/account/api-key.json controllers.Pages.accountApiKey(url: String)
+GET     /:url/account/plans-and-billing.json controllers.Pages.accountPlansAndBilling(url: String)
+GET     /:url/account                     controllers.Pages.account(url: String, path="")
 GET     /:url/account*path                controllers.Pages.account(url: String, path: String)
-GET     /:url/collect               controllers.Pages.collect(url: String)
-GET     /:url/order                 controllers.Pages.order(url: String)
-GET     /:url/pickup                controllers.Pages.pickup(url: String)
-GET     /:url/support               controllers.Pages.support(url: String)
+
+GET     /:url/collect               controllers.Pages.collect(url: String, path="")
+GET     /:url/collect*path          controllers.Pages.collect(url: String, path: String)
+
+GET     /:url/order                 controllers.Pages.order(url: String, path="")
+GET     /:url/order*path            controllers.Pages.order(url: String, path: String)
+
+GET     /:url/pickup                controllers.Pages.pickup(url: String, path="")
+GET     /:url/pickup*path           controllers.Pages.pickup(url: String, path: String)
+
+GET     /:url/support               controllers.Pages.support(url: String, path="")
+GET     /:url/support*path          controllers.Pages.support(url: String, path: String)
