@@ -68,11 +68,6 @@ jQuery ->
   pagesViewModel = () ->
     self = this
 
-    self.data =
-      usage: ko.observable()
-      plansAndBilling: ko.observable()
-      apiKey: ko.observable()
-
     self.menu = ko.observable()
     self._page = ko.observable()
     self.page = ko.computed {
@@ -97,6 +92,7 @@ jQuery ->
     self.password = ''
 
     self.signinButton = ko.observable _ 'signin'
+    self.applyButton = ko.observable _ 'apply.change'
     
     self.signin = (elem) ->
       self.signinButton _ 'signin.progress'
@@ -107,6 +103,13 @@ jQuery ->
         success: (d, s, x) ->
           if x.status is 202
             location.href = _.Pages.account(d, "").url
+          else if x.status is 201
+            Messenger().post {
+              message: _ d
+              type: 'info'
+              showCloseButton: true
+            }
+            self.signinButton _ 'signin'
           else
             Messenger().post {
               message: _ d
@@ -122,6 +125,101 @@ jQuery ->
           }
           self.signinButton _ 'signin'
       false
+
+    self.apiKey = 
+      data: ko.observableArray()
+      create: ->
+        self.apiKey.data.unshift {
+          $id: ''
+          $no: 0
+          label: 'test'
+          $createdAt: 0
+          $updatedAt: 0
+          url: ko.observableArray [
+            { value: ko.observable('*') }
+          ]
+          logThreshold: 'warn',
+          scope: [
+            { name: "read_model"    , value: true }
+            { name: "create_model"  , value: true }
+            { name: "update_model"  , value: true }
+            { name: "search_status" , value: true }
+            { name: "create_status" , value: true }
+            { name: "delete_status" , value: false }
+            { name: "manage_order" , value: false }
+            { name: "manage_pickup" , value: false }
+          ]
+        }
+      addUrl: (key) ->
+        key.url.push { value: '' }
+      removeUrl: ->
+        key = arguments[0]
+        value = arguments[1]
+        key.url.remove value
+      save: (key) ->
+        _.Pages._accountApiKey(_.url).ajax
+          contentType: 'application/json'
+          data: ko.toJSON key
+          success: (d, s, x) ->
+            _.currentSave = key.$id()
+            if x.status isnt 201
+              Messenger().post {
+                message: _ d
+                type: 'error'
+                showCloseButton: true
+              }
+            else
+              Messenger().post {
+                message: _ d
+                type: 'success'
+                showCloseButton: true
+                actions:
+                  reload:
+                    label: 'Refresh now'
+                    action: ->
+                      location.hash = _.currentSave
+                      location.reload()
+              }
+          error: (x, s, r) ->
+            console.log 'e'
+            msg = Messenger().post {
+              message: r
+              type: 'error'
+              showCloseButton: true
+              actions:
+                retry:
+                  label: 'Retry Now'
+                  action: ->
+                    self.apiKey.save(key)
+            }
+        false
+      delete: (key)-> 
+        self.apiKey.data.remove(key)
+
+      # load data from json
+      load: (data) ->
+        ko.mapping.fromJS(data, {}, self.apiKey.data)
+
+    self.usage =
+      data: ko.observable()
+
+    self.plansAndBilling =
+      data: ko.observable()
+
+    self.prepareComponents = ->
+      $('time').each (k, v) ->
+        $this = $(v)
+        if $this.is '[ago]'
+          m = moment( Number($this.html()) )
+          $this.html m.fromNow()
+          $this.attr 'datetime', m.format()
+          $this.attr 'title', m.format()
+          $this.tooltip {
+            placement: 'bottom'
+          }
+        else
+          m = moment( Number($this.html()) )
+          $this.html m.format()
 
     # apply url to view model, returns hasPropagation
     self.applyUrl = () ->
@@ -157,7 +255,11 @@ jQuery ->
                 showCloseButton: true
               }
             else
-              self.data[ $.camelCase(self.page()) ](d)
+              # for item in d
+              #   self[ $.camelCase(self.page()) ].data.push item
+              switch self.page()
+                when 'api-key' then self.apiKey.load d
+                else self[ $.camelCase(self.page()) ].data d
           error: (x, s, r) ->
             msg = Messenger().post {
               message: r

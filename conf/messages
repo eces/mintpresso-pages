@@ -24,3 +24,29 @@ user.invalid.password=Please check your password
 
 signin=Sign in
 signin.progress=Signing in ...
+
+reset.email.sent=Your account has to set a new password. Please check the email we've sent :)
+reset.code.invalid=Code is invalid. Please try again.
+reset.fail=No information is given. Please try again.
+reset.done=Password has been changed.
+
+apply.change=Apply changes
+apply.progress=Saving ...
+apply.fail=Failed to apply changes. Please try again or report it.
+apply.done=Saved
+
+read_model=can read models.
+create_model=can create new model.
+update_model=can update models.
+search_status=allow to search all types of status.
+create_status=can create new status.
+delete_status=can delete a status.
+manage_order=allow to start, pause, configure data mining plans for orders.
+manage_pickup=allow to start, pause, configure, and read results from pickups.
+
+url.invalid=Invalid URL forms.
+host.unavailable=We've tried to reach your server and hosts, but failed some of urls.
+
+error.400=Bad Request
+error.404=Page Not Found
+error.500=Internal Server Error

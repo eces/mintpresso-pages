@@ -98,11 +98,6 @@ Jinhyuk Lee at mintpresso.com
     pagesViewModel = function() {
       var self;
       self = this;
-      self.data = {
-        usage: ko.observable(),
-        plansAndBilling: ko.observable(),
-        apiKey: ko.observable()
-      };
       self.menu = ko.observable();
       self._page = ko.observable();
       self.page = ko.computed({
@@ -126,6 +121,7 @@ Jinhyuk Lee at mintpresso.com
       self.email = '';
       self.password = '';
       self.signinButton = ko.observable(_('signin'));
+      self.applyButton = ko.observable(_('apply.change'));
       self.signin = function(elem) {
         self.signinButton(_('signin.progress'));
         _.Users.signin().ajax({
@@ -136,6 +132,13 @@ Jinhyuk Lee at mintpresso.com
           success: function(d, s, x) {
             if (x.status === 202) {
               return location.href = _.Pages.account(d, "").url;
+            } else if (x.status === 201) {
+              Messenger().post({
+                message: _(d),
+                type: 'info',
+                showCloseButton: true
+              });
+              return self.signinButton(_('signin'));
             } else {
               Messenger().post({
                 message: _(d),
@@ -155,6 +158,141 @@ Jinhyuk Lee at mintpresso.com
           }
         });
         return false;
+      };
+      self.apiKey = {
+        data: ko.observableArray(),
+        create: function() {
+          return self.apiKey.data.unshift({
+            $id: '',
+            $no: 0,
+            label: 'test',
+            $createdAt: 0,
+            $updatedAt: 0,
+            url: ko.observableArray([
+              {
+                value: ko.observable('*')
+              }
+            ]),
+            logThreshold: 'warn',
+            scope: [
+              {
+                name: "read_model",
+                value: true
+              }, {
+                name: "create_model",
+                value: true
+              }, {
+                name: "update_model",
+                value: true
+              }, {
+                name: "search_status",
+                value: true
+              }, {
+                name: "create_status",
+                value: true
+              }, {
+                name: "delete_status",
+                value: false
+              }, {
+                name: "manage_order",
+                value: false
+              }, {
+                name: "manage_pickup",
+                value: false
+              }
+            ]
+          });
+        },
+        addUrl: function(key) {
+          return key.url.push({
+            value: ''
+          });
+        },
+        removeUrl: function() {
+          var key, value;
+          key = arguments[0];
+          value = arguments[1];
+          return key.url.remove(value);
+        },
+        save: function(key) {
+          _.Pages._accountApiKey(_.url).ajax({
+            contentType: 'application/json',
+            data: ko.toJSON(key),
+            success: function(d, s, x) {
+              _.currentSave = key.$id();
+              if (x.status !== 201) {
+                return Messenger().post({
+                  message: _(d),
+                  type: 'error',
+                  showCloseButton: true
+                });
+              } else {
+                return Messenger().post({
+                  message: _(d),
+                  type: 'success',
+                  showCloseButton: true,
+                  actions: {
+                    reload: {
+                      label: 'Refresh now',
+                      action: function() {
+                        location.hash = _.currentSave;
+                        return location.reload();
+                      }
+                    }
+                  }
+                });
+              }
+            },
+            error: function(x, s, r) {
+              var msg;
+              console.log('e');
+              return msg = Messenger().post({
+                message: r,
+                type: 'error',
+                showCloseButton: true,
+                actions: {
+                  retry: {
+                    label: 'Retry Now',
+                    action: function() {
+                      return self.apiKey.save(key);
+                    }
+                  }
+                }
+              });
+            }
+          });
+          return false;
+        },
+        "delete": function(key) {
+          return self.apiKey.data.remove(key);
+        },
+        load: function(data) {
+          return ko.mapping.fromJS(data, {}, self.apiKey.data);
+        }
+      };
+      self.usage = {
+        data: ko.observable()
+      };
+      self.plansAndBilling = {
+        data: ko.observable()
+      };
+      self.prepareComponents = function() {
+        return $('time').each(function(k, v) {
+          var $this, m;
+          $this = $(v);
+          if ($this.is('[ago]')) {
+            m = moment(Number($this.html()));
+            $this.html(m.fromNow());
+            $this.attr('datetime', m.format());
+            $this.attr('title', m.format());
+            return $this.tooltip({
+              placement: 'bottom'
+            });
+          } else {
+            m = moment(Number($this.html()));
+            return $this.html(m.format());
+          }
+        });
       };
       self.applyUrl = function() {
         var parts;
@@ -189,7 +327,12 @@ Jinhyuk Lee at mintpresso.com
                   showCloseButton: true
                 });
               } else {
-                return self.data[$.camelCase(self.page())](d);
+                switch (self.page()) {
+                  case 'api-key':
+                    return self.apiKey.load(d);
+                  default:
+                    return self[$.camelCase(self.page())].data(d);
+                }
               }
             },
             error: function(x, s, r) {

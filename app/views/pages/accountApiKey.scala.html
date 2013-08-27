@@ -1,5 +1,107 @@
 @()(implicit request: RequestHeader, flash: Flash)
 <div class="container">
+  <div id="selector">
+    <button type="button" class="btn btn-success" data-bind="click: $root.apiKey.create">Add new key</button>
+  </div>
   <h1>API Key Management</h1>
-  <p>Not available currently</p>
+  @*
+  <p>
+    <span data-bind="text: keys.length"></span> key(s) are issued.
+  </p>
+  *@
+  <div data-bind="foreach: keys">
+    <form class="form-horizontal" data-bind="submit: $root.apiKey.save.bind($parent, $data), attr: { id: $id }">
+      <div class="control-group">
+        <label class="control-label">API Key</label>
+        <div class="controls controls-list">
+          <input type="text" data-bind="value: $id" disabled="disabled" class="span4" placeholder="This will be shown after save.">
+          <button type="button" class="btn" data-bind="click: $root.apiKey.delete">Delete</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Label</label>
+        <div class="controls">
+          <input type="text" data-bind="value: label, uniqueName: true">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Domain and IP Address</label>
+        <div class="controls" data-bind="foreach: url">
+          <input type="text" data-bind="value: value" class="span4">
+          <button type="button" class="btn btn-small" data-bind="click: $root.apiKey.addUrl.bind($parent, $parent), visible: $index() == 0"><i class="icon-plus"></i> Add</button>
+          <button type="button" class="btn btn-small" data-bind="click: $root.apiKey.removeUrl.bind($parent, $parent, $data), visible: $index() > 0"><i class="icon-minus"></i>  Remove</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Permission Scope</label>
+        <div class="controls" data-bind="foreach: scope">
+          <label class="checkbox">
+            <input type="checkbox" value="true" data-bind="checked: $data.value">
+            <span data-bind="text: _($data.name)"></span>
+          </label>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Log Threshold</label>
+        <div class="controls">
+          <select data-bind="value: logThreshold" class="">
+            <option value="error">Error</option>
+            <option value="warn">Warning</option>
+            <option value="info">Info</option>
+            <option value="debug">Debug</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group" data-bind="visible: $createdAt > 0">
+        <label class="control-label"></label>
+        <div class="controls">
+          <span>Last updated <time ago data-bind="text: $updatedAt" /></span>, and
+          <span>created <time ago data-bind="text: $createdAt" /></span>.
+        </div>
+      </div>
+      <div class="row right">
+        <button type="submit" class="btn btn-primary" data-bind="text: $root.applyButton">Apply changes</button>
+      </div>
+    </form>
+    <hr />
+  </div>
+
+@*
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>API Key</th>
+        <th>Label</th>
+        <th>Domain and IP Address</th>
+        <th>Scope</th>
+        <th>Log Threshold</th>
+        <th>Created at</th>
+        <th>Updated at</th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: keys">
+      <tr>
+        <td data-bind="text: $id"></td>
+        <td>
+          <input type="hidden" data-bind="value: $id.split('__')[0]" />
+          <span data-bind="text: $id.split('__')[0]"></span>
+        </td>
+        <td><span data-bind="text: url"></span></td>
+        <td data-bind="foreach: scope">
+          <span data-bind="text: $data" class="label label-inverse"></span>
+        </td>
+        <td>
+          <select data-bind="value: logThreshold" class="input-small">
+            <option value="error">Error</option>
+            <option value="warn">Warning</option>
+            <option value="info">Info</option>
+            <option value="debug">Debug</option>
+          </select>
+        </td>
+        <td><time ago data-bind="text: $createdAt" /></td>
+        <td><time ago data-bind="text: $updatedAt" /></td>
+      </tr>
+    </tbody>
+  </table>
+*@
 </div>

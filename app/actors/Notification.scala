@@ -23,14 +23,15 @@ class MailActor extends Actor {
   val mail = use[MailerPlugin].email
   def receive = {
     case NewPasswordMail(name, email, codeUrl) => {
-      mail.setSubject(s"Hi ${name}, here's link to change your password")
+      mail.setSubject(s"Continue to change your password")
       mail.addRecipient(s"${name} <${email}>")
       mail.addFrom(s"MINTPRESSO <${emailAddress}>")
       mail.sendHtml(s"""
 <html>
-Hello, ${name}
+Hello, ${name}.
 <br />
-You can change your password immediately by clicking this link below:
+<br />
+You can change your password immediately by clicking the link below:
 <br />
 <br />
 <a href="${codeUrl}">${codeUrl}</a>
@@ -45,7 +46,7 @@ MINTPRESSO
 <br />
 http://mintpresso.com
 <br />
-This email is sent by a request of the user signed as ${email}. If you've never signed up before, ignore or please reply to us with empty body.
+<small>This email is sent by a request of the user signed as ${email}. If you've never signed up before, ignore or please reply to us with empty body.</small>
 </html>"""
       )
     }

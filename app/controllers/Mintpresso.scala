@@ -22,6 +22,21 @@ class Mintpresso(val url: String) {
       conn.get()
     }
   }
+  def post = {
+    this.withConnection { conn =>
+      conn.post("")
+    }
+  }
+  def put = {
+    this.withConnection { conn =>
+      conn.put("")
+    }
+  }
+  def delete = {
+    this.withConnection { conn =>
+      conn.delete()
+    }
+  }
 }
 
 object Mintpresso {

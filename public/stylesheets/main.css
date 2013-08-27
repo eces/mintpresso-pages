@@ -408,6 +408,12 @@ footer a {
   padding: 0;
   margin: 0;
 }
+#panel #submenu ul a {
+  text-decoration: none;
+}
+#panel #submenu ul a:hover {
+  text-decoration: none;
+}
 #panel #submenu ul li {
   padding-left: 40px;
   list-style: none;
@@ -468,27 +474,43 @@ footer a {
 }
 #panel #content {
   margin-left: 350px;
-  width: 800px;
-  min-height: 800px;
-  height: 100%;
+}
+#panel #content div.wide {
+  width: initial;
   background-color: #fff;
   border-right: solid #e4e4e4 1px;
+  min-height: 800px;
+  height: 100%;
 }
-#panel #content.wide {
-  width: initial;
+#panel #content div.wide div.container {
+  width: 94%;
+  padding: 20px 3% 20px 3%;
 }
-#panel #content div.container {
-  width: 100%;
-  padding: 20px 30px 20px 30px;
+#panel #content div.wide div.container h1 {
+  font-weight: 100;
+  color: #444;
+  line-height: 72px;
 }
-#panel #content div.container h1 {
+#panel #content div.condensed {
+  width: 800px;
+  background-color: #fff;
+  border-right: solid #e4e4e4 1px;
+  min-height: 800px;
+  height: 100%;
+}
+#panel #content div.condensed div.container {
+  width: 92%;
+  padding: 20px 4% 20px 4%;
+}
+#panel #content div.condensed div.container h1 {
   font-weight: 100;
   color: #444;
   line-height: 72px;
 }
 #panel #content #selector {
+  float: right;
   text-align: right;
-  margin-top: -62px;
+  line-height: 72px;
 }
 #panel #content #selector .btn-group {
   text-align: initial;
@@ -778,6 +800,11 @@ button:hover span.label-number {
 }
 button.active span.label-number {
   background: none;
+}
+.controls .controls-list input {
+  background-color: #fff;
+  border-radius: 3px;
+  margin-bottom: -1px;
 }
 .icons {
   padding-top: 50px;

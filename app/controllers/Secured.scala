@@ -43,19 +43,45 @@ trait Secured {
     }else{
       Results.Redirect(routes.Application.signin).flashing(
         "msg" -> "Permission required",
-        "redirect_url" -> request.path
+        "redirect.url" -> request.path
       )
     }
   }
 
-  def SignedUrl(url: String)(f: Request[AnyContent] => Result) = Action { implicit request =>
-    if( request.session.get("url").getOrElse("") == url){
-      f(request)
+  def SignedUrl(url: String)(f: Request[AnyContent] => User => Result) = Action { implicit request =>
+    if(signed){
+      if( request.session.get("url").getOrElse("") == url){
+        f(request)(getUser)
+      }else{
+        Results.Redirect(routes.Application.signin).flashing(
+          "msg" -> s"Permission override required. Currently signed as ${getUser.email}.",
+          "redirect.url" -> request.path,
+          "override" -> "true"
+        )
+      }
     }else{
       Results.Redirect(routes.Application.signin).flashing(
-        "msg" -> s"Permission override required",
-        "redirect_url" -> request.path,
-        "account_change" -> "true"
+        "msg" -> "Permission required",
+        "redirect.url" -> request.path
+      )
+    }
+  }
+
+  def JsonAction(url: String)(f: Request[play.api.libs.json.JsValue] => User => Result) = Action(play.api.mvc.BodyParsers.parse.json) { implicit request =>
+    if(signed){
+      if( request.session.get("url").getOrElse("") == url){
+        f(request)(getUser)
+      }else{
+        Results.Redirect(routes.Application.signin).flashing(
+          "msg" -> s"Permission override required. Currently signed as ${getUser.email}.",
+          "redirect.url" -> request.path,
+          "override" -> "true"
+        )
+      }
+    }else{
+      Results.Redirect(routes.Application.signin).flashing(
+        "msg" -> "Permission required",
+        "redirect.url" -> request.path
       )
     }
   }

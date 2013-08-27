@@ -21,7 +21,7 @@ object Global extends GlobalSettings {
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
-    Results.Ok(views.html.error500()(request, request.flash))
+    Results.Ok(play.api.libs.json.Json.obj("message" -> "error.500", "error" -> ex.getMessage)).as("application/json")
   }
 
   override def onHandlerNotFound(request: RequestHeader): Result = {
@@ -29,6 +29,6 @@ object Global extends GlobalSettings {
   }
 
   override def onBadRequest(request: RequestHeader, error: String) = {
-    Results.Ok(views.html.error400()(request, request.flash))
+    Results.Ok(play.api.libs.json.Json.obj("message" -> "error.400", "error" -> error)).as("application/json")
   }
 }

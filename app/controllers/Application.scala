@@ -3,6 +3,8 @@ package controllers
 import play.api._
 import play.api.Play.current
 import play.api.mvc._
+import play.api.libs._
+import play.api.i18n.Messages
 
 object Application extends Controller with Secured {
   
@@ -20,9 +22,31 @@ object Application extends Controller with Secured {
 
   def signin = Action { implicit request =>
     getOptionUser map { user =>
-      Redirect(routes.Pages.account(getUrl, ""))
+      flash.get("override") match {
+        case Some("true") =>
+          Ok(views.html.login()).flashing(
+            "request_url" -> flash.get("request.url").getOrElse(""),
+            "override" -> "true"
+          )
+        case _ =>
+          Redirect(routes.Pages.account(getUrl, ""))
+      }
     } getOrElse {
       Ok(views.html.login())
+    }
+  }
+
+  def changePassword(code: Option[String]) = Action { implicit request =>
+    code map { c =>
+      val parts = Crypto.decryptAES(c).split("__MINT__")
+      println(Crypto.decryptAES(c))
+      val no = parts(0)
+      val email = parts(1)
+      Ok(views.html.changePassword(c, email))
+    } getOrElse {
+      Redirect(routes.Application.signin).flashing(
+        "error" -> Messages("reset.code.invalid")
+      )
     }
   }
 
@@ -65,6 +89,7 @@ object Application extends Controller with Secured {
         routes.javascript.Pages.accountUsage,
         routes.javascript.Pages.accountPlansAndBilling,
         routes.javascript.Pages.accountApiKey,
+        routes.javascript.Pages._accountApiKey,
         routes.javascript.Pages.collect,
         routes.javascript.Pages.order,
         routes.javascript.Pages.pickup,

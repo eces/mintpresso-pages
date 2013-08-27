@@ -391,6 +391,12 @@ footer {
     z-index: @zindexFixedNavbar;
     ul {
       padding: 0; margin: 0;
+      a {
+        text-decoration: none;
+        &:hover {
+          text-decoration: none;
+        } 
+      }
       li {
         padding-left: 40px;
         list-style: none;
@@ -444,36 +450,57 @@ footer {
   #content {
     margin-left: 350px;
     // margin-top: -20px;
-    width: 800px; min-height: 800px; height: 100%;
-    background-color: #fff;
-    border-right: solid #e4e4e4 1px;
     // background-image: url("@{imagePath}/loading.gif");
     // background-size: 30px;
     // background-position: 50% 25%;
     // background-repeat: no-repeat;
 
-    &.wide {
+    div.wide {
       width: initial;
+      background-color: #fff;
+      border-right: solid #e4e4e4 1px;
+      min-height: 800px; height: 100%;
       // div.toolbar {
       //   width: 100%;
       //   padding: 0;
       //   min-height: 100px;
       //   height: 20%;
       // }
+      div.container {
+        width: 94%;
+        padding: 20px 3% 20px 3%;
+        h1 {
+          font-weight: 100;
+          // font-size: 12px * 3;
+          color: #444;
+          line-height: 12px * 6;
+        }
+      }
     }
-    div.container {
-      width: 100%;
-      padding: 20px 30px 20px 30px;
-      h1 {
-        font-weight: 100;
-        // font-size: 12px * 3;
-        color: #444;
-        line-height: 12px * 6;
+    div.condensed {
+      width: 800px;
+      background-color: #fff;
+      border-right: solid #e4e4e4 1px;
+      min-height: 800px;
+      height: 100%;
+      div.container {
+        // width: 100%;
+        // padding: 20px 30px 20px 30px;
+        width: 92%;
+        padding: 20px 4% 20px 4%;
+        h1 {
+          font-weight: 100;
+          // font-size: 12px * 3;
+          color: #444;
+          line-height: 12px * 6;
+        }
       }
     }
     #selector {
+      float: right;
       text-align: right;
-      margin-top: -62px;
+      line-height: 12px * 6;
+      // margin-top: -62px;
       .btn-group {
         text-align: initial;
       }
@@ -800,6 +827,14 @@ button {
 //     }
 //   }
 // }
+
+.controls .controls-list {
+  input {
+    background-color: #fff;
+    border-radius: 3px;
+    margin-bottom: -1px;
+  }
+}
 
 .icons {
   padding-top: 50px;

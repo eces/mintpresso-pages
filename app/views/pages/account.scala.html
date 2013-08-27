@@ -19,12 +19,13 @@
           <span>API Key Management</span>
           <p>Secure your application by issuing read-only key and revoking no more used keys.</p>
         </li>
+        <a href="@routes.Users.signout"><li><span>Sign out</span> <i class="icon-signout icon-flip-horizontal"></i></li></a>
       </ul>
     </div>
     <div id="content" data-bind="">
-      <div class="" data-bind="visible: page() == 'usage', template: { name: 'usage-template', data: data.usage, if: data.usage() } "></div>
-      <div class="" data-bind="visible: page() == 'plans-and-billing', template: { name: 'plans-template', data: data.plansAndBilling, if: data.plansAndBilling() } "></div>
-      <div class="wide" data-bind="visible: page() == 'api-key', template: { name: 'api-key-template', data: data.apiKey, if: data.apiKey() } "></div>
+      <div class="condensed" data-bind="visible: page() == 'usage', template: { name: 'usage-template', data: usage.data(), if: usage.data() } "></div>
+      <div class="condensed" data-bind="visible: page() == 'plans-and-billing', template: { name: 'plans-template', data: plansAndBilling.data(), if: plansAndBilling.data() } "></div>
+      <div class="wide" data-bind="visible: page() == 'api-key', template: { name: 'api-key-template', data: apiKey.data(), if: apiKey.data(), as: 'keys', afterRender: prepareComponents } "></div>
     </div>
     <script type="text/html" id="usage-template">@accountUsage()</script>
     <script type="text/html" id="plans-template">@accountPlansAndBilling()</script>

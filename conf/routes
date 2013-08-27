@@ -14,6 +14,8 @@ POST    /signin                     controllers.Users.signin
 GET     /signout                    controllers.Users.signout
 GET     /signup                     controllers.Application.signup
 POST    /signup                     controllers.Users.signup
+GET     /user/password              controllers.Application.changePassword(code: Option[String])
+PUT     /user/password              controllers.Users.changePassword
 
 GET     /jsValues                   controllers.Application.javascriptValues
 GET     /jsRoutes                   controllers.Application.javascriptRoutes
@@ -23,6 +25,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /:url/account/usage.json controllers.Pages.accountUsage(url: String)
 GET     /:url/account/api-key.json controllers.Pages.accountApiKey(url: String)
+POST    /:url/account/api-key      controllers.Pages._accountApiKey(url: String)
 GET     /:url/account/plans-and-billing.json controllers.Pages.accountPlansAndBilling(url: String)
 GET     /:url/account                     controllers.Pages.account(url: String, path="")
 GET     /:url/account*path                controllers.Pages.account(url: String, path: String)
