@@ -15,7 +15,7 @@
       </div>
       <div class="span3 offset1 right">
       @Application.getOptionUser.map { user =>
-        <a href="#" class="btn btn-large btn-success btn-block">See Documentation</a>
+        <a href="@routes.Application.documentation" class="btn btn-large btn-success btn-block">See Documentation</a>
       }.getOrElse{
         <form action="@routes.Users.signup" method="post" data-bind="submit: signup">
           <input type="text" name="username" data-bind="value: username" placeholder="Pick an username" class="input-block-level" required />

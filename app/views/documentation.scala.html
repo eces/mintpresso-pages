@@ -1,0 +1,298 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@landing(Messages("title.terms")) {
+<div class="featurette" style="text-align:center">
+  <h2 class="typo-capital bold">DOCUMENTATION</h2>
+  <br />
+  <hr style="width: 150px;border: solid 3px #1ABC9C; margin: 0 auto;" />
+  <br />
+</div>
+
+<div class="container">
+  <h3>Documentation is under review.</h3>
+  <p>
+  Please contact us to know further information. Thanks for checking it!
+  </p>
+</div>
+
+<hr />
+
+<div class="container">
+  <div class="row">
+    <div class="span6">
+      <h3>APP SERVER</h3>
+      <p>
+      https://app.mintpresso.com
+      </p>
+    </div>
+    <div class="span6">
+      <h3>PAGES</h3>
+      <p>
+      https://mintpresso.com
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<div class="container">
+  <div class="row">
+    <div class="span6">
+      <h1 class="bold">Basic API</h1>
+      <br />
+      <h3>Everything is JSON and RESTful</h3>
+      <p>
+        All operations can be done with <span class="label label-inverse">GET</span>
+        <span class="label label-inverse">POST</span>
+        <span class="label label-inverse">PUT</span>
+        <span class="label label-inverse">DELETE</span>.
+      </p>
+      <p>
+        All requests by <span class="label label-inverse">POST</span>.
+        and <span class="label label-inverse">PUT</span> must set <code class="">Content-Type: application/json</code>.
+      </p>
+      <p>
+        All responses from <span class="label label-inverse">GET</span> must have pure JSON.
+      </p>
+      <p>
+        All responses from <span class="label label-inverse">DELETE</span> must not have any body.
+      </p>
+    </div>
+  </div>
+
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <h3>Request Example</h3>
+      <p>Let's find name of some user with email address.</p>
+      <br />
+      <br />
+      <p>You can see the response is JSON and wrapped by key.</p>
+      <p>We called it <strong>a model</strong>. A model contains type, unique id, unique no, and data fields.</p>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+    <div class="span6">
+<pre><code class="http">
+GET /user/support@@mintpresso.com?apikey=public__43b62b5dd0ce945ab7 HTTP/1.1
+
+</code></pre>
+<pre><code class="javascript">
+{
+  "user" : {
+    "$no" : 1500,
+    "$id" : "support@@mintpresso.com",
+    "name": "Mintpresso"
+  }
+}
+
+</code></pre>
+    </div>
+  </div>
+
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <h3>Request/Response Example</h3>
+      <p>Let's add some music.</p>
+      <p>All you need to do is put wrapped json to request body.</p>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <p>You can see $no is newly created, $id is optional, and dates are automatically created.</p>
+    </div>
+    <div class="span6">
+<pre><code class="http">
+POST /music?apikey=public__43b62b5dd0ce945ab7 HTTP/1.1
+Host: app.mintpresso.com
+Content-Type: application/json; charset=utf-8
+Content-Length: 82
+
+{
+  "music": {
+    "title" : "When Will My Life Begin?",
+    "artist": "Mandy Moore"
+  }
+}
+</code></pre>
+
+<pre><code class="javascript">
+201 Created
+
+{
+  "music": {
+    "$no": 1501,
+    "$id": ""
+    "title" : "When Will My Life Begin?",
+    "artist": "Mandy Moore",
+    "$createdAt": 1377613096826,
+    "$updatedAt": 1377613096826,
+    "$referencedAt": 1377613096826
+  }
+}
+
+</code></pre>
+    </div>
+  </div>
+
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <h3>Routes for Model</h3>
+      <h4>Find one model by no.</h4>
+      <p>type: String, no: Number</p>
+      <p>
+        <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
+        <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
+      </p>
+      <br />
+      <h4>Find one model by id.</h4>
+      <p>type: String, id: String</p>
+      <p>
+        <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
+        <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
+      </p>
+      <br />
+      <br />
+      <h4>Find one model by json condition.</h4>
+      <div class="row">
+        <div class="span3">
+          <p>type: String, json: JsArray</p>
+        </div>
+        <div class="span3">
+        </div>
+      </div>
+      <p>In this case, models qualified that confirmed is true and subscription is Pro will be in a response. </p>
+      <p>
+        <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
+        <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
+        <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
+      </p>
+      <br />
+      <br />
+      <h4>Add new model</h4>
+      <p>type: String, json: JsObject</p>
+      <p>Json object must be wrapped by type. $id is optional, as well as empty string will be treated as nothing like null. If $id is conflict, the operation is cancelled and return 409 Conflict. You can construct any data form in model, but we recommend less than 2 depths. For example, <code>"urls": [ { "host": "..." } ]</code> is still okay and it's all.</p>
+      <p>
+        <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
+        <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
+        <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
+        <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
+      </p>
+      <br />
+      <br />
+      <h4>Update a model</h4>
+      <p>type: String, no: Number </p>
+      <p>Json object must be wrapped by type and contain $id and $no. This operation doesn't change $no and will renew $updatedAt.</p>
+      <p>
+        <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
+        <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
+        <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
+        <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
+      </p>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <h4>Delete a model</h4>
+      <p>type: String, no: Number </p>
+      <p>This operation will also remove all of any(subject, object) related status of the model. 204 No Content will be returned if the model to be deleted isn't exist; whatever deletion is done anyway.</p>
+      <p>
+        <span class="label label-inverse">203</span> Accepted &nbsp;&nbsp;
+        <span class="label label-inverse">204</span> No Content &nbsp;&nbsp;
+      </p>
+    </div>
+    <div class="span6">
+<br />
+<br />
+<pre><code class="ruby">
+GET     /:type/:no
+GET     /user/1000
+
+</code></pre>
+<br />
+<pre><code class="ruby">
+GET     /:type/:id
+GET     /user/support@@mintpresso.com
+
+</code></pre>
+<br />
+<pre><code class="ruby">
+GET     /:type
+GET     /user?json=[{"confirmed": true}, {"subscription": "Pro"}]
+
+</code></pre>
+<br />
+<br />
+<br />
+<pre><code class="ruby">
+POST    /:type
+POST    /user
+
+{ "user" : {
+    "$id": "support@@mintpresso.com"
+  }
+}
+
+</code></pre>
+<br />
+<pre><code class="ruby">
+PUT     /:type/:no
+PUT     /user/1000
+
+{ "user" : {
+    "$no": 1000
+    "$id": "support@@mintpresso.com"
+  }
+}
+
+</code></pre>
+<br />
+<pre><code class="ruby">
+DELETE  /:type/:no
+DELETE  /user/1000
+
+</code></pre>
+    </div>
+  </div>
+  
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <h3>Routes for Status</h3>
+    </div>
+    <div class="span6">
+    </div>
+  </div>
+
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <h3>Use Cases</h3>
+    </div>
+    <div class="span6">
+    </div>
+  </div>
+  
+  <hr />
+  <div class="row">
+    <div class="span6">
+    </div>
+    <div class="span6">
+    </div>
+  </div>
+</div>
+
+@footer()
+}

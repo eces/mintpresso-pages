@@ -22,6 +22,10 @@
         target: '#toc'
       });
     }
+    hljs.tabReplace = '  ';
+    $('pre code, code').each(function(i, e) {
+      return hljs.highlightBlock(e);
+    });
     landingViewModel = function() {
       var self;
       self = this;

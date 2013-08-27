@@ -19,6 +19,11 @@ jQuery ->
       target: '#toc'
     }
 
+  # 4 spaces
+  hljs.tabReplace = '  '
+  $('pre code, code').each (i, e) -> 
+    hljs.highlightBlock(e)
+
   landingViewModel = () ->
     self = this
     self.username = ''

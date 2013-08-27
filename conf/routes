@@ -8,6 +8,7 @@ GET     /security                   controllers.Application.security
 GET     /status                     controllers.Application.status
 GET     /about                      controllers.Application.about
 GET     /faq                        controllers.Application.faq
+GET     /documentation              controllers.Application.documentation
 
 GET     /signin                     controllers.Application.signin
 POST    /signin                     controllers.Users.signin

@@ -54,6 +54,10 @@ object Application extends Controller with Secured {
 
   def faq = TODO
 
+  def documentation = Action { implicit request =>
+    Ok(views.html.documentation())
+  }
+
   def terms = Action { implicit request =>
     Ok(views.html.terms())
   }

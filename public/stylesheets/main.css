@@ -345,9 +345,15 @@ footer a {
 #panel #menu ul li a {
   color: #fff;
   font-size: 9pt;
+  padding: 0;
+  padding-top: 34px;
+  padding-bottom: 29px;
 }
 #panel #menu ul li a:hover {
   text-decoration: none;
+}
+#panel #menu ul li a i {
+  margin: 0 35px;
 }
 #panel #menu ul li:hover {
   cursor: pointer;
