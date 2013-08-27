@@ -23,6 +23,7 @@
       </ul>
     </div>
     <div id="content" data-bind="">
+      <div class="condensed" data-bind="visible: page() == ''"></div>
       <div class="condensed" data-bind="visible: page() == 'usage', template: { name: 'usage-template', data: usage.data(), if: usage.data() } "></div>
       <div class="condensed" data-bind="visible: page() == 'plans-and-billing', template: { name: 'plans-template', data: plansAndBilling.data(), if: plansAndBilling.data() } "></div>
       <div class="wide" data-bind="visible: page() == 'api-key', template: { name: 'api-key-template', data: apiKey.data(), if: apiKey.data(), as: 'keys', afterRender: prepareComponents } "></div>

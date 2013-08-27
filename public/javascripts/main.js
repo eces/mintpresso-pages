@@ -159,13 +159,16 @@ Jinhyuk Lee at mintpresso.com
         });
         return false;
       };
+      self.search = {
+        data: ko.observableArray()
+      };
       self.apiKey = {
         data: ko.observableArray(),
         create: function() {
           return self.apiKey.data.unshift({
-            $id: '',
-            $no: 0,
-            label: 'test',
+            $id: ko.observable(''),
+            $no: ko.observable(0),
+            label: ko.observable('test'),
             $createdAt: 0,
             $updatedAt: 0,
             url: ko.observableArray([
@@ -173,8 +176,8 @@ Jinhyuk Lee at mintpresso.com
                 value: ko.observable('*')
               }
             ]),
-            logThreshold: 'warn',
-            scope: [
+            logThreshold: ko.observable('warn'),
+            scope: ko.observableArray([
               {
                 name: "read_model",
                 value: true
@@ -200,7 +203,7 @@ Jinhyuk Lee at mintpresso.com
                 name: "manage_pickup",
                 value: false
               }
-            ]
+            ])
           });
         },
         addUrl: function(key) {
@@ -215,11 +218,10 @@ Jinhyuk Lee at mintpresso.com
           return key.url.remove(value);
         },
         save: function(key) {
-          _.Pages._accountApiKey(_.url).ajax({
+          _.Pages.accountApiKeyUpdate(_.url).ajax({
             contentType: 'application/json',
             data: ko.toJSON(key),
             success: function(d, s, x) {
-              _.currentSave = key.$id();
               if (x.status !== 201) {
                 return Messenger().post({
                   message: _(d),
@@ -235,7 +237,6 @@ Jinhyuk Lee at mintpresso.com
                     reload: {
                       label: 'Refresh now',
                       action: function() {
-                        location.hash = _.currentSave;
                         return location.reload();
                       }
                     }
@@ -264,7 +265,61 @@ Jinhyuk Lee at mintpresso.com
           return false;
         },
         "delete": function(key) {
-          return self.apiKey.data.remove(key);
+          if (confirm(_('confirm.delete')) === false) {
+            return false;
+          }
+          if (key.$no() > 0) {
+            return _.Pages.accountApiKeyDelete(_.url, key.$no()).ajax({
+              success: function(d, s, x) {
+                console.log(d, s, x);
+                if (x.status !== 201) {
+                  return Messenger().post({
+                    message: _(d),
+                    type: 'error',
+                    showCloseButton: true
+                  });
+                } else {
+                  self.apiKey.data.remove(key);
+                  return Messenger().post({
+                    message: _(d),
+                    type: 'success',
+                    showCloseButton: true,
+                    actions: {
+                      reload: {
+                        label: 'Refresh now',
+                        action: function() {
+                          location.hash = _.currentSave;
+                          return location.reload();
+                        }
+                      }
+                    }
+                  });
+                }
+              },
+              error: function(x, s, r) {
+                var msg;
+                return msg = Messenger().post({
+                  message: r,
+                  type: 'error',
+                  showCloseButton: true,
+                  actions: {
+                    retry: {
+                      label: 'Retry Now',
+                      action: function() {
+                        return self.apiKey["delete"](key);
+                      }
+                    }
+                  }
+                });
+              }
+            });
+          } else {
+            return Messenger().post({
+              message: _('delete.fail'),
+              type: 'error',
+              showCloseButton: true
+            });
+          }
         },
         load: function(data) {
           return ko.mapping.fromJS(data, {}, self.apiKey.data);
@@ -277,7 +332,7 @@ Jinhyuk Lee at mintpresso.com
         data: ko.observable()
       };
       self.prepareComponents = function() {
-        return $('time').each(function(k, v) {
+        $('time').each(function(k, v) {
           var $this, m;
           $this = $(v);
           if ($this.is('[ago]')) {
@@ -293,6 +348,7 @@ Jinhyuk Lee at mintpresso.com
             return $this.html(m.format());
           }
         });
+        return $('input[type=file]').bootstrapFileInput();
       };
       self.applyUrl = function() {
         var parts;
@@ -308,6 +364,22 @@ Jinhyuk Lee at mintpresso.com
         }
       };
       self.applyUrl();
+      self.showMessage = function() {
+        var _ref, _ref1;
+        if ((_ref = _.error) != null ? _ref.length : void 0) {
+          Messenger().post({
+            message: _(_.error),
+            type: 'error',
+            showCloseButton: true
+          });
+        }
+        if ((_ref1 = _.success) != null ? _ref1.length : void 0) {
+          return Messenger().post({
+            message: _(_.success),
+            type: 'success'
+          });
+        }
+      };
       History.Adapter.bind(window, 'statechange', function(e) {
         var route, state;
         state = History.getState();
@@ -330,6 +402,10 @@ Jinhyuk Lee at mintpresso.com
                 switch (self.page()) {
                   case 'api-key':
                     return self.apiKey.load(d);
+                  case 'import':
+                    return self.showMessage();
+                  case 'export':
+                    break;
                   default:
                     return self[$.camelCase(self.page())].data(d);
                 }

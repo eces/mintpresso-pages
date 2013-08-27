@@ -1,0 +1,34 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.collect"))("white") {
+  <meta name="panel" content="data">
+
+  <div id="panel">
+    @menu("collect")
+    <div id="submenu">
+      <ul>
+        <li data-bind="click: page.bind($data, 'search'), css: { active: page() == 'search'}">
+          <span>Search</span>
+          <p>Browse all your model and status with any verb and conditions.</p>
+        </li>
+        <li data-bind="click: page.bind($data, 'import'), css: { active: page() == 'import'}">
+          <span>Import</span>
+          <p>Merge previous data to latest data set. You can directly upload or request to human.</p>
+        </li>
+        <li data-bind="click: page.bind($data, 'export'), css: { active: page() == 'export'}">
+          <span>Export</span>
+          <p>Save outputs or raw data to other formats.</p>
+        </li>
+      </ul>
+    </div>
+    <div id="content" data-bind="">
+      <div class="condensed" data-bind="visible: page() == ''"></div>
+      <div class="condensed" data-bind="visible: page() == 'search', template: { name: 'search-template', data: search.data(), if: search.data() } "></div>
+      <div class="condensed" data-bind="visible: page() == 'import', template: { name: 'import-template', afterRender: prepareComponents } "></div>
+      <div class="condensed" data-bind="visible: page() == 'export', template: { name: 'export-template' } "></div>
+    </div>
+    <script type="text/html" id="search-template">@collectSearch()</script>
+    <script type="text/html" id="import-template">@collectImport()</script>
+    <script type="text/html" id="export-template">@collectExport()</script>
+  </div>
+} 

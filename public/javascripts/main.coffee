@@ -126,20 +126,23 @@ jQuery ->
           self.signinButton _ 'signin'
       false
 
+    self.search =
+      data: ko.observableArray()
+
     self.apiKey = 
       data: ko.observableArray()
       create: ->
         self.apiKey.data.unshift {
-          $id: ''
-          $no: 0
-          label: 'test'
+          $id: ko.observable('')
+          $no: ko.observable(0)
+          label: ko.observable('test')
           $createdAt: 0
           $updatedAt: 0
           url: ko.observableArray [
             { value: ko.observable('*') }
           ]
-          logThreshold: 'warn',
-          scope: [
+          logThreshold: ko.observable('warn'),
+          scope: ko.observableArray([
             { name: "read_model"    , value: true }
             { name: "create_model"  , value: true }
             { name: "update_model"  , value: true }
@@ -148,7 +151,7 @@ jQuery ->
             { name: "delete_status" , value: false }
             { name: "manage_order" , value: false }
             { name: "manage_pickup" , value: false }
-          ]
+          ])
         }
       addUrl: (key) ->
         key.url.push { value: '' }
@@ -157,11 +160,11 @@ jQuery ->
         value = arguments[1]
         key.url.remove value
       save: (key) ->
-        _.Pages._accountApiKey(_.url).ajax
+        # _.currentSave = key.label()
+        _.Pages.accountApiKeyUpdate(_.url).ajax
           contentType: 'application/json'
           data: ko.toJSON key
           success: (d, s, x) ->
-            _.currentSave = key.$id()
             if x.status isnt 201
               Messenger().post {
                 message: _ d
@@ -177,7 +180,7 @@ jQuery ->
                   reload:
                     label: 'Refresh now'
                     action: ->
-                      location.hash = _.currentSave
+                      # location.hash = _.currentSave
                       location.reload()
               }
           error: (x, s, r) ->
@@ -194,7 +197,49 @@ jQuery ->
             }
         false
       delete: (key)-> 
-        self.apiKey.data.remove(key)
+        if confirm(_('confirm.delete')) is false
+          return false
+
+        if key.$no() > 0
+          _.Pages.accountApiKeyDelete(_.url, key.$no()).ajax
+            success: (d, s, x) ->
+              console.log d,s,x
+              if x.status isnt 201
+                Messenger().post {
+                  message: _ d
+                  type: 'error'
+                  showCloseButton: true
+                }
+              else
+                self.apiKey.data.remove(key)
+                Messenger().post {
+                  message: _ d
+                  type: 'success'
+                  showCloseButton: true
+                  actions:
+                    reload:
+                      label: 'Refresh now'
+                      action: ->
+                        location.hash = _.currentSave
+                        location.reload()
+                }
+            error: (x, s, r) ->
+              msg = Messenger().post {
+                message: r
+                type: 'error'
+                showCloseButton: true
+                actions:
+                  retry:
+                    label: 'Retry Now'
+                    action: ->
+                      self.apiKey.delete(key)
+              }
+        else
+          Messenger().post {
+            message: _ 'delete.fail'
+            type: 'error'
+            showCloseButton: true
+          }
 
       # load data from json
       load: (data) ->
@@ -220,6 +265,7 @@ jQuery ->
         else
           m = moment( Number($this.html()) )
           $this.html m.format()
+      $('input[type=file]').bootstrapFileInput()
 
     # apply url to view model, returns hasPropagation
     self.applyUrl = () ->
@@ -232,6 +278,20 @@ jQuery ->
         false
 
     self.applyUrl()
+
+    # display messages from flash data
+    self.showMessage = ->
+      if _.error?.length
+        Messenger().post {
+          message: _ _.error
+          type: 'error'
+          showCloseButton: true
+        }
+      if _.success?.length
+        Messenger().post {
+          message: _ _.success
+          type: 'success'
+        }
 
     # bind push state changes
     History.Adapter.bind window, 'statechange', (e) ->
@@ -259,6 +319,8 @@ jQuery ->
               #   self[ $.camelCase(self.page()) ].data.push item
               switch self.page()
                 when 'api-key' then self.apiKey.load d
+                when 'import' then self.showMessage()
+                when 'export' then 
                 else self[ $.camelCase(self.page()) ].data d
           error: (x, s, r) ->
             msg = Messenger().post {

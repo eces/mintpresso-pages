@@ -86,4 +86,23 @@ trait Secured {
     }
   }
 
+  def FormDataAction(url: String)(f: Request[play.api.mvc.MultipartFormData[play.api.libs.Files.TemporaryFile]] => User => Result) = Action(play.api.mvc.BodyParsers.parse.multipartFormData) { implicit request =>
+    if(signed){
+      if( request.session.get("url").getOrElse("") == url){
+        f(request)(getUser)
+      }else{
+        Results.Redirect(routes.Application.signin).flashing(
+          "msg" -> s"Permission override required. Currently signed as ${getUser.email}.",
+          "redirect.url" -> request.path,
+          "override" -> "true"
+        )
+      }
+    }else{
+      Results.Redirect(routes.Application.signin).flashing(
+        "msg" -> "Permission required",
+        "redirect.url" -> request.path
+      )
+    }
+  }
+
 }

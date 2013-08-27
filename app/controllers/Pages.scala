@@ -46,6 +46,10 @@ object Pages extends Controller with Secured {
                 "value" -> scopes.contains("update_model")
               ),
               Json.obj(
+                "name" -> "delete_model",
+                "value" -> scopes.contains("delete_model")
+              ),
+              Json.obj(
                 "name" -> "search_status",
                 "value" -> scopes.contains("search_status")
               ),
@@ -107,6 +111,7 @@ object Pages extends Controller with Secured {
         }
       }
 
+
       var j = request.body.as[JsObject] ++ Json.obj(
         "scope" -> scope,
         "url" -> url,
@@ -115,11 +120,20 @@ object Pages extends Controller with Secured {
 
       val key = Key(Json.obj("key" -> j))
 
+      val label = (request.body \ "label").asOpt[String].getOrElse("").replace("__", "")
+      if(key.id.length > 0){
+        val parts = key.id.split("__")
+        if(parts(0) != label){
+          key.id = label + parts(1)
+        }
+      }
+
       if(key.no > 0){
         // update
         Async {
           Mintpresso(s"/key/${key.no}") withConnection { conn =>
             conn.put(key.toTypedJson) map { r1 =>
+              println(r1.body)
               if(r1.status == 201){
                 Created("apply.done")
               }else{
@@ -135,14 +149,14 @@ object Pages extends Controller with Secured {
             conn.post(key.toTypedJson) map { r1 =>
               if(r1.status == 201){
                 val createdKey = Key(r1.json)
-                createdKey.id = (request.body \ "label").asOpt[String].getOrElse("") + "__" + Crypto.encryptAES(user.no + " " + createdKey.no)
+                createdKey.id = label + "__" + Crypto.encryptAES(user.no + " " + createdKey.no)
                 Async {
                   Mintpresso(s"/user/${user.no}/issue/key/${createdKey.no}").post map { r2 =>
                     if(r2.status == 201){
                       Async {
                         Mintpresso(s"/key/${createdKey.no}") withConnection { conn =>
-                          conn.put(key.toTypedJson) map { r3 =>
-                            if(r1.status == 201){
+                          conn.put(createdKey.toTypedJson) map { r3 =>
+                            if(r3.status == 201){
                               Created("apply.done")
                             }else{
                               Ok("apply.fail 3")
@@ -165,27 +179,77 @@ object Pages extends Controller with Secured {
     } catch {
       case e: MalformedURLException =>
         e.printStackTrace
-        Ok(Json.obj("message" -> "url.invalid", "error" -> e.getMessage))
+        Ok("url.invalid")
       case e: UnknownHostException =>
         e.printStackTrace
-        Ok(Json.obj("message" -> "host.unavailable", "error" -> e.getMessage))
+        // Ok(Json.obj("message" -> "host.unavailable", "error" -> e.getMessage))
+        Ok("host.unavailable")
       case e: Exception =>
         e.printStackTrace
-        Ok(Json.obj("message" -> "error.500", "error" -> e.getMessage))
+        // Ok(Json.obj("message" -> "error.500", "error" -> e.getMessage))
+        Ok("error.500")
     }
   }
-  def accountApiKeyDelete(url: String, no: Long) = JsonAction(url) { implicit request => user =>
+  def accountApiKeyDelete(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
     Async {
-      Mintpresso(s"/key/${key.no}").delete map { r1 =>
-        if(r1.status == 201){
-          Created("apply.done")
+      Mintpresso(s"/key/${no}").delete map { r1 =>
+        if(r1.status == 204 || r1.status == 404){
+          Created("delete.done")
         }else{
-          Ok("apply.fail")
+          Ok("delete.fail")
         }
       }
     }
   }
-  def collect(url: String, path: String) = TODO
+  def collect(url: String, path: String) = SignedUrl(url) { implicit request => user =>
+    Ok(views.html.pages.collect())    
+  }
+  def collectSearch(url: String, path: String) = JsonAction(url) { implicit request => user =>
+    Ok(Json.obj())
+  }
+  def collectImport(url: String) = SignedUrl(url) { implicit request => user =>
+    Ok(Json.obj())
+  }
+  def collectImportUpload(url: String) = FormDataAction(url) { implicit request => user =>
+    request.body.file("attachment").map { f =>
+      import java.io.File
+      val local = url + "." + java.util.UUID.randomUUID().toString
+      val name = f.filename
+      val contentType = f.contentType.getOrElse("application/octet-stream")
+      val upload = new File(System.getProperty("user.home") + "/" + Play.configuration.getString("file.directory").getOrElse("mintpresso_files") + "/" + local)
+      f.ref.moveTo(upload)
+      val size = upload.length.toInt
+
+      Async {
+        Mintpresso("/file") withConnection { conn =>
+          conn.post(Json.obj( "file" -> Json.obj(
+            "name" -> name,
+            "local" -> local,
+            "contentType" -> contentType,
+            "size" -> size,
+            "user" -> user.no
+          ))) map { r1 =>
+            if(r1.status == 201){
+              Redirect(routes.Pages.collectImport(url)).flashing(
+                "success" -> "submit.done"
+              )
+            }else{
+              Redirect(routes.Pages.collectImport(url)).flashing(
+                "error" -> "submit.fail"
+              )
+            }
+          }
+        }
+      }
+    } getOrElse {
+      Redirect(routes.Pages.collectImport(url)).flashing(
+        "error" -> "upload.empty"
+      )
+    }
+  }
+  def collectExport(url: String) = SignedUrl(url) { implicit request => user =>
+    Ok(Json.obj())
+  }
   def order(url: String, path: String) = TODO
   def pickup(url: String, path: String) = TODO
   def support(url: String, path: String) = TODO

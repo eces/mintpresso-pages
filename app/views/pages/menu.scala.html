@@ -1,19 +1,19 @@
 @(selected: String)(implicit request: RequestHeader, flash: Flash)
 <div id="menu">
   <ul>
-    <li data-bind="css: { active: menu == 'account' }">
+    <li data-bind="css: { active: menu() == 'account' }">
       <a href="@routes.Pages.account(Application.getUrl, "")"><i class="icon-desktop"></i><br />ACCOUNT</a>
     </li>
-    <li data-bind="css: { active: menu == 'collect' }">
+    <li data-bind="css: { active: menu() == 'collect' }">
       <a href="@routes.Pages.collect(Application.getUrl, "")"><i class="icon-cloud-download"></i><br />COLLECT</a>
     </li>
-    <li data-bind="css: { active: menu == 'order' }">
+    <li data-bind="css: { active: menu() == 'order' }">
       <a href="@routes.Pages.order(Application.getUrl, "")"><i class="icon-code-fork"></i><br />ORDER</a>
     </li>
-    <li data-bind="css: { active: menu == 'pickup' }">
+    <li data-bind="css: { active: menu() == 'pickup' }">
       <a href="@routes.Pages.pickup(Application.getUrl, "")"><i class="icon-download-alt"></i><br />PICK UP</a>
     </li>
-    <li data-bind="css: { active: menu == 'support' }">
+    <li data-bind="css: { active: menu() == 'support' }">
       <a href="@routes.Pages.support(Application.getUrl, "")"><i class="icon-comments"></i><br />SUPPORT</a>
     </li>
     <a href="/" title="Go to mintpresso website"><li class="mintpresso"></li></a>

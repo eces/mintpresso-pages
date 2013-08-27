@@ -7,13 +7,13 @@ import play.api.Play.current
 object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
-    // val f = new java.io.File( System.getProperty("user.home") + '/' + Play.configuration.getString("file.directory").getOrElse("mintpresso_files") )
-    // if(!f.exists){
-    //   if(f.mkdir()){
-    //     Logger.info(f.toString)
-    //     Logger.info("File directory created.")
-    //   }
-    // }
+    val f = new java.io.File( System.getProperty("user.home") + '/' + Play.configuration.getString("file.directory").getOrElse("mintpresso_files") )
+    if(!f.exists){
+      if(f.mkdir()){
+        Logger.info(f.toString)
+        Logger.info("File directory created.")
+      }
+    }
   }
   
   override def onStop(app: Application) {

@@ -35,6 +35,13 @@ apply.progress=Saving ...
 apply.fail=Failed to apply changes. Please try again or report it.
 apply.done=Saved
 
+submit.done=Submitted.
+submit.fail=Failed to submit. Not saved.
+upload.empty=Please choose a file.
+
+delete.done=Deleted
+delete.fail=Failed to delete. Please try again or report it.
+
 read_model=can read models.
 create_model=can create new model.
 update_model=can update models.
@@ -45,8 +52,10 @@ manage_order=allow to start, pause, configure data mining plans for orders.
 manage_pickup=allow to start, pause, configure, and read results from pickups.
 
 url.invalid=Invalid URL forms.
-host.unavailable=We've tried to reach your server and hosts, but failed some of urls.
+host.unavailable=Failed to reach your server and hosts, not saved.
 
 error.400=Bad Request
 error.404=Page Not Found
 error.500=Internal Server Error
+
+confirm.delete=Delete can't be undo, want to proceed?

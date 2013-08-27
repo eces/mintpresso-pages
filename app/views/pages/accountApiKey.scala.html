@@ -10,12 +10,12 @@
   </p>
   *@
   <div data-bind="foreach: keys">
-    <form class="form-horizontal" data-bind="submit: $root.apiKey.save.bind($parent, $data), attr: { id: $id }">
+    <form class="form-horizontal" data-bind="submit: $root.apiKey.save.bind($parent, $data), attr: { id: label() }">
       <div class="control-group">
         <label class="control-label">API Key</label>
         <div class="controls controls-list">
           <input type="text" data-bind="value: $id" disabled="disabled" class="span4" placeholder="This will be shown after save.">
-          <button type="button" class="btn" data-bind="click: $root.apiKey.delete">Delete</button>
+          <button type="button" class="btn" data-bind="click: $root.apiKey.delete, visible: $id().length > 0">Delete</button>
         </div>
       </div>
       <div class="control-group">

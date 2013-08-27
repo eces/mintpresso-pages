@@ -1,0 +1,13 @@
+@()(implicit request: RequestHeader, flash: Flash)
+<div class="container">
+  <h1>IMPORT</h1>
+  <h4>Please upload your data or let us know where to import.</h4>
+  <p>We receive any data formats such as JSON, XML, and Plain SQL. Your request will be processed in 1-7 days. Data format is a matter.</p>
+  <div class="alert alert-info">For the file larger than 10GB, you can post hard drive or USB memory to Mintpresso office.</div>
+  <form action="@routes.Pages.collectImportUpload(Application.getUrl)" method="post" enctype="multipart/form-data">
+    <input type="file" name="attachment" title="Browse (max 100MB)" required />
+    <div class="row right">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
