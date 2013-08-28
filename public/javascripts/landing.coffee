@@ -19,6 +19,12 @@ jQuery ->
       target: '#toc'
     }
 
+  $documentation = $('#documentation')
+  if $documentation.length
+    $('body').scrollspy {
+      target: '#toc'
+    }    
+
   # 4 spaces
   hljs.tabReplace = '  '
   $('pre code, code').each (i, e) -> 

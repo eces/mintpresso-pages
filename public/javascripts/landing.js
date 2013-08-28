@@ -6,7 +6,7 @@
 
 (function() {
   jQuery(function() {
-    var $features, $toc, landingViewModel;
+    var $documentation, $features, $toc, landingViewModel;
     $('#myCarousel').carousel();
     $toc = $('#toc');
     if ($toc.length) {
@@ -18,6 +18,12 @@
     }
     $features = $('#features');
     if ($features.length) {
+      $('body').scrollspy({
+        target: '#toc'
+      });
+    }
+    $documentation = $('#documentation');
+    if ($documentation.length) {
       $('body').scrollspy({
         target: '#toc'
       });

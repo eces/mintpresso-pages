@@ -20,7 +20,7 @@
         <a href="@routes.Application.plans">PRICING</a>
         <a href="@routes.Application.faq">FAQ</a>
         @Application.getOptionUser.map { user =>
-        <a href="@routes.Application.signin" class="btn btn-large">Go to Pages (@user.name)</a>
+        <a href="@routes.Application.signin" class="btn">Go to Pages (@user.name)</a>
         }.getOrElse{
         <a href="@routes.Application.signin" class="btn">SIGN IN</a>
         }

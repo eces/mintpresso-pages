@@ -877,6 +877,11 @@ button.active span.label-number {
 #features #_support {
   margin: 80px 0;
 }
+#documentation #_overview,
+#documentation #_basic-api,
+#documentation #_routes-for-model {
+  padding-top: 60px;
+}
 #plans {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
