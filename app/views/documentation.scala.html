@@ -11,6 +11,7 @@
         <li><a href="#_routes-for-model">Routes for Model</a></li>
         <li><a href="#_status">Status</a></li>
         <li><a href="#_routes-for-status">Routes for Status</a></li>
+        <li><a href="#_api_libraries">API Libraries</a></li>
         <li><a href="#_use_cases">Use Cases</a></li>
       </ul>
     </div>
@@ -187,6 +188,8 @@
           <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
         </p>
         <br />
+        <br />
+        <br />
         <h4>Find one model by id.</h4>
         <p>type: String, id: String</p>
         <p>
@@ -211,15 +214,17 @@
         </p>
         <br />
         <br />
+        <br />
         <h4>Add new model</h4>
         <p>type: String, json: JsObject</p>
-        <p>Json object must be wrapped by type. $id is optional, as well as empty string will be treated as nothing like null. If $id is conflict, the operation is cancelled and return 409 Conflict. You can construct any data form in model, but we recommend less than 2 depths. For example, <code>"urls": [ { "host": "..." } ]</code> is still okay and it's all.</p>
+        <p>Json object must be wrapped by type. $id is optional, as well as empty string will be treated as nothing like null. If $id is conflict, the operation is cancelled and return 409 Conflict. You can construct any data form in model, but we recommend less than 2 depths. For example, <code>"urls": [ { "host": "..." } ]</code> is still okay and it's all. As the keyword 'some' is reserved, you can't use 'some' as $id.</p>
         <p>
           <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
           <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
           <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
         </p>
+        <br />
         <br />
         <br />
         <h4>Update a model</h4>
@@ -231,6 +236,7 @@
           <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
           <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
         </p>
+        <br />
         <br />
         <br />
         <br />
@@ -413,6 +419,7 @@ GET  /user/james/read/some/post
         <h4>COMBINATIONS</h4>
         <div style="padding-left:30px;">
           <h4>Search all status by subject $no, verb and object type.</h4>
+          <p>'some' isn't such a type. It means just something unknown. You better understand that you're looking for some user, music, or post. The only purpose of a keyword 'some' is to solve conflict with $id string.</p>
           <p>subjectNo: Number, verb: String, objectType: String</p>
           <p>
             <span class="label label-inverse">200</span> Ok&nbsp;&nbsp;
@@ -569,6 +576,11 @@ GET     /:subjectType/:subjectNo/:verb/some/:objectType
 GET     /user/1000/like/some/post
 
 </code></pre>
+
+<br />
+<br />
+<br />
+<br />
 <br />
 <pre><code class="ruby">
 GET     /some/:subjectType/:verb/:objectType/:objectId
@@ -630,17 +642,84 @@ DELETE  /status/23039109
     </div>
 
     <hr />
-    <div id="_use_cases" class="row">
+    <div id="_api_libraries" class="row">
       <div class="span6">
-        <h3>Use Cases</h3>
+        <h3>Third party Clients &amp; Libraries</h3>
+        <p>
+          Though we're working hard to make things simple, there are many nice and tidy mintpresso clients for various languages. All of them are full of elegant code and extremely easy to use. Please check out these libraries.
+          @*note that every new features come out are available instantly on RESTful API but 3rd library doesn't because they need to patch and support.
+          *@
+        </p>
+        <h4>JavaScript API</h4>
+        <h4>CoffeeScript API</h4>
+        <h4>Java API</h4>
+        <h4>Scala API</h4>
+        <h4>Play Framework API</h4>
+        <h4>PHP API</h4>
+        <h4>Python API</h4>
+        <h4>Shell Client</h4>
       </div>
       <div class="span6">
+<pre><code class="javascript">
+var user = {
+  user: {
+    $id: 'support@@mintpresso.com',
+    name: 'Paul'
+  }
+}
+mintpresso.post(user, function(response, status, xhr){
+  if(status == 201){
+    console.log('Added')
+  }
+}
+
+mintpresso.post({
+  user: {
+    $id: 'support@@mintpresso.com',
+    name: 'Paul'
+  }
+}, function(response, status, xhr){
+  if(status == 201){
+    console.log('Added')
+  }
+}
+
+mintpresso.get('/user/support@@mintpresso.com', function(data, status, xhr){
+  // it will show 'Username is Paul'
+  console.log('Username is ' + data.user.name)
+});
+
+mintpresso('/user/support@@mintpresso.com').get(function(data, status, xhr){
+  console.log(data)
+})
+
+</code></pre>
+
+<pre><code class="coffeescript">
+
+mintpresso.post {
+  user:
+    $id: 'support@@mintpress.com'
+    name: 'Paul'
+}, (data, status) ->
+  console.log 'Added' if status is 201
+
+mintpresso.get '/user/support@@mintpresso.com', (data, status) ->
+  console.log 'Username is ' + data.user.name
+
+</code></pre>
       </div>
     </div>
     
     <hr />
-    <div class="row">
+    <div id="_use_cases" class="row">
       <div class="span6">
+        <h3>Use Cases</h3>
+        <h4>Counting active users</h4>
+        <h4>Using statistic result directly</h4>
+        <h4>Item recommendation (suggests attractive product)</h4>
+        <h4>User recommendation (suggests closer friends)</h4>
+        <h4></h4>
       </div>
       <div class="span6">
       </div>
