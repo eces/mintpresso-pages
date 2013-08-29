@@ -24,12 +24,13 @@
     }
     $documentation = $('#documentation');
     if ($documentation.length) {
+      Prism.highlightAll(true);
       $('body').scrollspy({
         target: '#toc'
       });
     }
     hljs.tabReplace = '  ';
-    $('pre code, code').each(function(i, e) {
+    $('pre code.ruby, code.ruby').each(function(i, e) {
       return hljs.highlightBlock(e);
     });
     landingViewModel = function() {

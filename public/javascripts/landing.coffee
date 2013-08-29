@@ -21,14 +21,16 @@ jQuery ->
 
   $documentation = $('#documentation')
   if $documentation.length
+    Prism.highlightAll true
     $('body').scrollspy {
       target: '#toc'
     }    
 
-  # 4 spaces
+  # # 4 spaces
   hljs.tabReplace = '  '
-  $('pre code, code').each (i, e) -> 
+  $('pre code.ruby, code.ruby').each (i, e) -> 
     hljs.highlightBlock(e)
+
 
   landingViewModel = () ->
     self = this

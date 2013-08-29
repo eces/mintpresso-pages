@@ -43,7 +43,10 @@
       </ul>
     </p>
     <p>
-      If you're trying to solve a domain specific problem, check these: <a href="http://loggly.com">Loggly</a> for system log, <a href="https://mixpanel.com">Mixpanel</a> for customer analytics, and <a href="http://newrelic.com/">New Relic</a> for server monitoring.
+      If you're trying to solve a domain specific problem, check these: <a href="http://loggly.com">Loggly</a> for system log, <a href="https://mixpanel.com">Mixpanel</a> for customer analytics, and <a href="http://newrelic.com/">New Relic</a> for server monitoring. However, mintpresso is no.1 at item recommendation.
+    </p>
+    <p>
+      All you need to do is creating new model(user, post, log, or etc) and linking each models as status(like, view, issue, purchase, or etc). Standardizing your data structure brings a huge positive impact. You can browser any data set in web pages and compose any data mining plans without coding explicit logics. Finally, <strong>all your data handling process become comfortable, consistent, responsive, and scalable.</strong> Really.
     </p>
   </div>
 
@@ -54,13 +57,13 @@
       <div class="span6">
         <h3>APP SERVER</h3>
         <p>
-        https://app.mintpresso.com
+        <a href="https://app.mintpresso.com">https://app.mintpresso.com</a>
         </p>
       </div>
       <div class="span6">
         <h3>PAGES</h3>
         <p>
-        https://mintpresso.com
+        <a href="https://mintpresso.com">https://mintpresso.com</a>
         </p>
       </div>
     </div>
@@ -102,6 +105,9 @@
         <br />
         <p>You can see the response is JSON and wrapped by key.</p>
         <p>We called it <strong>a model</strong>. A model contains type, unique id, unique no, and data fields.</p>
+        <p>
+          In all request, you have to put API key at parameter. This is used for calculating usage and preparing developer log. You can have multiple keys at the same time and each of them can be configured. Please check out API Key Management on <a href="@routes.Application.signin">Pages</a>.
+        </p>
         <br />
         <br />
         <br />
@@ -109,11 +115,11 @@
         <br />
       </div>
       <div class="span6">
-  <pre><code class="http">
+  <pre><code class="language-http">
   GET /user/support@@mintpresso.com?apikey=public__43b62b5dd0ce945ab7 HTTP/1.1
 
   </code></pre>
-  <pre><code class="javascript">
+  <pre><code class="language-javascript">
   {
     "user" : {
       "$no" : 1500,
@@ -129,7 +135,7 @@
     <hr />
     <div class="row">
       <div class="span6">
-        <h3>Request/Response Example</h3>
+        <h3>Response Example</h3>
         <p>Let's add some music.</p>
         <p>All you need to do is put wrapped json to request body.</p>
         <br />
@@ -144,7 +150,7 @@
         <p>You can see $no is newly created, $id is optional, and dates are automatically created.</p>
       </div>
       <div class="span6">
-  <pre><code class="http">
+  <pre><code class="language-http">
   POST /music?apikey=public__43b62b5dd0ce945ab7 HTTP/1.1
   Host: app.mintpresso.com
   Content-Type: application/json; charset=utf-8
@@ -158,7 +164,7 @@
   }
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code class="language-javascript">
   201 Created
 
   {
@@ -221,7 +227,6 @@
         <p>
           <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
-          <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
           <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
         </p>
         <br />
@@ -229,12 +234,11 @@
         <br />
         <h4>Update a model</h4>
         <p>type: String, no: Number </p>
-        <p>Json object must be wrapped by type and contain $id and $no. This operation doesn't change $no and will renew $updatedAt.</p>
+        <p>Json object must be wrapped by type and contain $id and $no. This operation doesn't change $no and will renew $updatedAt. 200 Ok will be returned whether it has been changed or not.</p>
         <p>
           <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
           <span class="label label-inverse">404</span> Not Found &nbsp;&nbsp;
-          <span class="label label-inverse">409</span> Conflict &nbsp;&nbsp;
         </p>
         <br />
         <br />
@@ -253,19 +257,19 @@
       <div class="span6">
   <br />
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   GET     /:type/:no
   GET     /user/1000
 
   </code></pre>
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   GET     /:type/:id
   GET     /user/support@@mintpresso.com
 
   </code></pre>
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   GET     /:type
   GET     /user?json=[{"confirmed": true}, {"subscription": "Pro"}]
 
@@ -273,7 +277,7 @@
   <br />
   <br />
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   POST    /:type
   POST    /user
 
@@ -284,7 +288,7 @@
 
   </code></pre>
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   PUT     /:type/:no
   PUT     /user/1000
 
@@ -296,7 +300,7 @@
 
   </code></pre>
   <br />
-  <pre><code class="ruby">
+  <pre><code class="language-http">
   DELETE  /:type/:no
   DELETE  /user/1000
 
@@ -333,7 +337,7 @@
       <br />
       <br />
       <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET  /user/james/read/post/20-ways-to-be-successful
 
 GET  /user/james/read/some/post
@@ -398,7 +402,7 @@ GET  /user/james/read/some/post
         <br />
         <br />
         <br />
-        <p>Each status are wrapped into Json Array. This operation is designed for searching that usually results 0 item or many, so it always returns 200 Ok. Of course, you're able to check the length of array to determine a search result is empty or not. 404 Not Found will be returned if subject or object model isn't exists.</p>
+        <p>Each status are wrapped into Json Array. This operation is designed for searching that usually results 0 item or many, so it always returns 200 Ok. Of course, you're able to check the length of array to determine a search result is empty or not. 404 Not Found will be returned if subject or object model isn't exist.</p>
         <br />
         <br />
         <br />
@@ -426,6 +430,7 @@ GET  /user/james/read/some/post
             <span class="label label-inverse">200</span> Empty&nbsp;&nbsp;
             <span class="label label-inverse">404</span> Not Found&nbsp;&nbsp;
           </p>
+          <br />
           <br />
           <br />
 
@@ -508,12 +513,12 @@ GET  /user/james/read/some/post
       <div class="span6">
 <br />
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /:subjectType/:subjectNo/:verb/:objectType/:objectNo
 GET     /user/1000/like/photo/201
 
 </code></pre>
-<pre><code class="ruby">
+<pre><code class="language-javascript">
 200 Ok
 
 {
@@ -535,19 +540,19 @@ GET     /user/1000/like/photo/201
 
 </code></pre>
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /:subjectType/:subjectId/:verb/:objectType/:objectId
 GET     /user/jimmy/like/post/introducing-new-accelerators
 
 </code></pre>
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /:subjectType/:verb/:objectType
 GET     /user/flag-as-spam/post
 GET     /user/report/post
 
 </code></pre>
-<pre><code class="ruby">
+<pre><code class="language-javascript">
 200 Ok
 
 [
@@ -571,7 +576,7 @@ GET     /user/report/post
 <br />
 <br />
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /:subjectType/:subjectNo/:verb/some/:objectType
 GET     /user/1000/like/some/post
 
@@ -582,19 +587,19 @@ GET     /user/1000/like/some/post
 <br />
 <br />
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /some/:subjectType/:verb/:objectType/:objectId
 GET     /some/user/listen/music/2000
 
 </code></pre>
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /:subjectType/:subjectNo/:verb/some/:objectType
 GET     /user/daniel/like/some/post
 
 </code></pre>
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 GET     /some/:subjectType/:verb/:objectType/:objectId
 GET     /some/user/listen/music/Stardust
 
@@ -602,7 +607,7 @@ GET     /some/user/listen/music/Stardust
 <br />
 <br />
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 POST    /:subjectType/:subject/:verb/:objectType/:object
 POST    /user/1000/listen/music/2000
 POST    /user/1000/listen/music/Moon+River
@@ -612,7 +617,7 @@ POST    /user/jin/listen/music/Moon+River
 { "device": "mobile" }
 
 </code></pre>
-<pre><code class="ruby">
+<pre><code class="language-javascript">
 201 Created
 
 {
@@ -621,11 +626,12 @@ POST    /user/jin/listen/music/Moon+River
     "$no": 1000,
     "$id": "jin"
   },
-  "$verb": "listen",
+  "$verb": "play",
+  "device": "mobile",
   "$object": {
     "$no": 2000,
     "$id": "Moon River"
-    "streaming_url": "https://secure-a.vimeocdn.com/p/flash/moogaloop/5.2.55/moogaloop.swf?v=1.0.0" 
+    "streaming_url": "https://secure-a.vimeocdn.com/p/2000+Moon+River.mp4?v=1.0.0" 
   },
   "$createdAt": 1377700751487
   "$updatedAt": 1377700751487
@@ -633,7 +639,7 @@ POST    /user/jin/listen/music/Moon+River
 
 </code></pre>
 <br />
-<pre><code class="ruby">
+<pre><code class="language-http">
 DELETE  /status/:no
 DELETE  /status/23039109
 
@@ -650,53 +656,102 @@ DELETE  /status/23039109
           @*note that every new features come out are available instantly on RESTful API but 3rd library doesn't because they need to patch and support.
           *@
         </p>
+        <br />
         <h4>JavaScript API</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso.js</a>
+        </p>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <h4>CoffeeScript API</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso.js</a>
+        </p>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <h4>Java API</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso-java</a>
+        </p>
         <h4>Scala API</h4>
+        <p>
+          <a href="#">http://github.com/admire93/mintpresso-scala</a>
+          <a href="#">http://github.com/eces/mintpresso-scala</a>
+        </p>
         <h4>Play Framework API</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso-play</a>
+        </p>
         <h4>PHP API</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso-php</a>
+        </p>
         <h4>Python API</h4>
-        <h4>Shell Client</h4>
+        <p>
+          <a href="#">http://github.com/admire93/mintpresso-python</a>
+        </p>
+        <h4>Shell Client (Command Line Interface)</h4>
+        <p>
+          <a href="#">http://github.com/eces/mintpresso-cli</a>
+        </p>
       </div>
       <div class="span6">
-<pre><code class="javascript">
-var user = {
-  user: {
-    $id: 'support@@mintpresso.com',
-    name: 'Paul'
-  }
-}
-mintpresso.post(user, function(response, status, xhr){
-  if(status == 201){
-    console.log('Added')
-  }
-}
-
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<pre><code class="language-javascript">
+// add new user
 mintpresso.post({
   user: {
     $id: 'support@@mintpresso.com',
     name: 'Paul'
   }
-}, function(response, status, xhr){
-  if(status == 201){
+}, function(response, status, xhr) {
+  if (status == 201) {
     console.log('Added')
   }
-}
+})
 
+// get username
 mintpresso.get('/user/support@@mintpresso.com', function(data, status, xhr){
-  // it will show 'Username is Paul'
   console.log('Username is ' + data.user.name)
 });
 
-mintpresso('/user/support@@mintpresso.com').get(function(data, status, xhr){
-  console.log(data)
-})
-
 </code></pre>
 
-<pre><code class="coffeescript">
+<br />
+<pre><code class="language-coffeescript">
 
+# add new user
 mintpresso.post {
   user:
     $id: 'support@@mintpress.com'
@@ -704,8 +759,9 @@ mintpresso.post {
 }, (data, status) ->
   console.log 'Added' if status is 201
 
+# get username: Username is Paul.
 mintpresso.get '/user/support@@mintpresso.com', (data, status) ->
-  console.log 'Username is ' + data.user.name
+  console.log "Username is ${data.user.name}."
 
 </code></pre>
       </div>
@@ -716,13 +772,32 @@ mintpresso.get '/user/support@@mintpresso.com', (data, status) ->
       <div class="span6">
         <h3>Use Cases</h3>
         <h4>Counting active users</h4>
+        <p>
+          This secion is under review.
+        </p>
         <h4>Using statistic result directly</h4>
-        <h4>Item recommendation (suggests attractive product)</h4>
-        <h4>User recommendation (suggests closer friends)</h4>
+        <p>
+          This secion is under review.
+        </p>
+        <h4>Item recommendation (suggests attractive products)</h4>
+        <p>
+          This secion is under review.
+        </p>
+        <h4>User recommendation (suggests mutual friends)</h4>
+        <p>
+          This secion is under review.
+        </p>
         <h4></h4>
       </div>
       <div class="span6">
       </div>
+    </div>
+
+    <hr />
+    <div class="well">
+      <h4>We're listening to your feedback, question and suggestion. Please email us :)</h4>
+      <p>All emails are read and reviewed by all team members - probably humans, not aliens. Your request will be processed in 12-24 hours.</p>
+      <a href="mailto:support@@mintpresso.com" class="btn">support@@mintpresso.com</a>
     </div>
   </div>
 </div>
