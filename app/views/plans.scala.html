@@ -2,35 +2,169 @@
 
 @landing(Messages("title.plans")) {
 
-<div id="toc" class="navbar navbar-static">
+<div id="" class="toc navbar navbar-static">
   <div class="navbar-inner">
     <div class="container" style="">
       <ul class="nav navbar-nav">
-        <li><a href="mailto:support@@mintpresso.com?subject=Direct Message to Billing Manager"><i class="icon-comments"></i> Contact us</a></li>
+        @Application.getOptionUser.map { u =>
+        <li><a href="@routes.Pages.account(Application.getUrl, "/plans-and-billing")">Your current plan: <strong>FREE</strong></a></li>
+        }.getOrElse{
+        <li><a>&nbsp;</a></li>
+        }
       </ul>
     </div>
   </div>
 </div>
 
+<style>
+  header { background-color: #fff; }
+  body { background-color: #f1f4f7; }
+</style>
+
 <div class="container" id="plans">
-  <h1>We're in beta service.</h1>
-  <p>Yet your feedback is necessarily important to our product. We'll offer redeem coupon to developers so please don't worry about unexpected charges.
-  <br />
-  Also, there are special offers to non-commercial users at almost free.
+  <h3 class="typo-capital bold">DATA POINT PLANS</h3>
+  <h3 class="typo-capital light">Includes access to all features and unlimited request rate with remaining data point.</h3>
+  
+  <hr />
+
+  <div id="pricing">
+    <div class="row header">
+      <div></div>
+      <div class="span2 offset6 center">
+        <h6>DATA POINTS</h6>
+      </div>
+      <div class="span2 center">
+        <h6>MONTHLY COST</h6>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Free or <a href="#">become a partner</a></h5>
+      </div>
+      <div class="span2 center">
+        <h4>50,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$0</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+          <a href="@routes.Application.signin" class="btn btn-small span1">SIGN UP</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Startup</h5>
+      </div>
+      <div class="span2 center">
+        <h4>500,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$150</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="#" class="btn btn-small span1">PURCHASE</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Business</h5>
+      </div>
+      <div class="span2 center">
+        <h4>2,000,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$350</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="#" class="btn btn-small span1">PURCHASE</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Growth</h5>
+      </div>
+      <div class="span2 center">
+        <h4>4,000,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$600</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="#" class="btn btn-small span1">PURCHASE</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Premium</h5>
+      </div>
+      <div class="span2 center">
+        <h4>8,000,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$1,000</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="#" class="btn btn-small span1">PURCHASE</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>Enterprise</h5>
+      </div>
+      <div class="span2 center">
+        <h4>20,000,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$2,000</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="#" class="btn btn-small span1">PURCHASE</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span6">
+        <h5>High volume</h5>
+      </div>
+      <div class="span2 center">
+        <h4>50,000,000+</h4>
+      </div>
+      <div class="span2 center">
+        <h4>-</h4>
+      </div>
+      <div class="span2 center" style="padding: 7px 0;">
+        <a href="mailto:support@@mintpresso.com?subject=Direct Message to Billing Manager" class="btn btn-small span1">CONTACT</a>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <h3 class="light">Frequently Asked Question</h3>
+  <p>
+    ...
   </p>
+  <br />
+  <br />
+  <br />
+
+@*
 <!-- Three columns of text below the carousel -->
   <div class="row icons" style="padding: 50px 0 100px 0">
     <div class="span4">
-      @*
-      <img class="img-circle" src="@routes.Assets.at("images/browser-icon-safari.png")">
-      *@
       <i class="icon-rocket img-circle" style=""></i>
       <h3>Developer Plan</h3>
       <h4>$0 / mo</h4>
       <hr />
       <p>Unlimited models</p>
       <p>Unlimited status</p>
-      <p>50,000 requests <small>/ month</small></p>
+      <p>50,000 data points <small>/ month</small></p>
       <p>5 concurrent orders</p>
       <p>Email Support <small>reply in 48 hours</small></p>
       <p>&nbsp;</p>
@@ -79,7 +213,7 @@
       <p><button class="btn btn-inverse" href="#" disabled="disabled">Subscribe &raquo;</button></p>
     </div><!-- /.span4 -->
   </div><!-- /.row -->
-
+*@
 
 
   <!-- /END THE FEATURETTES -->

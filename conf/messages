@@ -1,22 +1,32 @@
-title.overview=MINTPRESSO
-title.signup=Sign up to MINTPRESSO
-title.login=Sign in to MINTPRESSO
-title.features=Features
-title.plans=Plans & Pricing
-title.404=404 Page Not Found
-title.400=400 Bad Request
-title.500=500 Internal Server Error
-title.changeAccount=Change account
-title.pages=Pages
-title.pages.overview=Pages > Overview
+title.overview=Mintpresso | Realtime Analytics
+title.signup=Sign up - Mintpresso | Realtime Analytics
+title.login=Sign in - Mintpresso | Realtime Analytics
+title.features=Features - Mintpresso | Realtime Analytics
+title.documentation=Documentation - Mintpresso | Realtime Analytics
+title.plans=Pricing - Mintpresso | Realtime Analytics
+title.404=404 Page Not Found - Mintpresso | Realtime Analytics
+title.400=400 Bad Request - Mintpresso | Realtime Analytics
+title.500=500 Internal Server Error - Mintpresso | Realtime Analytics
+title.changeAccount=Change account - Mintpresso | Realtime Analytics
+title.pages=Pages - Mintpresso | Realtime Analytics
+title.account=Account - Pages - Mintpresso | Realtime Analytics
+title.account.usage=API Usage - Account - Pages - Mintpresso | Realtime Analytics
+title.account.plansAndBilling=Plans and Billing - Account - Pages - Mintpresso | Realtime Analytics
+title.account.apiKey=API Key Management - Account - Pages - Mintpresso | Realtime Analytics
+title.collect=Collect - Pages - Mintpresso | Realtime Analytics
+title.collect.search=Search - Collection - Pages - Mintpresso | Realtime Analytics
+title.collect.import=Import - Collection - Pages - Mintpresso | Realtime Analytics
+title.collect.export=Export - Collection - Pages - Mintpresso | Realtime Analytics
 
 signup.button=Sign Up for MINTPRESSO
 signup.button.done=Signed <i class="icon-check-sign"></i>
 signup.done.redirect=Redirecting to sign in...
 
 email.duplicate=Email is already taken
+code.expired=Code is expired. Request code agian.
 
 form.empty=Please fill the form
+form.empty.email=Please type your email address
 form.empty.invalid=Form is invalid or empty
 
 user.invalid.email=Sorry, email not found
@@ -25,9 +35,10 @@ user.invalid.password=Please check your password
 signin=Sign in
 signin.progress=Signing in ...
 
-reset.email.sent=Your account has to set a new password. Please check the email we've sent :)
+reset.email.sent=Your account has to set a new password. Please check the email we've sent.
+reset.email.sent.basic=We've sent the email to you.
 reset.code.invalid=Code is invalid. Please try again.
-reset.fail=No information is given. Please try again.
+reset.fail=Password is empty. Please try again.
 reset.done=Password has been changed.
 
 apply.change=Apply changes

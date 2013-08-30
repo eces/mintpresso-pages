@@ -31,7 +31,7 @@ class MailActor extends Actor {
 Hello, ${name}.
 <br />
 <br />
-You can change your password immediately by clicking the link below:
+You can change your password by following the link. This will be expired after 10 minutes.
 <br />
 <br />
 <a href="${codeUrl}">${codeUrl}</a>

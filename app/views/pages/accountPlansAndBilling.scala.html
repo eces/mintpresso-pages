@@ -1,5 +1,41 @@
 @()(implicit request: RequestHeader, flash: Flash)
 <div class="container">
   <h1>Plans and Billing</h1>
-  <p>Not available currently</p>
+  <div id="pricing">
+    <div class="row header">
+      <div class="span3">
+        
+      </div>
+      <div class="span2 center">
+        <h6>DATA POINTS</h6>
+      </div>
+      <div class="span2 center">
+        <h6>MONTHLY COST</h6>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span3">
+        <h5>Free</h5>
+      </div>
+      <div class="span2 center">
+        <h4>50,000</h4>
+      </div>
+      <div class="span2 center">
+        <h4>$0</h4>
+      </div>
+    </div>
+    <hr />
+    <h4>Deposit: $0</h4>
+    <ul>
+      <li>A data point is counted every time you request with API key. Every time you add, find, update, delete models that will count as a data point. </li>
+      <li>You can upgrade or downgrade plan anytime. It'll be applied at the next bill.</li>
+      <li>If you do choose too higher or lower plan, we'll always charge the cheaper price at downgraded plan.</li>
+      <li>Data points don't roll over to the next month. It's a monthly quota.</li>
+    </ul>
+    <p></p>
+    <hr />
+    <a href="@routes.Application.plans" class="btn btn-small span1">UPGRADE</a>
+    <a href="#" class="btn btn-small btn-primary span1">CANCEL</a>
+  </div>
 </div>

@@ -82,7 +82,7 @@ jQuery ->
           # ignore when pointing none page like '/account'
           if value.length > 0
             # change push state
-            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + self._page() ), '/' + _.url + '/' + self.menu() + '/' + self._page()
+            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page()
         true
       owner: self
     }
@@ -94,6 +94,16 @@ jQuery ->
     self.signinButton = ko.observable _ 'signin'
     self.applyButton = ko.observable _ 'apply.change'
     
+    self.findPassword = ->
+      if self.email.length
+        location.href = _.Users.findPassword(self.email).url
+      else
+        Messenger().post {
+          message: _ 'form.empty.email'
+          type: 'info'
+        }
+      false
+
     self.signin = (elem) ->
       self.signinButton _ 'signin.progress'
       _.Users.signin().ajax
@@ -101,6 +111,8 @@ jQuery ->
           email: self.email
           password: self.password
         success: (d, s, x) ->
+          console.log(self.email)
+          console.log(self.password)
           if x.status is 202
             location.href = _.Pages.account(d, "").url
           else if x.status is 201

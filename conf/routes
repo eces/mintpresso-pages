@@ -1,6 +1,6 @@
 GET     /                           controllers.Application.index
-GET     /product                    controllers.Application.features
-GET     /plans                      controllers.Application.plans
+GET     /features                   controllers.Application.features
+GET     /pricing                    controllers.Application.plans
 
 GET     /terms                      controllers.Application.terms
 GET     /privacy                    controllers.Application.privacy
@@ -15,8 +15,9 @@ POST    /signin                     controllers.Users.signin
 GET     /signout                    controllers.Users.signout
 GET     /signup                     controllers.Application.signup
 POST    /signup                     controllers.Users.signup
+GET     /user/find                  controllers.Users.findPassword(email: Option[String])
 GET     /user/password              controllers.Application.changePassword(code: Option[String])
-PUT     /user/password              controllers.Users.changePassword
+POST    /user/password              controllers.Users.changePassword
 
 GET     /jsValues                   controllers.Application.javascriptValues
 GET     /jsRoutes                   controllers.Application.javascriptRoutes

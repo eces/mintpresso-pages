@@ -27,9 +27,9 @@ jQuery ->
     }    
 
   # # 4 spaces
-  hljs.tabReplace = '  '
-  $('pre code.ruby, code.ruby').each (i, e) -> 
-    hljs.highlightBlock(e)
+  # hljs.tabReplace = '  '
+  # $('pre code.ruby, code.ruby').each (i, e) -> 
+  #   hljs.highlightBlock(e)
 
 
   landingViewModel = () ->

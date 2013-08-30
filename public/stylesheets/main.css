@@ -318,6 +318,17 @@ footer a {
   padding-top: 100px;
   z-index: 1030;
 }
+#panel #menu span.badge {
+  float: right;
+  position: relative;
+  margin-bottom: -25px;
+  margin-right: 10px;
+  background-color: #e74c3c;
+  padding: 3px 7px;
+  -webkit-border-radius: 9999px;
+  -moz-border-radius: 9999px;
+  border-radius: 9999px;
+}
 #panel #menu ul {
   padding: 0;
   margin: 0;
@@ -863,6 +874,11 @@ button.active span.label-number {
 #toc.affix + div.container {
   padding-top: 70px;
 }
+.toc div.navbar-inner {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+}
 #features hr.featurette-divider {
   margin: 0px auto;
 }
@@ -884,6 +900,28 @@ button.active span.label-number {
 }
 #plans {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
+  color: #5a6b7d;
+}
+#pricing {
+  padding: 20px 0;
+}
+#pricing div.row.header h6 {
+  background-color: #7795b4;
+  color: #fff;
+  padding: 3px 0;
+  margin: 0 20px 10px 20px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#pricing div.row div:nth-child(1) {
+  color: #768594;
+}
+#pricing div.row div:nth-child(2) {
+  color: #7795b4;
+}
+#pricing div.row div:nth-child(3) {
+  color: #7795b4;
 }
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */

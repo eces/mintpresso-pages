@@ -39,7 +39,6 @@ object Application extends Controller with Secured {
   def changePassword(code: Option[String]) = Action { implicit request =>
     code map { c =>
       val parts = Crypto.decryptAES(c).split("__MINT__")
-      println(Crypto.decryptAES(c))
       val no = parts(0)
       val email = parts(1)
       Ok(views.html.changePassword(c, email))
@@ -89,6 +88,7 @@ object Application extends Controller with Secured {
       Routes.javascriptRouter("routes")(
         routes.javascript.Users.signup,
         routes.javascript.Users.signin,
+        routes.javascript.Users.findPassword,
         routes.javascript.Pages.account,
         routes.javascript.Pages.accountUsage,
         routes.javascript.Pages.accountPlansAndBilling,

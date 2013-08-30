@@ -18,7 +18,8 @@
         <a href="@routes.Application.index">HOME</a>
         <a href="@routes.Application.features">FEATURES</a>
         <a href="@routes.Application.plans">PRICING</a>
-        <a href="@routes.Application.faq">FAQ</a>
+        <a href="@routes.Application.documentation">DOCUMENTATION</a>
+        <a href="#@routes.Application.faq">FAQ</a>
         @Application.getOptionUser.map { user =>
         <a href="@routes.Application.signin" class="btn">Go to Pages (@user.name)</a>
         }.getOrElse{

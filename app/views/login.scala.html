@@ -18,10 +18,10 @@
               @flash.get("error").map { message =>
                 @Html(message)
               }
-              @flash.get("msg").map { message =>
+              @flash.get("success").map { message =>
                 @Html(message)
               }.getOrElse {
-                <a href="#">Forgot your account or password?</a>
+                <a href="#" data-bind="click: findPassword">Forgot your account or password?</a>
               }
             </span>
           </div>

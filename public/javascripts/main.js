@@ -110,7 +110,7 @@ Jinhyuk Lee at mintpresso.com
             if (value.length > 0) {
               History.pushState({
                 timestamp: moment().seconds()
-              }, _('title.' + self.menu() + '.' + self._page()), '/' + _.url + '/' + self.menu() + '/' + self._page());
+              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page());
             }
           }
           return true;
@@ -122,6 +122,17 @@ Jinhyuk Lee at mintpresso.com
       self.password = '';
       self.signinButton = ko.observable(_('signin'));
       self.applyButton = ko.observable(_('apply.change'));
+      self.findPassword = function() {
+        if (self.email.length) {
+          location.href = _.Users.findPassword(self.email).url;
+        } else {
+          Messenger().post({
+            message: _('form.empty.email'),
+            type: 'info'
+          });
+        }
+        return false;
+      };
       self.signin = function(elem) {
         self.signinButton(_('signin.progress'));
         _.Users.signin().ajax({
@@ -130,6 +141,8 @@ Jinhyuk Lee at mintpresso.com
             password: self.password
           },
           success: function(d, s, x) {
+            console.log(self.email);
+            console.log(self.password);
             if (x.status === 202) {
               return location.href = _.Pages.account(d, "").url;
             } else if (x.status === 201) {

@@ -2,18 +2,23 @@
 <div id="menu">
   <ul>
     <li data-bind="css: { active: menu() == 'account' }">
+      <span class="badge hide"></span>
       <a href="@routes.Pages.account(Application.getUrl, "")"><i class="icon-desktop"></i><br />ACCOUNT</a>
     </li>
     <li data-bind="css: { active: menu() == 'collect' }">
+      <span class="badge hide"></span>
       <a href="@routes.Pages.collect(Application.getUrl, "")"><i class="icon-cloud-download"></i><br />COLLECT</a>
     </li>
     <li data-bind="css: { active: menu() == 'order' }">
+      <span class="badge hide"></span>
       <a href="@routes.Pages.order(Application.getUrl, "")"><i class="icon-code-fork"></i><br />ORDER</a>
     </li>
     <li data-bind="css: { active: menu() == 'pickup' }">
+      <span class="badge hide"></span>
       <a href="@routes.Pages.pickup(Application.getUrl, "")"><i class="icon-download-alt"></i><br />PICK UP</a>
     </li>
     <li data-bind="css: { active: menu() == 'support' }">
+      <span class="badge hide"></span>
       <a href="@routes.Pages.support(Application.getUrl, "")"><i class="icon-comments"></i><br />SUPPORT</a>
     </li>
     <a href="/" title="Go to mintpresso website"><li class="mintpresso"></li></a>

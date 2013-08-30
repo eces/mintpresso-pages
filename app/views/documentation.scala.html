@@ -1,6 +1,6 @@
 @()(implicit request: RequestHeader, flash: Flash)
 
-@landing(Messages("title.terms")) {
+@landing(Messages("title.documentation")) {
 
 <div id="toc" class="navbar navbar-static">
   <div class="navbar-inner">
@@ -12,6 +12,8 @@
         <li><a href="#_status">Status</a></li>
         <li><a href="#_routes-for-status">Routes for Status</a></li>
         <li><a href="#_api_libraries">API Libraries</a></li>
+        <li><a href="#_order">Order</a></li>
+        <li><a href="#_pickup">Pick up</a></li>
         <li><a href="#_use_cases">Use Cases</a></li>
       </ul>
     </div>
@@ -223,7 +225,7 @@
         <br />
         <h4>Add new model</h4>
         <p>type: String, json: JsObject</p>
-        <p>Json object must be wrapped by type. $id is optional, as well as empty string will be treated as nothing like null. If $id is conflict, the operation is cancelled and return 409 Conflict. You can construct any data form in model, but we recommend less than 2 depths. For example, <code>"urls": [ { "host": "..." } ]</code> is still okay and it's all. As the keyword 'some' is reserved, you can't use 'some' as $id.</p>
+        <p>Json object must be wrapped by type. $id is optional, as well as empty string will be treated as nothing like null. If $id is duplicated, the operation is cancelled and return 409 Conflict. You can construct any data form in model, but we recommend less than 2 depths. For example, <code>"urls": [ { "host": "..." } ]</code> is still okay and it's all. As the keyword 'some' is reserved, you can't use 'some' as $id.</p>
         <p>
           <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
@@ -234,7 +236,7 @@
         <br />
         <h4>Update a model</h4>
         <p>type: String, no: Number </p>
-        <p>Json object must be wrapped by type and contain $id and $no. This operation doesn't change $no and will renew $updatedAt. 200 Ok will be returned whether it has been changed or not.</p>
+        <p>Json object must be wrapped by type and contain $id and $no. This operation doesn't change $no and will renew $updatedAt. 200 Ok will be returned even request doesn't have any changes.</p>
         <p>
           <span class="label label-inverse">200</span> Ok &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
@@ -248,7 +250,7 @@
         <br />
         <h4>Delete a model</h4>
         <p>type: String, no: Number </p>
-        <p>This operation will also remove all of any(subject, object) related status of the model. 204 No Content will be returned if the model to be deleted isn't exist; whatever deletion is done anyway.</p>
+        <p>This operation will also remove all of any(subject, object) related status of the model. 204 No Content will be returned if the model to be deleted doesn't exist; whatever deletion is done anyway.</p>
         <p>
           <span class="label label-inverse">203</span> Accepted &nbsp;&nbsp;
           <span class="label label-inverse">204</span> No Content &nbsp;&nbsp;
@@ -314,7 +316,7 @@
         <h1 class="bold">Status</h1>
         <h3>This is subject + verb + object</h3>
         <p>
-          Every status has three parts: subject model, verb string and object model. This is opt for store and express relationship between two models as simple as you can. Let's see examples
+          Every status has three parts: subject model, verb string and object model. This is opt for store and express relationship between two models as simple as you can. Let's see examples:
           <ul>
             <li>User reads Post</li>
             <li>User views Page</li>
@@ -402,7 +404,7 @@ GET  /user/james/read/some/post
         <br />
         <br />
         <br />
-        <p>Each status are wrapped into Json Array. This operation is designed for searching that usually results 0 item or many, so it always returns 200 Ok. Of course, you're able to check the length of array to determine a search result is empty or not. 404 Not Found will be returned if subject or object model isn't exist.</p>
+        <p>Each status are wrapped into Json Array. This operation is designed for searching that usually results 0 item or many, so it always returns 200 Ok. Of course, you're able to check the length of array to determine a search result is empty or not. 404 Not Found will be returned if subject or object model doesn't exist.</p>
         <br />
         <br />
         <br />
@@ -423,7 +425,7 @@ GET  /user/james/read/some/post
         <h4>COMBINATIONS</h4>
         <div style="padding-left:30px;">
           <h4>Search all status by subject $no, verb and object type.</h4>
-          <p>'some' isn't such a type. It means just something unknown. You better understand that you're looking for some user, music, or post. The only purpose of a keyword 'some' is to solve conflict with $id string.</p>
+          <p>'some' isn't such a type. It means just something unknown. You better understand that you're looking for some user, some music, or some post. The only purpose of a keyword 'some' is to solve conflict with $id string.</p>
           <p>subjectNo: Number, verb: String, objectType: String</p>
           <p>
             <span class="label label-inverse">200</span> Ok&nbsp;&nbsp;
@@ -468,7 +470,7 @@ GET  /user/james/read/some/post
 
         <h4>Add new status.</h4>
         <p>subjectType: String, subject: String | Number, verb: String, objectType: String, object: String | Number</p>
-        <p>$id or $no both can be placed in subject and/or object field. 422 Unprocessable Entity will be returned if subject or object model isn't exists.</p>
+        <p>$id or $no both can be placed in subject and/or object field. 422 Unprocessable Entity will be returned if subject or object model doesn't exist.</p>
         <p>
           <span class="label label-inverse">201</span> Created &nbsp;&nbsp;
           <span class="label label-inverse">400</span> Invalid Json &nbsp;&nbsp;
@@ -502,7 +504,7 @@ GET  /user/james/read/some/post
 
         <h4>Delete a status</h4>
         <p>statusNo: Number</p>
-        <p>This operation is for undo when some user pressed a button by mistake so wants to rollback in a few seconds. Implementation of 'unlike' action for 'like'd status should not use this operation. We recommend you to simply add new status with data <code>{ value: false }</code>. 204 No Content will be returned if the edge to be deleted isn't exist; whatever deletion is done anyway.</p>
+        <p>This operation is for undo when some user pressed a button by mistake so wants to rollback in a few seconds. Implementation of 'unlike' action for 'like'd status should not use this operation. We recommend you to simply add new status with data <code>{ value: false }</code>. 204 No Content will be returned if the edge to be deleted doesn't exist; whatever deletion is done anyway.</p>
         <p>
           <span class="label label-inverse">203</span> Accepted &nbsp;&nbsp;
           <span class="label label-inverse">204</span> No Content &nbsp;&nbsp;
@@ -766,26 +768,80 @@ mintpresso.get '/user/support@@mintpresso.com', (data, status) ->
 </code></pre>
       </div>
     </div>
-    
+
+    <hr />
+    <div id="_order" class="row">
+      <div class="span6">
+        <h3>Order</h3>
+        <p>
+          In Mintpresso, we called whole data mining process as two steps: Order and Pick up. It's a primitive concept of big or small data processing, you'll be love it.
+        </p>
+        <h4>Basic Concept</h4>
+        <p>
+          You can compose any data you sent to mintpresso at anytime. See presets:
+          <ul>
+            <li>Counts all models of certain type. (number of users)</li>
+            <li>Counts all models having json value. (number of active users)</li>
+            <li>Counts all status of certain verb. (listen counts)</li>
+            <li>Counts all status having json value. (number of mobile users)</li>
+            <li>Filters all models by condition. (mark trending posts)</li>
+            <li>Suggests items to a user.</li>
+            <li>Recommends a user to a user.</li>
+          </uL>
+        </p>
+        <p>
+          But all of those plans don't have an actual value change to your data. Because that's a job for pick up does instead. We need to split it up as the following reasons: as many as a number of data processing growing, too many url and sub-scheme(key, column name) for saving temporary values float on new problem and increase complexity. In Mintpresso, one data results can serve one or more ways, and also can affect to other data processing like eco-system. You can export the results by publishing static json url, adding json value to model, adding new model, adding new status and etc by clicking 'New Pickup' in Pages. That's why one data result can affect multiple data.
+          <blockquote>
+            All model and status is working on publish/subscribe model, its message-driven way has benefits on optimization.
+          </blockquote>
+        </p>
+        <h4>Place new order</h4>
+        <p>
+          This section is under review.
+        </p>
+      </div>
+      <div class="span6">
+      </div>
+    </div>
+
+    <hr />
+    <div id="_pickup" class="row">
+      <div class="span6">
+        <h3>Pickup Table</h3>
+        <p>
+          This section is under review.
+        </p>
+        <h4>Basic Concept</h4>
+        <p>
+          This section is under review.
+        </p>
+        <h4>Add new pickup</h4>
+        <p>
+          This section is under review.
+        </p>
+      </div>
+      <div class="span6">
+      </div>
+    </div>
     <hr />
     <div id="_use_cases" class="row">
       <div class="span6">
         <h3>Use Cases</h3>
         <h4>Counting active users</h4>
         <p>
-          This secion is under review.
+          This section is under review.
         </p>
         <h4>Using statistic result directly</h4>
         <p>
-          This secion is under review.
+          This section is under review.
         </p>
         <h4>Item recommendation (suggests attractive products)</h4>
         <p>
-          This secion is under review.
+          This section is under review.
         </p>
         <h4>User recommendation (suggests mutual friends)</h4>
         <p>
-          This secion is under review.
+          This section is under review.
         </p>
         <h4></h4>
       </div>

@@ -305,6 +305,16 @@ footer {
     top: 0px; left: 0px;
     padding-top: 100px;
     z-index: @zindexFixedNavbar;
+    span.badge {
+      float: right;
+      position: relative;
+      margin-bottom: -25px;
+      margin-right: 10px;
+      background-color: @alizarin;
+      padding: 3px 7px;
+      .border-radius(9999px);
+    }
+
     ul {
       padding: 0; margin: 0;
       li {
@@ -896,6 +906,11 @@ button {
     padding-top: 70px;
   }
 }
+.toc {
+  div.navbar-inner {
+    .border-radius(0px);
+  }
+}
 
 #features {
   hr.featurette-divider {
@@ -916,6 +931,30 @@ button {
 }
 #plans {
   .typo-capital();
+  color: mix(@wet-asphalt, #f1f4f7, 80%);
+}
+#pricing {
+  padding: 20px 0;
+  div.row {
+    &.header {
+      h6 {
+        background-color: lighten(@wet-asphalt, 30%);
+        color: #fff;
+        padding: 3px 0;
+        margin: 0 20px 10px 20px;
+        .border-radius(3px);
+      }
+    }
+    div:nth-child(1){
+      color: mix(@wet-asphalt, #f1f4f7, 65%);
+    }
+    div:nth-child(2){
+      color: lighten(@wet-asphalt, 30%);
+    }
+    div:nth-child(3){
+      color: lighten(@wet-asphalt, 30%);
+    }
+  }
 }
 
 /* CUSTOMIZE THE NAVBAR
