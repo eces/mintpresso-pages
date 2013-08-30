@@ -117,6 +117,7 @@ object Application extends Controller with Secured {
       kv += (("name" -> user.name))
       kv += (("no" -> user.no.toString))
       kv += (("url" -> request.session.get("url").getOrElse("")))
+      kv += (("server" -> Play.configuration.getString("mintpresso.server").getOrElse("http://localhost:15200") ))
     }
     Ok( views.html.javascriptValues(kv) ).as("text/javascript")
   }

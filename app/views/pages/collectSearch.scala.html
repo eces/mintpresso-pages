@@ -1,5 +1,40 @@
-@()(implicit request: RequestHeader, flash: Flash)
-<div class="container">
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
+<div class="container" id="search" data-bind="with: $root.search">
+  <p class="pull-right" id="secretKey">@secretKey</p>
   <h1>SEARCH</h1>
-  <p>Not available currently</p>
+  <form data-bind="submit: query">
+    <div class="input-append">
+      <i class="icon-search"></i>
+      <input name="q" type="text" data-bind="value: queries" class="input-block-level" />
+      <button type="submit" class="btn" type="button">Search</button>
+      <button class="btn" type="button" data-bind="click: refresh"><i class="icon-refresh"></i> Refresh</button>
+      <button class="btn" type="button" data-bind="click: revert"><i class="icon-reply"></i> Revert</button>
+    </div>
+  </form>
+  <h5><span data-bind="text: itemString">0 item</span> found in <span data-bind="text: responseTime">0</span>ms.</h5>
+  <table class="table" data-bind="template: { name: template(), data: data, as: 'items', if: data() }"></table>
+  <script type="text/html" id="model-template">
+    <thead>
+      <tr>
+        <td>$no</td>
+        <td>type</td>
+        <td>$id</td>
+        <td>json</td>
+        <td>created at</td>
+        <td>updated at</td>
+        <td>referenced at</td>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: items">
+      <tr>
+        <td><span data-bind="text: $no"></span></td>
+        <td><span data-bind="text: $type"></span></td>
+        <td><span data-bind="text: $id"></span></td>
+        <td data-bind="foreach: Object.keys($data)"> <span data-bind="text: $data, visible: !$data.startsWith('$')" class="label label-inverse"></span> </td>
+        <td> - </td>
+        <td> - </td>
+        <td> - </td>
+      </tr>
+    </tbody>
+  </script>
 </div>

@@ -1486,6 +1486,7 @@ select:focus:invalid:focus {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  padding: 8px 18px;
 }
 .input-append .active,
 .input-prepend .active {
@@ -1524,6 +1525,7 @@ select:focus:invalid:focus {
 .input-append .add-on:last-child,
 .input-append .btn:last-child,
 .input-append .btn-group:last-child > .dropdown-toggle {
+  padding-right: 22px !important;
   -webkit-border-radius: 0 9999px 9999px 0;
   -moz-border-radius: 0 9999px 9999px 0;
   border-radius: 0 9999px 9999px 0;

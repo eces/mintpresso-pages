@@ -574,6 +574,17 @@ footer a {
 #panel footer {
   display: none;
 }
+#search form i.icon-search {
+  position: absolute;
+  z-index: 1030;
+  font-size: 12pt;
+  opacity: 0.3;
+  margin: 10px 12px;
+}
+#search form div.input-append input[name=q] {
+  padding-left: 35px;
+  width: 60%;
+}
 #document {
   color: #333;
   background-color: #fff;

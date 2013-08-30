@@ -202,7 +202,19 @@ object Pages extends Controller with Secured {
     }
   }
   def collect(url: String, path: String) = SignedUrl(url) { implicit request => user =>
-    Ok(views.html.pages.collect())    
+    Async {
+      Mintpresso(s"/user/${user.no}/issue/key").get map { r1 =>
+        if(r1.status == 200){
+          val keys = (r1.json \\ "$object")
+          keys.find( (a: JsValue) => (a \ "$id").as[String].startsWith("secret__") ) match {
+            case Some(key) => Ok(views.html.pages.collect((key \ "$id").as[String]))
+            case None => Ok(views.html.pages.collect(""))
+          }
+        }else{
+          Ok(views.html.pages.collect(""))
+        }
+      }
+    }
   }
   def collectSearch(url: String, path: String) = JsonAction(url) { implicit request => user =>
     Ok(Json.obj())

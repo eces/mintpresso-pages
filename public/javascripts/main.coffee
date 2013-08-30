@@ -111,8 +111,6 @@ jQuery ->
           email: self.email
           password: self.password
         success: (d, s, x) ->
-          console.log(self.email)
-          console.log(self.password)
           if x.status is 202
             location.href = _.Pages.account(d, "").url
           else if x.status is 201
@@ -139,8 +137,138 @@ jQuery ->
       false
 
     self.search =
-      data: ko.observableArray()
+      data: ko.observable()
+      dataType: ko.observable('')
+      responseTime: ko.observable('0')
+      itemString: ko.observable('0 item')
+      apikey: ko.observable('')
+      queries: ko.observable('')
+      secretKey: ''
+      template: ->
+        if self.search.dataType() is 'model'
+          'model-template'
+        else if self.search.dataType() is 'status'
+          'status-template'
+        # if data.type is 'model'
+        #   if data.length is 0 or 1
+        #     'model-template'
+        #   else
+        #     'models-template'
+        # else if data.type is 'model'
+        #   if data.length is 0 or 1
+        #     'status-template'
+        #   else
+        #     'status-template'
+        else
+          ''
+      refresh: ->
+        self.search.query self.search.queries()
+      revert: ->
+        self.search.queries ''
+        self.search.data.removeAll()
+      afterRender: ->
+        self.search.secretKey = $('#secretKey').html()
+        if self.search.secretKey.length is 0
+          Messenger().post { message: _ 'secret.key.empty', type: 'error' }
+        $('input[name=q]').focus()
+          
 
+    self.search.query = ->
+      parts = []
+      if self.search.queries().length
+        parts = self.search.queries().split(' ')
+      
+      switch parts.length
+        when 0
+          Messenger().post { message: _ 'query.empty', type: 'error', showCloseButton: true }
+        when 1
+          # Messenger().post { message: _ 'query.empty.2', type: 'error', showCloseButton: true }
+          self.search.queries( parts[0] + ' {}')
+          self.search.query()
+        when 2
+          if Number(parts[0]).toString() isnt 'NaN'
+            Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
+            return false
+          
+          json = null
+          try
+            temp = JSON.parse(parts[1])
+            if toString.call(json) is '[object Object]'
+              json = temp
+          catch e
+            # slient
+
+          _.responseTime = Date.now()
+          self.search.data []
+          self.search.dataType 'model'
+
+          if json is null
+            url = _.server + "/#{parts[0]}/#{parts[1]}?apikey=#{self.search.secretKey}"
+          else
+            url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
+
+          $.ajax {
+            url: url
+            type: 'GET'
+            async: true
+            cache: false
+            crossDomain: true
+            dataType: 'jsonp'
+            jsonpCallback: '_' + Date.now(),
+            success: (d, s, x) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              if x.status is 200 and d.status isnt 404
+                self.search.itemString '1 item'
+                t = Object.keys(d)[0]
+                d[t].$type = t
+                self.search.data [d[t]]
+              else
+                if d.status isnt undefined
+                  self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
+                else
+                  self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            error: (x, s, r) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            complete: ->
+              $('input[name=q]').focus()
+          }
+
+        when 3
+          Messenger().post { message: _ 'query.invalid.short', type: 'error' }
+        when 4
+          Messenger().post { message: _ 'query.invalid.short', type: 'error' }
+        when 5
+          if Number(parts[0]) isnt NaN
+            Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
+            return false
+          # else
+          #   sT = parts[0]
+          # if Number(parts[1]) is NaN
+          #   sId = parts[1]
+          # else
+          #   sNo = parts[1]    
+
+          if Number(parts[2]) isnt NaN
+            Messenger().post { message: _ 'query.v.invalid', type: 'error' }
+            return false
+          # else
+          #   v = parts[2]
+
+          if Number(parts[3]) isnt NaN
+            Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
+            return false
+          # else
+          #   oT = parts[3]
+          # if Number(parts[4]) is NaN
+          #   oId = parts[4]
+          # else
+          #   oNo = parts[4]    
+
+        else
+          Messenger().post { message: _ 'query.invalid.long', type: 'error' }
+
+      false
     self.apiKey = 
       data: ko.observableArray()
       create: ->
@@ -196,7 +324,6 @@ jQuery ->
                       location.reload()
               }
           error: (x, s, r) ->
-            console.log 'e'
             msg = Messenger().post {
               message: r
               type: 'error'
@@ -215,7 +342,6 @@ jQuery ->
         if key.$no() > 0
           _.Pages.accountApiKeyDelete(_.url, key.$no()).ajax
             success: (d, s, x) ->
-              console.log d,s,x
               if x.status isnt 201
                 Messenger().post {
                   message: _ d

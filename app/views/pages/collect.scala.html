@@ -1,4 +1,4 @@
-@()(implicit request: RequestHeader, flash: Flash)
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
 
 @single(Messages("title.collect"))("white") {
   <meta name="panel" content="data">
@@ -23,11 +23,11 @@
     </div>
     <div id="content" data-bind="">
       <div class="condensed" data-bind="visible: page() == ''"></div>
-      <div class="condensed" data-bind="visible: page() == 'search', template: { name: 'search-template', data: search.data(), if: search.data() } "></div>
+      <div class="wide" data-bind="visible: page() == 'search', template: { name: 'search-template', data: search.data(), if: search.data(), afterRender: search.afterRender } "></div>
       <div class="condensed" data-bind="visible: page() == 'import', template: { name: 'import-template', afterRender: prepareComponents } "></div>
       <div class="condensed" data-bind="visible: page() == 'export', template: { name: 'export-template' } "></div>
     </div>
-    <script type="text/html" id="search-template">@collectSearch()</script>
+    <script type="text/html" id="search-template">@collectSearch(secretKey)</script>
     <script type="text/html" id="import-template">@collectImport()</script>
     <script type="text/html" id="export-template">@collectExport()</script>
   </div>

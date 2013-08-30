@@ -141,8 +141,6 @@ Jinhyuk Lee at mintpresso.com
             password: self.password
           },
           success: function(d, s, x) {
-            console.log(self.email);
-            console.log(self.password);
             if (x.status === 202) {
               return location.href = _.Pages.account(d, "").url;
             } else if (x.status === 201) {
@@ -173,7 +171,167 @@ Jinhyuk Lee at mintpresso.com
         return false;
       };
       self.search = {
-        data: ko.observableArray()
+        data: ko.observable(),
+        dataType: ko.observable(''),
+        responseTime: ko.observable('0'),
+        itemString: ko.observable('0 item'),
+        apikey: ko.observable(''),
+        queries: ko.observable(''),
+        secretKey: '',
+        template: function() {
+          if (self.search.dataType() === 'model') {
+            return 'model-template';
+          } else if (self.search.dataType() === 'status') {
+            return 'status-template';
+          } else {
+            return '';
+          }
+        },
+        refresh: function() {
+          return self.search.query(self.search.queries());
+        },
+        revert: function() {
+          self.search.queries('');
+          return self.search.data.removeAll();
+        },
+        afterRender: function() {
+          self.search.secretKey = $('#secretKey').html();
+          if (self.search.secretKey.length === 0) {
+            Messenger().post({
+              message: _('secret.key.empty', {
+                type: 'error'
+              })
+            });
+          }
+          return $('input[name=q]').focus();
+        }
+      };
+      self.search.query = function() {
+        var e, json, parts, temp, url;
+        parts = [];
+        if (self.search.queries().length) {
+          parts = self.search.queries().split(' ');
+        }
+        switch (parts.length) {
+          case 0:
+            Messenger().post({
+              message: _('query.empty', {
+                type: 'error',
+                showCloseButton: true
+              })
+            });
+            break;
+          case 1:
+            self.search.queries(parts[0] + ' {}');
+            self.search.query();
+            break;
+          case 2:
+            if (Number(parts[0]).toString() !== 'NaN') {
+              Messenger().post({
+                message: _('query.sType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            json = null;
+            try {
+              temp = JSON.parse(parts[1]);
+              if (toString.call(json) === '[object Object]') {
+                json = temp;
+              }
+            } catch (_error) {
+              e = _error;
+            }
+            _.responseTime = Date.now();
+            self.search.data([]);
+            self.search.dataType('model');
+            if (json === null) {
+              url = _.server + ("/" + parts[0] + "/" + parts[1] + "?apikey=" + self.search.secretKey);
+            } else {
+              url = _.server + ("/" + parts[0] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))));
+            }
+            $.ajax({
+              url: url,
+              type: 'GET',
+              async: true,
+              cache: false,
+              crossDomain: true,
+              dataType: 'jsonp',
+              jsonpCallback: '_' + Date.now(),
+              success: function(d, s, x) {
+                var t;
+                self.search.responseTime(Date.now() - _.responseTime);
+                if (x.status === 200 && d.status !== 404) {
+                  self.search.itemString('1 item');
+                  t = Object.keys(d)[0];
+                  d[t].$type = t;
+                  return self.search.data([d[t]]);
+                } else {
+                  if (d.status !== void 0) {
+                    return self.search.itemString("(" + (_('response.' + d.status)) + ") - 0 item");
+                  } else {
+                    return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+                  }
+                }
+              },
+              error: function(x, s, r) {
+                self.search.responseTime(Date.now() - _.responseTime);
+                return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+              },
+              complete: function() {
+                return $('input[name=q]').focus();
+              }
+            });
+            break;
+          case 3:
+            Messenger().post({
+              message: _('query.invalid.short', {
+                type: 'error'
+              })
+            });
+            break;
+          case 4:
+            Messenger().post({
+              message: _('query.invalid.short', {
+                type: 'error'
+              })
+            });
+            break;
+          case 5:
+            if (Number(parts[0]) !== NaN) {
+              Messenger().post({
+                message: _('query.sType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            if (Number(parts[2]) !== NaN) {
+              Messenger().post({
+                message: _('query.v.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            if (Number(parts[3]) !== NaN) {
+              Messenger().post({
+                message: _('query.oType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            break;
+          default:
+            Messenger().post({
+              message: _('query.invalid.long', {
+                type: 'error'
+              })
+            });
+        }
+        return false;
       };
       self.apiKey = {
         data: ko.observableArray(),
@@ -259,7 +417,6 @@ Jinhyuk Lee at mintpresso.com
             },
             error: function(x, s, r) {
               var msg;
-              console.log('e');
               return msg = Messenger().post({
                 message: r,
                 type: 'error',
@@ -284,7 +441,6 @@ Jinhyuk Lee at mintpresso.com
           if (key.$no() > 0) {
             return _.Pages.accountApiKeyDelete(_.url, key.$no()).ajax({
               success: function(d, s, x) {
-                console.log(d, s, x);
                 if (x.status !== 201) {
                   return Messenger().post({
                     message: _(d),

@@ -29,6 +29,8 @@ form.empty=Please fill the form
 form.empty.email=Please type your email address
 form.empty.invalid=Form is invalid or empty
 
+query.empty=Please type query string.
+
 user.invalid.email=Sorry, email not found
 user.invalid.password=Please check your password
 
@@ -64,6 +66,9 @@ manage_pickup=allow to start, pause, configure, and read results from pickups.
 
 url.invalid=Invalid URL forms.
 host.unavailable=Failed to reach your server and hosts, not saved.
+
+response.200=200 Ok
+response.404=404 Not Found
 
 error.400=Bad Request
 error.404=Page Not Found
