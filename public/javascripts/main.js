@@ -203,7 +203,8 @@ Jinhyuk Lee at mintpresso.com
               })
             });
           }
-          return $('input[name=q]').focus();
+          $('input[name=q]').focus();
+          return self.prepareComponents();
         }
       };
       self.search.query = function() {
@@ -285,10 +286,73 @@ Jinhyuk Lee at mintpresso.com
             });
             break;
           case 3:
-            Messenger().post({
-              message: _('query.invalid.short', {
-                type: 'error'
-              })
+            if (!isNaN(Number(parts[0]))) {
+              Messenger().post({
+                message: _('query.sType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            if (!isNaN(Number(parts[1]))) {
+              Messenger().post({
+                message: _('query.v.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            if (!isNaN(Number(parts[2]))) {
+              Messenger().post({
+                message: _('query.oType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            }
+            _.responseTime = Date.now();
+            self.search.data([]);
+            self.search.dataType('status');
+            url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "?apikey=" + self.search.secretKey);
+            $.ajax({
+              url: url,
+              type: 'GET',
+              async: true,
+              cache: false,
+              crossDomain: true,
+              dataType: 'jsonp',
+              jsonpCallback: '_' + Date.now(),
+              success: function(d, s, x) {
+                var key, len;
+                self.search.responseTime(Date.now() - _.responseTime);
+                if (x.status === 200) {
+                  console.log(d, s);
+                  len = d.length;
+                  if (len > 1) {
+                    self.search.itemString("" + len + " items");
+                  } else {
+                    self.search.itemString("" + len + " item");
+                  }
+                  for (key in d) {
+                    d[key].$subject.$type = parts[0];
+                    d[key].$object.$type = parts[2];
+                  }
+                  return self.search.data(d);
+                } else {
+                  if (d.status !== void 0) {
+                    return self.search.itemString("(" + (_('response.' + d.status)) + ") - 0 item");
+                  } else {
+                    return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+                  }
+                }
+              },
+              error: function(x, s, r) {
+                self.search.responseTime(Date.now() - _.responseTime);
+                return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+              },
+              complete: function() {
+                return $('input[name=q]').focus();
+              }
             });
             break;
           case 4:
@@ -323,6 +387,33 @@ Jinhyuk Lee at mintpresso.com
               });
               return false;
             }
+            _.responseTime = Date.now();
+            self.search.data([]);
+            self.search.dataType('status');
+            url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "/" + parts[4] + "?apikey=" + self.search.secretKey);
+            $.ajax({
+              url: url,
+              type: 'GET',
+              async: true,
+              cache: false,
+              crossDomain: true,
+              dataType: 'jsonp',
+              jsonpCallback: '_' + Date.now(),
+              success: function(d, s, x) {
+                self.search.responseTime(Date.now() - _.responseTime);
+                if (x.status === 200) {
+                  return console.log(d, s);
+                } else {
+                  return console.log(d, s);
+                }
+              },
+              error: function(x, s, r) {
+                return console.log(d, s);
+              },
+              complete: function() {
+                return $('input[name=q]').focus();
+              }
+            });
             break;
           default:
             Messenger().post({

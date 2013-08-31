@@ -12,7 +12,7 @@
     </div>
   </form>
   <h5><span data-bind="text: itemString">0 item</span> found in <span data-bind="text: responseTime">0</span>ms.</h5>
-  <table class="table" data-bind="template: { name: template(), data: data, as: 'items', if: data() }"></table>
+  <table class="table" data-bind="template: { name: template(), data: data, as: 'items', if: data(), afterRender: $root.search.afterRender }"></table>
   <script type="text/html" id="model-template">
     <thead>
       <tr>
@@ -31,9 +31,33 @@
         <td><span data-bind="text: $type"></span></td>
         <td><span data-bind="text: $id"></span></td>
         <td data-bind="foreach: Object.keys($data)"> <span data-bind="text: $data, visible: !$data.startsWith('$')" class="label label-inverse"></span> </td>
-        <td> - </td>
-        <td> - </td>
-        <td> - </td>
+        <td><time ago data-bind="text: $createdAt"></time></td>
+        <td><time ago data-bind="text: $updatedAt"></time></td>
+        <td><time ago data-bind="text: $referencedAt"></time></td>
+      </tr>
+    </tbody>
+  </script>
+  <script type="text/html" id="status-template">
+    <thead>
+      <tr>
+        <td>$no</td>
+        <td>type</td>
+        <td>$id</td>
+        <td>json</td>
+        <td>created at</td>
+        <td>updated at</td>
+        <td>referenced at</td>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: items">
+      <tr>
+        <td><span data-bind="text: $no"></span></td>
+        <td><span data-bind="text: $type"></span></td>
+        <td><span data-bind="text: $id"></span></td>
+        <td data-bind="foreach: Object.keys($data)"> <span data-bind="text: $data, visible: !$data.startsWith('$')" class="label label-inverse"></span> </td>
+        <td><time ago data-bind="text: $createdAt"></time></td>
+        <td><time ago data-bind="text: $updatedAt"></time></td>
+        <td><time ago data-bind="text: $referencedAt"></time></td>
       </tr>
     </tbody>
   </script>

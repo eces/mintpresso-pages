@@ -171,6 +171,7 @@ jQuery ->
         if self.search.secretKey.length is 0
           Messenger().post { message: _ 'secret.key.empty', type: 'error' }
         $('input[name=q]').focus()
+        self.prepareComponents()
           
 
     self.search.query = ->
@@ -235,7 +236,56 @@ jQuery ->
           }
 
         when 3
-          Messenger().post { message: _ 'query.invalid.short', type: 'error' }
+          # Messenger().post { message: _ 'query.invalid.short', type: 'error' }
+          if not isNaN Number parts[0]
+            Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
+            return false
+          if not isNaN Number parts[1]
+            Messenger().post { message: _ 'query.v.invalid', type: 'error' }
+            return false
+          if not isNaN Number parts[2]
+            Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
+            return false
+
+          _.responseTime = Date.now()
+          self.search.data []
+          self.search.dataType 'status'
+
+          url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}?apikey=#{self.search.secretKey}"
+
+          $.ajax {
+            url: url
+            type: 'GET'
+            async: true
+            cache: false
+            crossDomain: true
+            dataType: 'jsonp'
+            jsonpCallback: '_' + Date.now(),
+            success: (d, s, x) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              if x.status is 200
+                console.log d, s
+                len = d.length
+                if len > 1
+                  self.search.itemString "#{len} items"
+                else
+                  self.search.itemString "#{len} item"
+                for key of d
+                  d[key].$subject.$type = parts[0]
+                  d[key].$object.$type = parts[2]
+                self.search.data d
+              else
+                if d.status isnt undefined
+                  self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
+                else
+                  self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            error: (x, s, r) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            complete: ->
+              $('input[name=q]').focus()
+          }
+
         when 4
           Messenger().post { message: _ 'query.invalid.short', type: 'error' }
         when 5
@@ -244,10 +294,10 @@ jQuery ->
             return false
           # else
           #   sT = parts[0]
-          # if Number(parts[1]) is NaN
-          #   sId = parts[1]
-          # else
-          #   sNo = parts[1]    
+          #   if Number(parts[1]) is NaN
+          #     sId = parts[1]
+          #   else
+          #     sNo = parts[1]
 
           if Number(parts[2]) isnt NaN
             Messenger().post { message: _ 'query.v.invalid', type: 'error' }
@@ -264,6 +314,45 @@ jQuery ->
           #   oId = parts[4]
           # else
           #   oNo = parts[4]    
+
+          _.responseTime = Date.now()
+          self.search.data []
+          self.search.dataType 'status'
+
+          url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}/#{parts[4]}?apikey=#{self.search.secretKey}"
+          # if json is null
+          # else
+          #   url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
+
+          $.ajax {
+            url: url
+            type: 'GET'
+            async: true
+            cache: false
+            crossDomain: true
+            dataType: 'jsonp'
+            jsonpCallback: '_' + Date.now(),
+            success: (d, s, x) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              if x.status is 200
+                console.log d, s
+                # self.search.itemString '1 item'
+                # t = Object.keys(d)[0]
+                # d[t].$type = t
+                # self.search.data [d[t]]
+              else
+                console.log d, s
+                # if d.status isnt undefined
+                #   self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
+                # else
+                #   self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            error: (x, s, r) ->
+              console.log d, s
+              # self.search.responseTime( Date.now() - _.responseTime )
+              # self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            complete: ->
+              $('input[name=q]').focus()
+          }
 
         else
           Messenger().post { message: _ 'query.invalid.long', type: 'error' }
