@@ -413,7 +413,9 @@ Jinhyuk Lee at mintpresso.com
                   }
                   for (key in d) {
                     d[key].$subject.$type = parts[0];
+                    d[key].$subject.$expanded = ko.observable(false);
                     d[key].$object.$type = parts[2];
+                    d[key].$object.$expanded = ko.observable(false);
                   }
                   return self.search.data(d);
                 } else {
