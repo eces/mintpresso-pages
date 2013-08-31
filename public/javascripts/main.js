@@ -204,7 +204,8 @@ Jinhyuk Lee at mintpresso.com
             });
           }
           $('input[name=q]').focus();
-          return self.prepareComponents();
+          self.prepareComponents();
+          return Prism.highlightElement($('#search table pre'), true);
         }
       };
       self.search.query = function() {
@@ -326,7 +327,6 @@ Jinhyuk Lee at mintpresso.com
                 var key, len;
                 self.search.responseTime(Date.now() - _.responseTime);
                 if (x.status === 200) {
-                  console.log(d, s);
                   len = d.length;
                   if (len > 1) {
                     self.search.itemString("" + len + " items");
@@ -335,7 +335,9 @@ Jinhyuk Lee at mintpresso.com
                   }
                   for (key in d) {
                     d[key].$subject.$type = parts[0];
+                    d[key].$subject.$expanded = ko.observable(false);
                     d[key].$object.$type = parts[2];
+                    d[key].$object.$expanded = ko.observable(false);
                   }
                   return self.search.data(d);
                 } else {
@@ -363,7 +365,7 @@ Jinhyuk Lee at mintpresso.com
             });
             break;
           case 5:
-            if (Number(parts[0]) !== NaN) {
+            if (!isNaN(Number(parts[0]))) {
               Messenger().post({
                 message: _('query.sType.invalid', {
                   type: 'error'
@@ -371,7 +373,7 @@ Jinhyuk Lee at mintpresso.com
               });
               return false;
             }
-            if (Number(parts[2]) !== NaN) {
+            if (!isNaN(Number(parts[2]))) {
               Messenger().post({
                 message: _('query.v.invalid', {
                   type: 'error'
@@ -379,7 +381,7 @@ Jinhyuk Lee at mintpresso.com
               });
               return false;
             }
-            if (Number(parts[3]) !== NaN) {
+            if (!isNaN(Number(parts[3]))) {
               Messenger().post({
                 message: _('query.oType.invalid', {
                   type: 'error'
@@ -400,15 +402,31 @@ Jinhyuk Lee at mintpresso.com
               dataType: 'jsonp',
               jsonpCallback: '_' + Date.now(),
               success: function(d, s, x) {
+                var key, len;
                 self.search.responseTime(Date.now() - _.responseTime);
                 if (x.status === 200) {
-                  return console.log(d, s);
+                  len = d.length;
+                  if (len > 1) {
+                    self.search.itemString("" + len + " items");
+                  } else {
+                    self.search.itemString("" + len + " item");
+                  }
+                  for (key in d) {
+                    d[key].$subject.$type = parts[0];
+                    d[key].$object.$type = parts[2];
+                  }
+                  return self.search.data(d);
                 } else {
-                  return console.log(d, s);
+                  if (d.status !== void 0) {
+                    return self.search.itemString("(" + (_('response.' + d.status)) + ") - 0 item");
+                  } else {
+                    return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+                  }
                 }
               },
               error: function(x, s, r) {
-                return console.log(d, s);
+                self.search.responseTime(Date.now() - _.responseTime);
+                return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
               },
               complete: function() {
                 return $('input[name=q]').focus();

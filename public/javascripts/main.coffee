@@ -172,6 +172,7 @@ jQuery ->
           Messenger().post { message: _ 'secret.key.empty', type: 'error' }
         $('input[name=q]').focus()
         self.prepareComponents()
+        Prism.highlightElement $('#search table pre'), true
           
 
     self.search.query = ->
@@ -264,7 +265,6 @@ jQuery ->
             success: (d, s, x) ->
               self.search.responseTime( Date.now() - _.responseTime )
               if x.status is 200
-                console.log d, s
                 len = d.length
                 if len > 1
                   self.search.itemString "#{len} items"
@@ -272,7 +272,9 @@ jQuery ->
                   self.search.itemString "#{len} item"
                 for key of d
                   d[key].$subject.$type = parts[0]
+                  d[key].$subject.$expanded = ko.observable false
                   d[key].$object.$type = parts[2]
+                  d[key].$object.$expanded = ko.observable false
                 self.search.data d
               else
                 if d.status isnt undefined
@@ -289,7 +291,11 @@ jQuery ->
         when 4
           Messenger().post { message: _ 'query.invalid.short', type: 'error' }
         when 5
-          if Number(parts[0]) isnt NaN
+          # if parts[0] is 'some'
+          #   parts[0] = parts[1]
+          #   parts[1] = 'some'
+
+          if not isNaN Number parts[0]
             Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
             return false
           # else
@@ -299,13 +305,17 @@ jQuery ->
           #   else
           #     sNo = parts[1]
 
-          if Number(parts[2]) isnt NaN
+          if not isNaN Number parts[2]
             Messenger().post { message: _ 'query.v.invalid', type: 'error' }
             return false
           # else
           #   v = parts[2]
 
-          if Number(parts[3]) isnt NaN
+          # if parts[3] is 'some'
+          #   parts[3] = parts[4]
+          #   parts[4] = 'some'
+
+          if not isNaN Number parts[3]
             Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
             return false
           # else
@@ -335,21 +345,23 @@ jQuery ->
             success: (d, s, x) ->
               self.search.responseTime( Date.now() - _.responseTime )
               if x.status is 200
-                console.log d, s
-                # self.search.itemString '1 item'
-                # t = Object.keys(d)[0]
-                # d[t].$type = t
-                # self.search.data [d[t]]
+                len = d.length
+                if len > 1
+                  self.search.itemString "#{len} items"
+                else
+                  self.search.itemString "#{len} item"
+                for key of d
+                  d[key].$subject.$type = parts[0]
+                  d[key].$object.$type = parts[2]
+                self.search.data d
               else
-                console.log d, s
-                # if d.status isnt undefined
-                #   self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
-                # else
-                #   self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+                if d.status isnt undefined
+                  self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
+                else
+                  self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             error: (x, s, r) ->
-              console.log d, s
-              # self.search.responseTime( Date.now() - _.responseTime )
-              # self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+              self.search.responseTime( Date.now() - _.responseTime )
+              self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             complete: ->
               $('input[name=q]').focus()
           }
