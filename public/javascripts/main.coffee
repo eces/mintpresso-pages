@@ -300,51 +300,39 @@ jQuery ->
           }
 
         when 4
-          Messenger().post { message: _ 'query.invalid.short', type: 'error' }
-        when 5
-          # if parts[0] is 'some'
-          #   parts[0] = parts[1]
-          #   parts[1] = 'some'
-
           if not isNaN Number parts[0]
             Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
             return false
-          # else
-          #   sT = parts[0]
-          #   if Number(parts[1]) is NaN
-          #     sId = parts[1]
-          #   else
-          #     sNo = parts[1]
-
-          if not isNaN Number parts[2]
-            Messenger().post { message: _ 'query.v.invalid', type: 'error' }
-            return false
-          # else
-          #   v = parts[2]
-
-          # if parts[3] is 'some'
-          #   parts[3] = parts[4]
-          #   parts[4] = 'some'
-
-          if not isNaN Number parts[3]
-            Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
-            return false
-          # else
-          #   oT = parts[3]
-          # if Number(parts[4]) is NaN
-          #   oId = parts[4]
-          # else
-          #   oNo = parts[4]    
+          else
+            # string
+            temp = Number parts[1]
+            if not isNaN temp and isFinite temp
+              # string number
+              if not isNaN Number parts[2]
+                # string number string
+                temp = Number parts[3]
+                if not isNaN temp
+                  Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
+                  return false
+                # string number string string
+            else
+              # string string
+              if not isNaN Number parts[2]
+                Messenger().post { message: _ 'query.v.invalid', type: 'error' }
+                return false
+              else
+                # string string string
+                temp = Number parts[3]
+                if (not isNaN temp and isFinite temp) is false
+                  Messenger().post { message: _ 'query.oNo.invalid', type: 'error' }
+                  return false
+                # string string string number
 
           _.responseTime = Date.now()
           self.search.data []
           self.search.dataType 'status'
 
-          url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}/#{parts[4]}?apikey=#{self.search.secretKey}"
-          # if json is null
-          # else
-          #   url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
-
+          url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}?apikey=#{self.search.secretKey}"
           $.ajax {
             url: url
             type: 'GET'
@@ -377,6 +365,60 @@ jQuery ->
               self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             complete: ->
               $('input[name=q]').focus()
+              self.prepareComponents()
+          }
+        when 5
+          if not isNaN Number parts[0]
+            Messenger().post { message: _ 'query.sType.invalid', type: 'error' }
+            return false
+
+          if not isNaN Number parts[2]
+            Messenger().post { message: _ 'query.v.invalid', type: 'error' }
+            return false
+
+          if not isNaN Number parts[3]
+            Messenger().post { message: _ 'query.oType.invalid', type: 'error' }
+            return false
+
+          _.responseTime = Date.now()
+          self.search.data []
+          self.search.dataType 'status'
+
+          url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}/#{parts[4]}?apikey=#{self.search.secretKey}"
+          
+          $.ajax {
+            url: url
+            type: 'GET'
+            async: true
+            cache: false
+            crossDomain: true
+            dataType: 'jsonp'
+            jsonpCallback: '_' + Date.now(),
+            success: (d, s, x) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              if x.status is 200
+                len = d.length
+                if len > 1
+                  self.search.itemString "#{len} items"
+                else
+                  self.search.itemString "#{len} item"
+                for key of d
+                  d[key].$subject.$type = parts[0]
+                  d[key].$subject.$expanded = ko.observable false
+                  d[key].$object.$type = parts[2]
+                  d[key].$object.$expanded = ko.observable false
+                self.search.data d
+              else
+                if d.status isnt undefined
+                  self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
+                else
+                  self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            error: (x, s, r) ->
+              self.search.responseTime( Date.now() - _.responseTime )
+              self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
+            complete: ->
+              $('input[name=q]').focus()
+              self.prepareComponents()
           }
 
         else

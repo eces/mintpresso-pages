@@ -154,7 +154,7 @@ object Pages extends Controller with Secured {
                 val createdKey = Key(r1.json)
                 createdKey.id = label + "__" + Crypto.encryptAES(user.no + " " + createdKey.no)
                 Async {
-                  Mintpresso(s"/user/${user.no}/issue/key/${createdKey.no}").post map { r2 =>
+                  Mintpresso(s"/user/${user.no}/issue/some/key/${createdKey.no}").post map { r2 =>
                     if(r2.status == 201){
                       Async {
                         Mintpresso(s"/key/${createdKey.no}") withConnection { conn =>

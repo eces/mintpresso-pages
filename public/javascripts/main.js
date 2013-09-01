@@ -375,10 +375,93 @@ Jinhyuk Lee at mintpresso.com
             });
             break;
           case 4:
-            Messenger().post({
-              message: _('query.invalid.short', {
-                type: 'error'
-              })
+            if (!isNaN(Number(parts[0]))) {
+              Messenger().post({
+                message: _('query.sType.invalid', {
+                  type: 'error'
+                })
+              });
+              return false;
+            } else {
+              temp = Number(parts[1]);
+              if (!isNaN(temp && isFinite(temp))) {
+                if (!isNaN(Number(parts[2]))) {
+                  temp = Number(parts[3]);
+                  if (!isNaN(temp)) {
+                    Messenger().post({
+                      message: _('query.oType.invalid', {
+                        type: 'error'
+                      })
+                    });
+                    return false;
+                  }
+                }
+              } else {
+                if (!isNaN(Number(parts[2]))) {
+                  Messenger().post({
+                    message: _('query.v.invalid', {
+                      type: 'error'
+                    })
+                  });
+                  return false;
+                } else {
+                  temp = Number(parts[3]);
+                  if ((!isNaN(temp && isFinite(temp))) === false) {
+                    Messenger().post({
+                      message: _('query.oNo.invalid', {
+                        type: 'error'
+                      })
+                    });
+                    return false;
+                  }
+                }
+              }
+            }
+            _.responseTime = Date.now();
+            self.search.data([]);
+            self.search.dataType('status');
+            url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "?apikey=" + self.search.secretKey);
+            $.ajax({
+              url: url,
+              type: 'GET',
+              async: true,
+              cache: false,
+              crossDomain: true,
+              dataType: 'jsonp',
+              jsonpCallback: '_' + Date.now(),
+              success: function(d, s, x) {
+                var key, len;
+                self.search.responseTime(Date.now() - _.responseTime);
+                if (x.status === 200) {
+                  len = d.length;
+                  if (len > 1) {
+                    self.search.itemString("" + len + " items");
+                  } else {
+                    self.search.itemString("" + len + " item");
+                  }
+                  for (key in d) {
+                    d[key].$subject.$type = parts[0];
+                    d[key].$subject.$expanded = ko.observable(false);
+                    d[key].$object.$type = parts[2];
+                    d[key].$object.$expanded = ko.observable(false);
+                  }
+                  return self.search.data(d);
+                } else {
+                  if (d.status !== void 0) {
+                    return self.search.itemString("(" + (_('response.' + d.status)) + ") - 0 item");
+                  } else {
+                    return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+                  }
+                }
+              },
+              error: function(x, s, r) {
+                self.search.responseTime(Date.now() - _.responseTime);
+                return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
+              },
+              complete: function() {
+                $('input[name=q]').focus();
+                return self.prepareComponents();
+              }
             });
             break;
           case 5:
@@ -448,7 +531,8 @@ Jinhyuk Lee at mintpresso.com
                 return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
               },
               complete: function() {
-                return $('input[name=q]').focus();
+                $('input[name=q]').focus();
+                return self.prepareComponents();
               }
             });
             break;
