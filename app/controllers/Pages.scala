@@ -268,7 +268,15 @@ object Pages extends Controller with Secured {
   def collectExport(url: String) = SignedUrl(url) { implicit request => user =>
     Ok(Json.obj())
   }
-  def order(url: String, path: String) = TODO
+  def order(url: String, path: String) = SignedUrl(url) { implicit request => user =>
+    Ok(views.html.pages.order())    
+  }
+  def orderStatus(url: String) = SignedUrl(url) { implicit request => user =>
+    Ok(Json.obj())
+  }
+  def orderAdd(url: String) = SignedUrl(url) { implicit request => user =>
+    Ok(Json.obj())
+  }
   def pickup(url: String, path: String) = TODO
   def support(url: String, path: String) = TODO
 }

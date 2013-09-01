@@ -1,0 +1,28 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.order"))("white") {
+  <meta name="panel" content="data">
+
+  <div id="panel">
+    @menu("order")
+    <div id="submenu">
+      <ul>
+        <li data-bind="click: page.bind($data, 'status'), css: { active: page() == 'status'}">
+          <span>Status</span>
+          <p>See all your orders that is properly working or paused.</p>
+        </li>
+        <li data-bind="click: page.bind($data, 'add'), css: { active: page() == 'add'}">
+          <span>Add New Order</span>
+          <p>Place your new order with step by step ordering process.</p>
+        </li>
+      </ul>
+    </div>
+    <div id="content" data-bind="">
+      <div class="condensed" data-bind="visible: page() == ''"></div>
+      <div class="condensed" data-bind="visible: page() == 'status', template: { name: 'status-template', data: order.data(), if: order.data(), afterRender: order.afterRender } "></div>
+      <div class="condensed" data-bind="visible: page() == 'add', template: { name: 'add-template', data: order.data(), if: order.data(), afterRender: order.afterRender } "></div>
+    </div>
+    <script type="text/html" id="status-template">@orderStatus()</script>
+    <script type="text/html" id="add-template">@orderAddNew()</script>
+  </div>
+} 
