@@ -204,7 +204,6 @@ Jinhyuk Lee at mintpresso.com
             });
           }
           $('input[name=q]').focus();
-          self.prepareComponents();
           return Prism.highlightElement($('#search table pre'), true);
         }
       };
@@ -239,7 +238,7 @@ Jinhyuk Lee at mintpresso.com
             json = null;
             try {
               temp = JSON.parse(parts[1]);
-              if (toString.call(json) === '[object Object]') {
+              if (toString.call(temp) === '[object Object]') {
                 json = temp;
               }
             } catch (_error) {
@@ -249,7 +248,7 @@ Jinhyuk Lee at mintpresso.com
             self.search.data([]);
             self.search.dataType('model');
             if (json === null) {
-              url = _.server + ("/" + parts[0] + "/" + parts[1] + "?apikey=" + self.search.secretKey);
+              url = _.server + ("/" + parts[0] + "/" + parts[1] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))));
             } else {
               url = _.server + ("/" + parts[0] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))));
             }
@@ -262,13 +261,29 @@ Jinhyuk Lee at mintpresso.com
               dataType: 'jsonp',
               jsonpCallback: '_' + Date.now(),
               success: function(d, s, x) {
-                var t;
+                var key, len, res, t;
                 self.search.responseTime(Date.now() - _.responseTime);
                 if (x.status === 200 && d.status !== 404) {
-                  self.search.itemString('1 item');
-                  t = Object.keys(d)[0];
-                  d[t].$type = t;
-                  return self.search.data([d[t]]);
+                  res = toString.call(d);
+                  if (res === '[object Array]') {
+                    len = d.length;
+                    self.search.itemString("" + len + " items");
+                    for (key in d) {
+                      d[key].$type = parts[0];
+                    }
+                    return self.search.data(d);
+                  } else if (res === '[object Object]') {
+                    self.search.itemString('1 item');
+                    t = Object.keys(d)[0];
+                    d[t].$type = parts[0];
+                    return self.search.data([d[t]]);
+                  } else {
+                    return Messenger().post({
+                      message: _('query.response.invalid', {
+                        type: 'error'
+                      })
+                    });
+                  }
                 } else {
                   if (d.status !== void 0) {
                     return self.search.itemString("(" + (_('response.' + d.status)) + ") - 0 item");
@@ -282,7 +297,8 @@ Jinhyuk Lee at mintpresso.com
                 return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
               },
               complete: function() {
-                return $('input[name=q]').focus();
+                $('input[name=q]').focus();
+                return self.prepareComponents();
               }
             });
             break;
@@ -353,7 +369,8 @@ Jinhyuk Lee at mintpresso.com
                 return self.search.itemString("(" + (_('response.' + x.status)) + ") - 0 item");
               },
               complete: function() {
-                return $('input[name=q]').focus();
+                $('input[name=q]').focus();
+                return self.prepareComponents();
               }
             });
             break;
@@ -615,6 +632,7 @@ Jinhyuk Lee at mintpresso.com
         $('time').each(function(k, v) {
           var $this, m;
           $this = $(v);
+          console.log(moment.isMoment($this));
           if ($this.is('[ago]')) {
             m = moment(Number($this.html()));
             $this.html(m.fromNow());

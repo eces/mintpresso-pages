@@ -30,6 +30,10 @@ form.empty.email=Please type your email address
 form.empty.invalid=Form is invalid or empty
 
 query.empty=Please type query string.
+query.sType.invalid=Subject type should be a-z characters.
+query.oType.invalid=Object type should be a-z characters.
+query.v.invalid=Verb should be a-z characters.
+query.response.invalid=Invalid response. It has been automatically reported.
 
 user.invalid.email=Sorry, email not found
 user.invalid.password=Please check your password

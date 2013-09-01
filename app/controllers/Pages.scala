@@ -38,6 +38,10 @@ object Pages extends Controller with Secured {
                 "value" -> scopes.contains("read_model")
               ),
               Json.obj(
+                "name" -> "search_model",
+                "value" -> scopes.contains("search_model")
+              ),
+              Json.obj(
                 "name" -> "create_model",
                 "value" -> scopes.contains("create_model")
               ),
@@ -133,7 +137,6 @@ object Pages extends Controller with Secured {
         Async {
           Mintpresso(s"/key/${key.no}") withConnection { conn =>
             conn.put(key.toTypedJson) map { r1 =>
-              println(r1.body)
               if(r1.status == 201){
                 Created("apply.done")
               }else{
@@ -159,18 +162,21 @@ object Pages extends Controller with Secured {
                             if(r3.status == 201){
                               Created("apply.done")
                             }else{
-                              Ok("apply.fail 3")
+                              // error
+                              Ok("apply.fail")
                             }
                           }
                         }
                       }
                     }else{
-                      Ok("apply.fail 2")
+                      // error
+                      Ok("apply.fail")
                     }
                   }
                 }
               }else{
-                Ok("apply.fail 1")
+                // error
+                Ok("apply.fail")
               }
             }
           }
@@ -193,7 +199,7 @@ object Pages extends Controller with Secured {
   def accountApiKeyDelete(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
     Async {
       Mintpresso(s"/key/${no}").delete map { r1 =>
-        if(r1.status == 204 || r1.status == 404){
+        if(r1.status == 203 || r1.status == 204){
           Created("delete.done")
         }else{
           Ok("delete.fail")

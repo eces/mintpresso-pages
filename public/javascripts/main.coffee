@@ -171,7 +171,6 @@ jQuery ->
         if self.search.secretKey.length is 0
           Messenger().post { message: _ 'secret.key.empty', type: 'error' }
         $('input[name=q]').focus()
-        self.prepareComponents()
         Prism.highlightElement $('#search table pre'), true
           
 
@@ -195,7 +194,7 @@ jQuery ->
           json = null
           try
             temp = JSON.parse(parts[1])
-            if toString.call(json) is '[object Object]'
+            if toString.call(temp) is '[object Object]'
               json = temp
           catch e
             # slient
@@ -205,10 +204,10 @@ jQuery ->
           self.search.dataType 'model'
 
           if json is null
-            url = _.server + "/#{parts[0]}/#{parts[1]}?apikey=#{self.search.secretKey}"
+            url = _.server + "/#{parts[0]}/#{parts[1]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
           else
             url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
-
+          
           $.ajax {
             url: url
             type: 'GET'
@@ -220,10 +219,20 @@ jQuery ->
             success: (d, s, x) ->
               self.search.responseTime( Date.now() - _.responseTime )
               if x.status is 200 and d.status isnt 404
-                self.search.itemString '1 item'
-                t = Object.keys(d)[0]
-                d[t].$type = t
-                self.search.data [d[t]]
+                res = toString.call(d)
+                if res is '[object Array]'
+                  len = d.length
+                  self.search.itemString "#{len} items"
+                  for key of d
+                    d[key].$type = parts[0]
+                  self.search.data d
+                else if res is '[object Object]'
+                  self.search.itemString '1 item'
+                  t = Object.keys(d)[0]
+                  d[t].$type = parts[0]
+                  self.search.data [d[t]]
+                else
+                  Messenger().post { message: _ 'query.response.invalid', type: 'error' }
               else
                 if d.status isnt undefined
                   self.search.itemString "(#{_('response.'+d.status)}) - 0 item"
@@ -234,6 +243,7 @@ jQuery ->
               self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             complete: ->
               $('input[name=q]').focus()
+              self.prepareComponents()
           }
 
         when 3
@@ -286,6 +296,7 @@ jQuery ->
               self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             complete: ->
               $('input[name=q]').focus()
+              self.prepareComponents()
           }
 
         when 4
@@ -495,6 +506,7 @@ jQuery ->
     self.prepareComponents = ->
       $('time').each (k, v) ->
         $this = $(v)
+        console.log moment.isMoment($this)
         if $this.is '[ago]'
           m = moment( Number($this.html()) )
           $this.html m.fromNow()
