@@ -1,7 +1,55 @@
-@()(implicit request: RequestHeader, flash: Flash)
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
 <div class="container">
+  <p class="pull-right" id="secretKey">@secretKey</p>
   <h1>ADD NEW ORDER</h1>
-  <h4>Please email to us with full explanation you want to export.</h4>
-  <p>We usually received a request for data set of time period, item types, and only json. Your request will be processed in 1-3 days.</p>
-  <a href="mailto:support@@mintpresso.com" class="btn">support@@mintpresso.com</a>
+  <form class="form-horizontal" data-bind="submit: $root.orderAdd.create">
+    <div class="control-group">
+      <label class="control-label">Result type</label>
+      <div class="controls controls-list">
+        <label class="radio">
+        <input type="radio" name="resultType" value="number" data-bind="checked: resultType">
+        <h4>Basic numbers</h4>
+        Counts models or edges, calculates average or standard deviation.
+      </label>
+      <label class="radio">
+        <input type="radio" name="resultType" value="recommend" data-bind="checked: resultType">
+        <h4>Recommendation</h4>
+        Suggests preferrable candidates by defined case such as item to user, user to user.
+      </label>
+      <label class="radio">
+        <input type="radio" name="resultType" value="graph" data-bind="checked: resultType">
+        <h4>Graph manipulation</h4>
+        Merges or cleans a model or an edge automatically by defined plan. Also can used for neighborhood aggregation, weight repopulation.
+      </label>
+      </div>
+    </div>
+    <hr />
+    @*
+    <div class="control-group" data-bind="visible: resultType() == 'number'">
+      <label class="control-label">Query to find what counts on</label>
+      <div class="controls">
+        <input name="q" type="text" data-bind="value: query, valueUpdate: 'afterkeydown' " class="input-xlarge" />
+        <div data-bind="html: queryResult"></div>
+      </div>
+    </div>
+    <div class="row right">
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+    *@
+    <h4>Node or Edge</h4>
+    <hr />
+    
+    <h4>Type, Verb , Date, Json field, Conditions, is number, .. line mix filters + apply/event (pickup isn't necessary for graph manipulation)</h4>
+    <hr />
+    
+    <h4>Preferred Response Time</h4>
+    <hr />
+    
+    <h4>Title, Descrption, Note for scientist</h4>
+    <hr />
+    
+    <h4>Log threshold</h4>
+    <hr />
+
+  </form>
 </div>

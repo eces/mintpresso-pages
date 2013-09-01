@@ -269,10 +269,31 @@ object Pages extends Controller with Secured {
     Ok(Json.obj())
   }
   def order(url: String, path: String) = SignedUrl(url) { implicit request => user =>
-    Ok(views.html.pages.order())    
+    Async {
+      Mintpresso(s"/user/${user.no}/issue/key").get map { r1 =>
+        if(r1.status == 200){
+          val keys = (r1.json \\ "$object")
+          keys.find( (a: JsValue) => (a \ "$id").as[String].startsWith("secret__") ) match {
+            case Some(key) => Ok(views.html.pages.order((key \ "$id").as[String]))
+            case None => Ok(views.html.pages.order(""))
+          }
+        }else{
+          Ok(views.html.pages.order(""))
+        }
+      }
+    }
   }
   def orderStatus(url: String) = SignedUrl(url) { implicit request => user =>
-    Ok(Json.obj())
+    Async {
+      Mintpresso(s"/user/${user.no}/request/order").get map { r1 =>
+        if(r1.status == 200){
+          Ok(r1.json)
+        }else{
+          Ok(Json.arr())
+        }
+      }
+    }
+    
   }
   def orderAdd(url: String) = SignedUrl(url) { implicit request => user =>
     Ok(Json.obj())

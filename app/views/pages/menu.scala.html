@@ -7,11 +7,11 @@
     </li>
     <li data-bind="css: { active: menu() == 'collect' }">
       <span class="badge hide"></span>
-      <a href="@routes.Pages.collect(Application.getUrl, "")"><i class="icon-cloud-download"></i><br />COLLECT</a>
+      <a href="@routes.Pages.collectSearch(Application.getUrl, "")"><i class="icon-cloud-download"></i><br />COLLECT</a>
     </li>
     <li data-bind="css: { active: menu() == 'order' }">
       <span class="badge hide"></span>
-      <a href="@routes.Pages.order(Application.getUrl, "")"><i class="icon-code-fork"></i><br />ORDER</a>
+      <a href="@routes.Pages.orderStatus(Application.getUrl)"><i class="icon-code-fork"></i><br />ORDER</a>
     </li>
     <li data-bind="css: { active: menu() == 'pickup' }">
       <span class="badge hide"></span>

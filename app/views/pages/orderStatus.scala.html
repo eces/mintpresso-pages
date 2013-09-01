@@ -1,7 +1,35 @@
 @()(implicit request: RequestHeader, flash: Flash)
 <div class="container">
+  <div id="selector">
+    <a href="@routes.Pages.order(Application.getUrl, "/add")" class="btn btn-success" data-bind="click: $root.orderStatus.create">Add new order</a>
+  </div>
   <h1>STATUS</h1>
-  <h4>Please email to us with full explanation you want to export.</h4>
-  <p>We usually received a request for data set of time period, item types, and only json. Your request will be processed in 1-3 days.</p>
-  <a href="mailto:support@@mintpresso.com" class="btn">support@@mintpresso.com</a>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <td>Order #</td>
+        <td>Title</td>
+        <td>State</td>
+        <td>JSON</td>
+        <td>Created at</td>
+        <td>Updated at</td>
+        <td>Referenced at</td>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: { data: items }">
+      <tr>
+        <td><span data-bind="text: $no"></span></td>
+        <td><span data-bind="text: title"></span></td>
+        <td><span data-bind="text: state"></span></td>
+        <td><time ago data-bind="text: $createdAt"></time></td>
+        <td><time ago data-bind="text: $updatedAt"></time></td>
+        <td><time ago data-bind="text: $referencedAt"></time></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="center loading" data-bind="visible: items.length == 0">
+    <i class="icon-refresh icon-spin"></i>
+    <h2 class="bold">PLACE YOUR ORDER NOW !</h2>
+    <a href="@routes.Pages.order(Application.getUrl, "/add")" class="btn" data-bind="click: $root.orderStatus.create">Add new order</a>
+  </div>
 </div>

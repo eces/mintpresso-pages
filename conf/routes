@@ -41,10 +41,10 @@ GET     /:url/collect/import          controllers.Pages.collectImport(url: Strin
 POST    /:url/collect/import          controllers.Pages.collectImportUpload(url: String)
 GET     /:url/collect/export          controllers.Pages.collectExport(url: String)
 
+GET     /:url/order/status.json     controllers.Pages.orderStatus(url: String)
+GET     /:url/order/add.json        controllers.Pages.orderAdd(url: String)
 GET     /:url/order                 controllers.Pages.order(url: String, path="")
 GET     /:url/order*path            controllers.Pages.order(url: String, path: String)
-GET     /:url/order/status          controllers.Pages.orderStatus(url: String)
-GET     /:url/order/add             controllers.Pages.orderAdd(url: String)
 
 GET     /:url/pickup                controllers.Pages.pickup(url: String, path="")
 GET     /:url/pickup*path           controllers.Pages.pickup(url: String, path: String)

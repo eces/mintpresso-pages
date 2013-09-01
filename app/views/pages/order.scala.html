@@ -1,4 +1,4 @@
-@()(implicit request: RequestHeader, flash: Flash)
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
 
 @single(Messages("title.order"))("white") {
   <meta name="panel" content="data">
@@ -19,10 +19,10 @@
     </div>
     <div id="content" data-bind="">
       <div class="condensed" data-bind="visible: page() == ''"></div>
-      <div class="condensed" data-bind="visible: page() == 'status', template: { name: 'status-template', data: order.data(), if: order.data(), afterRender: order.afterRender } "></div>
-      <div class="condensed" data-bind="visible: page() == 'add', template: { name: 'add-template', data: order.data(), if: order.data(), afterRender: order.afterRender } "></div>
+      <div class="condensed" data-bind="visible: page() == 'status', template: { name: 'status-template', data: orderStatus.data(), as: 'items', if: orderStatus.data(), afterRender: orderStatus.afterRender } "></div>
+      <div class="condensed" data-bind="visible: page() == 'add', template: { name: 'add-template', data: orderAdd.data, afterRender: orderAdd.afterRender } "></div>
     </div>
     <script type="text/html" id="status-template">@orderStatus()</script>
-    <script type="text/html" id="add-template">@orderAddNew()</script>
+    <script type="text/html" id="add-template">@orderAddNew(secretKey)</script>
   </div>
 } 

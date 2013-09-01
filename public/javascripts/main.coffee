@@ -174,7 +174,7 @@ jQuery ->
         Prism.highlightElement $('#search table pre'), true
           
 
-    self.search.query = ->
+    self.search.query = (callback) ->
       parts = []
       if self.search.queries().length
         parts = self.search.queries().split(' ')
@@ -539,6 +539,46 @@ jQuery ->
       load: (data) ->
         ko.mapping.fromJS(data, {}, self.apiKey.data)
 
+    self.orderStatus =
+      data: ko.observable()
+      create: ->
+        console.log '>>'
+        true
+      afterRender: ->
+        self.prepareComponents()
+
+    self.orderAdd =
+      data: 
+        # resultType: ko.observable ''
+        resultType: ko.observable 'number'
+        query: ko.observable 'user issue key'
+
+      secretKey: ''
+      create: ->
+        console.log '>>'
+        false
+      afterRender: ->
+        self.orderAdd.secretKey = $('#secretKey').html()
+        self.search.secretKey = $('#secretKey').html()
+        if self.orderAdd.secretKey.length is 0
+          Messenger().post { message: _ 'secret.key.empty', type: 'error' }
+
+    self.orderAdd.data.queryResult = ko.computed ->
+      # # put queries to search form
+      # self.search.queries self.orderAdd.data.query()
+      # self.search.query()
+      # # if self.search.data() isnt undefined
+      # console.log '>'
+      # # return self.orderAdd.data.query()
+      'Preview not available - ' + self.orderAdd.data.query()
+    .extend { throttle: 400 }
+
+
+    self.pickupStatus =
+      data: ko.observable()
+      afterRender: ->
+        self.prepareComponents()
+
     self.usage =
       data: ko.observable()
 
@@ -615,6 +655,17 @@ jQuery ->
               switch self.page()
                 when 'api-key' then self.apiKey.load d
                 when 'import' then self.showMessage()
+                when 'status'
+                  if self.menu() is 'order'
+                    self.orderStatus.data d
+                  else
+                    self.pickupStatus.data d
+                when 'add'
+                  # if self.menu() is 'order'
+                  #   self.orderAdd.data d
+                  # else
+                  #   self.pickupAdd.data d
+                  true
                 when 'export' then 
                 else self[ $.camelCase(self.page()) ].data d
           error: (x, s, r) ->

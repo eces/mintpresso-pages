@@ -139,6 +139,19 @@ span.seal::-moz-selection {
 
   color: #d4d4d4;
 }
+.loading {
+  position: fixed;
+  width: 500px;
+  height: 250px;
+  left: 500px;
+  top: 50%;
+  margin-top: -125px;
+}
+.loading i {
+  font-size: 84pt;
+  color: #1abc9c;
+  margin-bottom: 25px;
+}
 #features {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
 }
@@ -1148,6 +1161,9 @@ button.active span.label-number {
 }
 .light {
   font-weight: 100;
+}
+.normal {
+  font-weight: normal;
 }
 .typo-capital {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;

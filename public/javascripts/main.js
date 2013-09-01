@@ -207,7 +207,7 @@ Jinhyuk Lee at mintpresso.com
           return Prism.highlightElement($('#search table pre'), true);
         }
       };
-      self.search.query = function() {
+      self.search.query = function(callback) {
         var e, json, parts, temp, url;
         parts = [];
         if (self.search.queries().length) {
@@ -706,6 +706,49 @@ Jinhyuk Lee at mintpresso.com
           return ko.mapping.fromJS(data, {}, self.apiKey.data);
         }
       };
+      self.orderStatus = {
+        data: ko.observable(),
+        create: function() {
+          console.log('>>');
+          return true;
+        },
+        afterRender: function() {
+          return self.prepareComponents();
+        }
+      };
+      self.orderAdd = {
+        data: {
+          resultType: ko.observable('number'),
+          query: ko.observable('user issue key')
+        },
+        secretKey: '',
+        create: function() {
+          console.log('>>');
+          return false;
+        },
+        afterRender: function() {
+          self.orderAdd.secretKey = $('#secretKey').html();
+          self.search.secretKey = $('#secretKey').html();
+          if (self.orderAdd.secretKey.length === 0) {
+            return Messenger().post({
+              message: _('secret.key.empty', {
+                type: 'error'
+              })
+            });
+          }
+        }
+      };
+      self.orderAdd.data.queryResult = ko.computed(function() {
+        return 'Preview not available - ' + self.orderAdd.data.query();
+      }).extend({
+        throttle: 400
+      });
+      self.pickupStatus = {
+        data: ko.observable(),
+        afterRender: function() {
+          return self.prepareComponents();
+        }
+      };
       self.usage = {
         data: ko.observable()
       };
@@ -786,6 +829,15 @@ Jinhyuk Lee at mintpresso.com
                     return self.apiKey.load(d);
                   case 'import':
                     return self.showMessage();
+                  case 'status':
+                    if (self.menu() === 'order') {
+                      return self.orderStatus.data(d);
+                    } else {
+                      return self.pickupStatus.data(d);
+                    }
+                    break;
+                  case 'add':
+                    return true;
                   case 'export':
                     break;
                   default:

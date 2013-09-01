@@ -100,6 +100,8 @@ object Application extends Controller with Secured {
         routes.javascript.Pages.collectImport,
         routes.javascript.Pages.collectExport,
         routes.javascript.Pages.order,
+        routes.javascript.Pages.orderStatus,
+        routes.javascript.Pages.orderAdd,
         routes.javascript.Pages.pickup,
         routes.javascript.Pages.support,
         routes.javascript.Application.signin,

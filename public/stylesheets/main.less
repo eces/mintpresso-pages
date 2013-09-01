@@ -114,6 +114,21 @@ span.seal {
   }
 }
 
+.loading {
+  position: fixed;
+  width: 500px;
+  height: 250px;
+  left: 350px + 800px/2 - 500px/2; 
+  top: 50%;
+  // margin-left: -500px / 2 + 75px;
+  margin-top: -250px / 2;
+  i {
+    font-size: 84pt;
+    color: @turquoise;
+    margin-bottom: 25px;
+  }
+}
+
 #features {
   .typo-capital();
 }
@@ -870,6 +885,9 @@ button {
     border-radius: 3px;
     margin-bottom: -1px;
   }
+  label.radio input {
+    // margin-top: 13px;
+  }
 }
 
 .icons {
@@ -1222,6 +1240,9 @@ button {
 }
 .light {
   font-weight: 100;
+}
+.normal {
+  font-weight: normal;
 }
 .typo-capital {
   font-family: "museo-sans", 'Helvetica Neue', Helvetica, 'Apple SD Gothic Neo', 'Nanum Gothic', 'Malgun Gothic', Arial, sans-serif;
