@@ -72,6 +72,14 @@ object Pages extends Controller with Secured {
               Json.obj(
                 "name" -> "manage_pickup",
                 "value" -> scopes.contains("manage_pickup")
+              ),
+              Json.obj(
+                "name" -> "read_type",
+                "value" -> scopes.contains("read_type")
+              ),
+              Json.obj(
+                "name" -> "read_verb",
+                "value" -> scopes.contains("read_verb")
               )
             )
             val label = (b \ "$id").as[String].split("__")(0)
@@ -154,7 +162,7 @@ object Pages extends Controller with Secured {
                 val createdKey = Key(r1.json)
                 createdKey.id = label + "__" + Crypto.encryptAES(user.no + " " + createdKey.no)
                 Async {
-                  Mintpresso(s"/user/${user.no}/issue/some/key/${createdKey.no}").post map { r2 =>
+                  Mintpresso(s"/user/${user.no}/issue/key/${createdKey.no}").post map { r2 =>
                     if(r2.status == 201){
                       Async {
                         Mintpresso(s"/key/${createdKey.no}") withConnection { conn =>
@@ -287,7 +295,9 @@ object Pages extends Controller with Secured {
     Async {
       Mintpresso(s"/user/${user.no}/request/order").get map { r1 =>
         if(r1.status == 200){
-          Ok(r1.json)
+          Ok((r1.json \\ "$object").foldLeft(Json.arr()){ (a, b) =>
+            a.append((b))
+          })
         }else{
           Ok(Json.arr())
         }
@@ -295,8 +305,75 @@ object Pages extends Controller with Secured {
     }
     
   }
+  def orderStatusStart(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/order/${no}/prepare").get map { r1 =>
+        r1.status match {
+          case 202 => Accepted
+          case 200 => Ok
+          case 404 => NoContent
+          case _ => BadRequest
+        }
+      }
+    }
+  }
+  def orderStatusPause(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/order/${no}/cancel").get map { r1 =>
+        Logger.debug(r1.body + r1.status)
+        r1.status match {
+          case 202 => Accepted
+          case 200 => Ok
+          case 404 => NoContent
+          case _ => BadRequest
+        }
+      }
+    }
+  }
+  def orderDelete(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Ok
+  }
   def orderAdd(url: String) = SignedUrl(url) { implicit request => user =>
     Ok(Json.obj())
+  }
+  def orderAddType(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/types/${user.no}").get map { r1 =>
+        Ok(r1.json)
+      }
+    }
+  }
+  def orderAddVerb(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/verbs/${user.no}").get map { r1 =>
+        Ok(r1.json)
+      }
+    }
+  }
+  def orderAddUpdate(url: String) = JsonAction(url) { implicit request => user =>
+    val json = request.body.as[JsObject]
+    Async {
+      Mintpresso("/order").withConnection { conn =>
+        conn.post(Json.obj("order" -> json))
+      } map { r1 =>
+        if(r1.status == 201){
+          val orderNo = (r1.json \ "order" \ "$no").as[Long]
+          Async {
+            Mintpresso(s"/user/${user.no}/request/order/${orderNo}").post map { r2 =>
+              if(r2.status == 201){
+                Created("apply.done")
+              }else{
+                Logger.info(r1.body)
+                Ok("apply.fail")        
+              }
+            }
+          }
+        }else{
+          Logger.info(r1.body)
+          Ok("apply.fail")
+        }
+      }
+    }
   }
   def pickup(url: String, path: String) = TODO
   def support(url: String, path: String) = TODO

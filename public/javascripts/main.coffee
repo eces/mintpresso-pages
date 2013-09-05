@@ -15,6 +15,13 @@ String.prototype.endsWith = (suffix) ->
 String.prototype.startsWith = (prefix) ->
   return (this.substr(0, prefix.length) is prefix)
 
+String.prototype.capitalize = (lower) ->
+  if lower
+    this.toLowerCase()
+  else
+    this.replace /(?:^|\s)\S/g, (a) ->
+      return a.toUpperCase()
+
 jQuery ->
   $('input, textarea').placeholder()
 
@@ -81,12 +88,16 @@ jQuery ->
           self._page value
           # ignore when pointing none page like '/account'
           if value.length > 0
+            parameter = ''
+            if self.id() isnt undefined and String(self.id()).length > 0
+              parameter = '/' + self.id()
             # change push state
-            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page()
+            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + parameter
         true
       owner: self
     }
-    
+    self.id = ko.observable ''
+
     self.username = ''
     self.email = ''
     self.password = ''
@@ -540,38 +551,242 @@ jQuery ->
         ko.mapping.fromJS(data, {}, self.apiKey.data)
 
     self.orderStatus =
-      data: ko.observable()
+      data: ko.observableArray()
       create: ->
-        console.log '>>'
         true
+      start: (item) ->
+        _.Pages.orderStatusStart(_.url, item.$no()).ajax {
+          success: (d, s, x) ->
+            if x.status is 202
+              item.state 'running'
+            else
+              # 200 or 204
+              Messenger().post { message: _('order.start.fail'), type: 'error' }
+          error: ->
+            Messenger().post { message: _('order.start.fail'), type: 'error' }
+        }
+        true
+      pause: (item) ->
+        if not confirm _('confirm.order.pause')
+          return false
+        _.Pages.orderStatusPause(_.url, item.$no()).ajax {
+          success: (d, s, x) ->
+            if x.status is 202
+              item.state 'paused'
+            else
+              # 200 or 204
+              Messenger().post { message: _('order.pause.fail'), type: 'error' }
+          error: ->
+            Messenger().post { message: _('order.pause.fail'), type: 'error' }
+        }
+        true
+      delete: (item) ->
+        if not confirm _('confirm.order.delete')
+          return false
+        self.orderStatus.data.remove(item)
+        _.Pages.orderDelete(_.url, item.$no()).ajax()
       afterRender: ->
         self.prepareComponents()
 
     self.orderAdd =
+      source: []
+      verbs: ko.observableArray()
+      types: ko.observableArray()
+      basicQuery: ko.observable()
+      advancedQuery: ko.observable """
+{
+  "dataType": "",
+  "dataQuery": "",
+  "plans": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "duration": "5 minutes",
+  "title": "",
+  "state": "paused"
+}
+"""
+      mode: ko.observable 'basic'
       data: 
+        # dataType: ko.observable 'model'
+        # dataQuery: ko.observable ''
+        # plans: ko.observableArray [
+        #   {
+        #     key: 'count', value: ''
+        #   }
+        # ]
         # resultType: ko.observable ''
-        resultType: ko.observable 'number'
-        query: ko.observable 'user issue key'
+        # resultQuery: ko.observable ''
+        # duration: '5 minutes'
+        # title: ko.observable ''
+        # state: ko.observable 'paused'
+
+        dataType: ko.observable ''
+        dataQuery: ko.observable ''
+        plans: ko.observableArray []
+        # resultType: ko.observable 'status-create'
+        # resultQuery: ko.observable '{"count": $count}'
+        duration: ko.observable '5 minutes'
+        title: ko.observable ''
+        state: ko.observable 'paused'
+
+        # resultType: ko.observable ''
+        # resultType: ko.observable ''
+        # planCategory: ko.observable ''
+        # query: ko.observable ''
+        # availableNumberPlans: ko.observable [ 'count.node', 'count.edge' ]
+        # plans: ko.observableArray [
+        #   {
+        #     availableActions: ko.observable [ 'filter', 'count', 'sum', 'ave', 'sd' ]
+        #     availableKeys: ko.observable [ 'cdate', 'udate', 'rdate', 'type', 'id', 'json' ]
+        #     availableDateOperators: ko.observable [ 'after', 'before' ]
+        #     availableStringOperators: ko.observable [ 'eq', 'neq' ]
+        #     availableOperators: ko.observable [ 'lt', 'lte', 'eq', 'neq', 'gt', 'gte' ]
+        #     action: ko.observable ''
+        #     operator: ko.observable ''
+        #     key: ko.observable ''
+        #     value: ko.observable ''
+        #   }
+        # ]
 
       secretKey: ''
       create: ->
-        console.log '>>'
+        data = self.orderAdd
+        request = data.data
+
+        json = null
+
+        if data.mode() is 'basic'
+          q = data.basicQuery()
+          if data.source.indexOf(q) is -1
+            Messenger().post { message: _('form.basicQuery.invalid'), type: 'info' }
+            return false
+          else if q[q.length-1] is ' '
+            Messenger().post { message: _('form.basicQuery.incomplete'), type: 'info' }
+            return false
+          q = q.split ' '
+          switch q.length
+            # count how many {model type}
+            when 4
+              request.dataType 'model'
+              request.dataQuery q[3]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'count'
+                value: ''
+              }
+            # count how many {subject type} did {verb} some {object type}
+            when 8
+              request.dataType 'status'
+              request.dataQuery q[3] + ' ' + q[6] + ' ' + q[8]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'count'
+                value: 's'
+              }
+            # count how many times does a user issue some key
+            when 10
+              request.dataType 'status'
+              request.dataQuery q[6] + ' ' + q[7] + ' ' + q[9]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'count'
+                value: ''
+              }
+            # count how many times does a user listen for each music
+            when 11
+              request.dataType 'status'
+              request.dataQuery q[6] + ' ' + q[7] + ' ' + q[10]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'count'
+                value: 'o'
+              }
+            else
+              Messenger().post { message: _('form.basicQuery.incomplete'), type: 'info' }
+              return false
+          json = JSON.parse ko.toJSON request
+          # data = JSON.parse d
+        else if data.mode() is 'advanced'
+          try
+            json = JSON.parse data.advancedQuery()
+          catch e
+            Messenger().post { message: _('form.advancedQuery.invalid'), type: 'error' }
+            return false
+        
+        else
+          Messenger().post { message: _('form.empty'), type: 'error' }
+          return false
+
+        # check empty
+        if not json.dataType.length
+          Messenger().post { message: _('form.dataType.empty'), type: 'error' }
+          return false
+        if not json.dataQuery.length
+          Messenger().post { message: _('form.dataQuery.empty'), type: 'error' }
+          return false
+        if not json.state.length
+          Messenger().post { message: _('form.order.state.empty'), type: 'error' }
+          return false
+        if not json.title.length
+          Messenger().post { message: _('form.order.title.empty'), type: 'error' }
+          return false
+
+        _.Pages.orderAddUpdate(_.url).ajax {
+          contentType: 'application/json'
+          data: JSON.stringify(json)
+          success: (d, s, x) ->
+            console.log d,s
+            if x.status is 201
+              Messenger().post { message: _(d), type: 'success' }
+              location.href = _.Pages.order(_.url, '/status').url
+            else
+              Messenger().post { message: _(d), type: 'error' }
+          error: (x, s, r) ->
+            console.log r,s
+            Messenger().post { message: _('error.' + x.status), type: 'error' }
+        }
         false
+
+      optionsAfterRender: (element, index, data) ->
+        # console.log '>', element, index, data
+        # $('select').selectpicker();
       afterRender: ->
+        $('select').selectpicker();
+        $('#basicQuery').focus();
+
         self.orderAdd.secretKey = $('#secretKey').html()
         self.search.secretKey = $('#secretKey').html()
         if self.orderAdd.secretKey.length is 0
           Messenger().post { message: _ 'secret.key.empty', type: 'error' }
 
-    self.orderAdd.data.queryResult = ko.computed ->
-      # # put queries to search form
-      # self.search.queries self.orderAdd.data.query()
-      # self.search.query()
-      # # if self.search.data() isnt undefined
-      # console.log '>'
-      # # return self.orderAdd.data.query()
-      'Preview not available - ' + self.orderAdd.data.query()
-    .extend { throttle: 400 }
+        q = $('#basicQuery')
+        q.typeahead {
+          source: self.orderAdd.source
+          items: 10
+          minLength: 0
+          matcher: (item) ->
+            p1 = item.split(' ').length
+            p2 = this.query.split(' ').length
+            # and (itemParts.length-1) <= queryParts.length
+            # console.log item, p1, p2
+            if item.toUpperCase().startsWith(this.query.toUpperCase()) and Math.max(p1-2,0) <= p2
+              true
+            else
+              false
+        }
+
+    # self.orderAdd.data.queryResult = ko.computed ->
+    #   # # put queries to search form
+    #   # self.search.queries self.orderAdd.data.query()
+    #   # self.search.query()
+    #   # # if self.search.data() isnt undefined
+    #   # console.log '>'
+    #   # # return self.orderAdd.data.query()
+    #   'Preview not available - ' + self.orderAdd.data.query()
+    # .extend { throttle: 400 }
 
 
     self.pickupStatus =
@@ -588,7 +803,6 @@ jQuery ->
     self.prepareComponents = ->
       $('time').each (k, v) ->
         $this = $(v)
-        console.log moment.isMoment($this)
         if $this.is '[ago]'
           m = moment( Number($this.html()) )
           $this.html m.fromNow()
@@ -601,12 +815,18 @@ jQuery ->
           m = moment( Number($this.html()) )
           $this.html m.format()
       $('input[type=file]').bootstrapFileInput()
+      $('select').selectpicker()
+      true
 
     # apply url to view model, returns hasPropagation
     self.applyUrl = () ->
       parts = location.pathname.split '/'
       self.menu parts[2] if parts.length > 2
       if parts.length > 3
+        if parts[4] isnt undefined
+          self.id parts[4] 
+        # else
+        #   self.id ''
         self.page parts[3]
       else
         self._page ''
@@ -657,14 +877,55 @@ jQuery ->
                 when 'import' then self.showMessage()
                 when 'status'
                   if self.menu() is 'order'
-                    self.orderStatus.data d
+                    for key of d
+                      d[key].$expanded = false
+                    ko.mapping.fromJS d, {}, self.orderStatus.data
+                    # console.log d
                   else
                     self.pickupStatus.data d
                 when 'add'
-                  # if self.menu() is 'order'
-                  #   self.orderAdd.data d
-                  # else
-                  #   self.pickupAdd.data d
+                  if self.menu() is 'order'
+                    # _.Pages.orderAddVerb(_.url).ajax {
+                    #   success: (d, s, x) ->
+                    #     self.orderAdd.verbs d
+                    # }
+                    # console.log self.orderAdd.types()
+                    # _.Pages.orderAddType(_.url).ajax {
+                    #   success: (d, s, x) ->
+                    #     self.orderAdd.types d
+                    #     console.log self.orderAdd.types()
+                    # }
+
+                    $.when(
+                      _.Pages.orderAddVerb(_.url).ajax(),
+                      _.Pages.orderAddType(_.url).ajax()
+                    ).done (verbs, types) ->
+                      self.orderAdd.types types[0]
+                      self.orderAdd.verbs verbs[0]
+                      self.orderAdd.source.push 'Count '
+                      self.orderAdd.source.push 'Count how '
+                      self.orderAdd.source.push 'Count how many '
+                      self.orderAdd.source.push 'Count how many times '
+                      self.orderAdd.source.push 'Count how many times does'
+                      self.orderAdd.source.push 'Count how many times does a '
+                      for a in self.orderAdd.types()
+                        self.orderAdd.source.push "Count how many #{a.name}"
+                        self.orderAdd.source.push "Count how many times does a #{a.name}"
+                        self.orderAdd.source.push "Count how many #{a.name} did "
+                        for v in self.orderAdd.verbs()
+                          self.orderAdd.source.push "Count how many #{a.name} did #{v.verb} "
+                          self.orderAdd.source.push "Count how many #{a.name} did #{v.verb} some "
+                          self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb}"
+                          self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} some "
+                          self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} for each "
+                        for b in self.orderAdd.types()
+                          for v in self.orderAdd.verbs()
+                            self.orderAdd.source.push "Count how many #{a.name} did #{v.verb} some #{b.name}"
+                            self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} some #{b.name}"
+                            self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} for each #{b.name}"
+
+                  else
+                    # self.pickupAdd.data d
                   true
                 when 'export' then 
                 else self[ $.camelCase(self.page()) ].data d

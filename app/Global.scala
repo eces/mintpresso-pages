@@ -29,6 +29,7 @@ object Global extends GlobalSettings {
   }
 
   override def onBadRequest(request: RequestHeader, error: String) = {
+    Logger.warn("[400] " + error)
     Results.Ok(play.api.libs.json.Json.obj("message" -> "error.400", "error" -> error)).as("application/json")
   }
 }

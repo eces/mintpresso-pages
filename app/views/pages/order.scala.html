@@ -19,7 +19,7 @@
     </div>
     <div id="content" data-bind="">
       <div class="condensed" data-bind="visible: page() == ''"></div>
-      <div class="condensed" data-bind="visible: page() == 'status', template: { name: 'status-template', data: orderStatus.data(), as: 'items', if: orderStatus.data(), afterRender: orderStatus.afterRender } "></div>
+      <div class="wide" data-bind="visible: page() == 'status', template: { name: 'status-template', data: orderStatus.data(), as: 'items', if: orderStatus.data(), afterRender: orderStatus.afterRender } "></div>
       <div class="condensed" data-bind="visible: page() == 'add', template: { name: 'add-template', data: orderAdd.data, afterRender: orderAdd.afterRender } "></div>
     </div>
     <script type="text/html" id="status-template">@orderStatus()</script>

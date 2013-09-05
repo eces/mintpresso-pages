@@ -28,6 +28,15 @@ code.expired=Code is expired. Request code agian.
 form.empty=Please fill the form
 form.empty.email=Please type your email address
 form.empty.invalid=Form is invalid or empty
+form.dataType.empty='dataType' is empty.
+form.dataQuery.empty='dataQuery' is empty.
+form.basicQuery = Please complete the query
+form.basicQuery.invalid = Query is invalid. Have you followed auto completion?
+form.basicQuery.incomplete = Please complete the query
+form.advancedQuery.invalid = Query is invalid. Have you followed auto completion?
+form.advancedQuery.incomplete = Please complete the query
+form.order.state.empty=Order 'state' is empty.
+form.order.title.empty=Order 'title' is empty.
 
 query.empty=Please type query string.
 query.sType.invalid=Subject type should be a-z characters.
@@ -71,6 +80,9 @@ manage_pickup=allow to start, pause, configure, and read results from pickups.
 url.invalid=Invalid URL forms.
 host.unavailable=Failed to reach your server and hosts, not saved.
 
+order.start.fail=Failed to prepare order.
+order.pause.fail=Failed to pause order.
+
 response.200=200 Ok
 response.404=404 Not Found
 
@@ -79,3 +91,4 @@ error.404=Page Not Found
 error.500=Internal Server Error
 
 confirm.delete=Delete can't be undo, want to proceed?
+confirm.order.pause=Order will no loger update the result that makes your pickup outdated, want to proceed?

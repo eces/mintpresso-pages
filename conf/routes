@@ -43,6 +43,12 @@ GET     /:url/collect/export          controllers.Pages.collectExport(url: Strin
 
 GET     /:url/order/status.json     controllers.Pages.orderStatus(url: String)
 GET     /:url/order/add.json        controllers.Pages.orderAdd(url: String)
+GET     /:url/order/type.json       controllers.Pages.orderAddType(url: String)
+GET     /:url/order/verb.json       controllers.Pages.orderAddVerb(url: String)
+POST    /:url/order/update          controllers.Pages.orderAddUpdate(url: String)
+PUT     /:url/order/start/:no       controllers.Pages.orderStatusStart(url: String, no: Long)
+PUT     /:url/order/pause/:no       controllers.Pages.orderStatusPause(url: String, no: Long)
+DELETE  /:url/order/:no             controllers.Pages.orderDelete(url: String, no: Long)
 GET     /:url/order                 controllers.Pages.order(url: String, path="")
 GET     /:url/order*path            controllers.Pages.order(url: String, path: String)
 

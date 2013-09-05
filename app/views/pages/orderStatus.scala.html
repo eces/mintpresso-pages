@@ -10,20 +10,36 @@
         <td>Order #</td>
         <td>Title</td>
         <td>State</td>
-        <td>JSON</td>
-        <td>Created at</td>
-        <td>Updated at</td>
-        <td>Referenced at</td>
+        <td>Last Edited</td>
+        <td>Processed</td>
+        <td></td>
       </tr>
     </thead>
-    <tbody data-bind="foreach: { data: items }">
+    <tbody data-bind="foreach: { data: items, as: 'item' }">
       <tr>
         <td><span data-bind="text: $no"></span></td>
         <td><span data-bind="text: title"></span></td>
-        <td><span data-bind="text: state"></span></td>
-        <td><time ago data-bind="text: $createdAt"></time></td>
+        <td>
+          <i class="icon-refresh icon-spin icon-1x" style="color: #1abc9c" data-bind="visible: state() == 'running' "></i>
+          <i class="icon-exclamation-sign icon-1x" style="color: #f1c40f" data-bind="visible: state() == 'paused' "></i>
+          <i class="icon-refresh icon-spin icon-1x" style="color: #f1c40f" data-bind="visible: state() == 'hold' "></i>&nbsp;
+          <span data-bind="text: state, style: { backgroundColor: state() == 'running' ? '#16A085' : '#D35400' }" class="label label-inverse"></span>
+        </td>
         <td><time ago data-bind="text: $updatedAt"></time></td>
-        <td><time ago data-bind="text: $referencedAt"></time></td>
+        <td><time ago data-bind="text: $referencedAt, visible: $updatedAt() != $referencedAt()"></time><span data-bind="visible: $updatedAt() == $referencedAt()">-</span></td>
+        <td>
+          <div class="btn-group typo-capital bold">
+            <button data-bind="click: $root.orderStatus.start.bind($root, $data), visible: state() == 'paused'" class="btn btn-small"> <i class="icon-play"></i> Start</button>
+            <button data-bind="click: $root.orderStatus.pause.bind($root, $data), visible: state() == 'running' " class="btn btn-small"> <i class="icon-pause"></i> Pause</button>
+            <button data-bind="click: $root.orderStatus.delete.bind($root, $data)" class="btn btn-small" disabled="disabled"> <i class="icon-remove"></i> Delete</button>
+            <button class="btn btn-small" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$expanded; _(!_()) }">&nbsp;<i data-bind="css: { 'icon-caret-down': $expanded() === false, 'icon-caret-up': $expanded() === true }"></i>&nbsp;</button>
+          </div>
+        </td>
+      </tr>
+      <tr data-bind="visible: $expanded() === true">
+        <td colspan="7" style="border: 0">
+<pre class="language-javascript" style="text-indent: -16pt;"><code class="language-javascript" data-bind="text: JSON.stringify(ko.toJS($root.orderStatus.data()[$index()]), function(k,v){if(!k.startsWith('$')){return v}}, '  ')"></code></pre>
+        </td>
       </tr>
     </tbody>
   </table>

@@ -27,6 +27,16 @@ Jinhyuk Lee at mintpresso.com
     return this.substr(0, prefix.length) === prefix;
   };
 
+  String.prototype.capitalize = function(lower) {
+    if (lower) {
+      return this.toLowerCase();
+    } else {
+      return this.replace(/(?:^|\s)\S/g, function(a) {
+        return a.toUpperCase();
+      });
+    }
+  };
+
   jQuery(function() {
     var $body, $meta, content, event, pagesViewModel;
     $('input, textarea').placeholder();
@@ -105,18 +115,24 @@ Jinhyuk Lee at mintpresso.com
           return this._page();
         },
         write: function(value) {
+          var parameter;
           if (self._page() !== value) {
             self._page(value);
             if (value.length > 0) {
+              parameter = '';
+              if (self.id() !== void 0 && String(self.id()).length > 0) {
+                parameter = '/' + self.id();
+              }
               History.pushState({
                 timestamp: moment().seconds()
-              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page());
+              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + parameter);
             }
           }
           return true;
         },
         owner: self
       });
+      self.id = ko.observable('');
       self.username = '';
       self.email = '';
       self.password = '';
@@ -707,42 +723,254 @@ Jinhyuk Lee at mintpresso.com
         }
       };
       self.orderStatus = {
-        data: ko.observable(),
+        data: ko.observableArray(),
         create: function() {
-          console.log('>>');
           return true;
+        },
+        start: function(item) {
+          _.Pages.orderStatusStart(_.url, item.$no()).ajax({
+            success: function(d, s, x) {
+              if (x.status === 202) {
+                return item.state('running');
+              } else {
+                return Messenger().post({
+                  message: _('order.start.fail'),
+                  type: 'error'
+                });
+              }
+            },
+            error: function() {
+              return Messenger().post({
+                message: _('order.start.fail'),
+                type: 'error'
+              });
+            }
+          });
+          return true;
+        },
+        pause: function(item) {
+          if (!confirm(_('confirm.order.pause'))) {
+            return false;
+          }
+          _.Pages.orderStatusPause(_.url, item.$no()).ajax({
+            success: function(d, s, x) {
+              if (x.status === 202) {
+                return item.state('paused');
+              } else {
+                return Messenger().post({
+                  message: _('order.pause.fail'),
+                  type: 'error'
+                });
+              }
+            },
+            error: function() {
+              return Messenger().post({
+                message: _('order.pause.fail'),
+                type: 'error'
+              });
+            }
+          });
+          return true;
+        },
+        "delete": function(item) {
+          if (!confirm(_('confirm.order.delete'))) {
+            return false;
+          }
+          self.orderStatus.data.remove(item);
+          return _.Pages.orderDelete(_.url, item.$no()).ajax();
         },
         afterRender: function() {
           return self.prepareComponents();
         }
       };
       self.orderAdd = {
+        source: [],
+        verbs: ko.observableArray(),
+        types: ko.observableArray(),
+        basicQuery: ko.observable(),
+        advancedQuery: ko.observable("{\n  \"dataType\": \"\",\n  \"dataQuery\": \"\",\n  \"plans\": [\n    {\n      \"key\": \"\",\n      \"value\": \"\"\n    }\n  ],\n  \"duration\": \"5 minutes\",\n  \"title\": \"\",\n  \"state\": \"paused\"\n}"),
+        mode: ko.observable('basic'),
         data: {
-          resultType: ko.observable('number'),
-          query: ko.observable('user issue key')
+          dataType: ko.observable(''),
+          dataQuery: ko.observable(''),
+          plans: ko.observableArray([]),
+          duration: ko.observable('5 minutes'),
+          title: ko.observable(''),
+          state: ko.observable('paused')
         },
         secretKey: '',
         create: function() {
-          console.log('>>');
+          var data, e, json, q, request;
+          data = self.orderAdd;
+          request = data.data;
+          json = null;
+          if (data.mode() === 'basic') {
+            q = data.basicQuery();
+            if (data.source.indexOf(q) === -1) {
+              Messenger().post({
+                message: _('form.basicQuery.invalid'),
+                type: 'info'
+              });
+              return false;
+            } else if (q[q.length - 1] === ' ') {
+              Messenger().post({
+                message: _('form.basicQuery.incomplete'),
+                type: 'info'
+              });
+              return false;
+            }
+            q = q.split(' ');
+            switch (q.length) {
+              case 4:
+                request.dataType('model');
+                request.dataQuery(q[3]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'count',
+                  value: ''
+                });
+                break;
+              case 8:
+                request.dataType('status');
+                request.dataQuery(q[3] + ' ' + q[6] + ' ' + q[8]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'count',
+                  value: 's'
+                });
+                break;
+              case 10:
+                request.dataType('status');
+                request.dataQuery(q[6] + ' ' + q[7] + ' ' + q[9]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'count',
+                  value: ''
+                });
+                break;
+              case 11:
+                request.dataType('status');
+                request.dataQuery(q[6] + ' ' + q[7] + ' ' + q[10]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'count',
+                  value: 'o'
+                });
+                break;
+              default:
+                Messenger().post({
+                  message: _('form.basicQuery.incomplete'),
+                  type: 'info'
+                });
+                return false;
+            }
+            json = JSON.parse(ko.toJSON(request));
+          } else if (data.mode() === 'advanced') {
+            try {
+              json = JSON.parse(data.advancedQuery());
+            } catch (_error) {
+              e = _error;
+              Messenger().post({
+                message: _('form.advancedQuery.invalid'),
+                type: 'error'
+              });
+              return false;
+            }
+          } else {
+            Messenger().post({
+              message: _('form.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.dataType.length) {
+            Messenger().post({
+              message: _('form.dataType.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.dataQuery.length) {
+            Messenger().post({
+              message: _('form.dataQuery.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.state.length) {
+            Messenger().post({
+              message: _('form.order.state.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.title.length) {
+            Messenger().post({
+              message: _('form.order.title.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          _.Pages.orderAddUpdate(_.url).ajax({
+            contentType: 'application/json',
+            data: JSON.stringify(json),
+            success: function(d, s, x) {
+              console.log(d, s);
+              if (x.status === 201) {
+                Messenger().post({
+                  message: _(d),
+                  type: 'success'
+                });
+                return location.href = _.Pages.order(_.url, '/status').url;
+              } else {
+                return Messenger().post({
+                  message: _(d),
+                  type: 'error'
+                });
+              }
+            },
+            error: function(x, s, r) {
+              console.log(r, s);
+              return Messenger().post({
+                message: _('error.' + x.status),
+                type: 'error'
+              });
+            }
+          });
           return false;
         },
+        optionsAfterRender: function(element, index, data) {},
         afterRender: function() {
+          var q;
+          $('select').selectpicker();
+          $('#basicQuery').focus();
           self.orderAdd.secretKey = $('#secretKey').html();
           self.search.secretKey = $('#secretKey').html();
           if (self.orderAdd.secretKey.length === 0) {
-            return Messenger().post({
+            Messenger().post({
               message: _('secret.key.empty', {
                 type: 'error'
               })
             });
           }
+          q = $('#basicQuery');
+          return q.typeahead({
+            source: self.orderAdd.source,
+            items: 10,
+            minLength: 0,
+            matcher: function(item) {
+              var p1, p2;
+              p1 = item.split(' ').length;
+              p2 = this.query.split(' ').length;
+              if (item.toUpperCase().startsWith(this.query.toUpperCase()) && Math.max(p1 - 2, 0) <= p2) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          });
         }
       };
-      self.orderAdd.data.queryResult = ko.computed(function() {
-        return 'Preview not available - ' + self.orderAdd.data.query();
-      }).extend({
-        throttle: 400
-      });
       self.pickupStatus = {
         data: ko.observable(),
         afterRender: function() {
@@ -759,7 +987,6 @@ Jinhyuk Lee at mintpresso.com
         $('time').each(function(k, v) {
           var $this, m;
           $this = $(v);
-          console.log(moment.isMoment($this));
           if ($this.is('[ago]')) {
             m = moment(Number($this.html()));
             $this.html(m.fromNow());
@@ -773,7 +1000,9 @@ Jinhyuk Lee at mintpresso.com
             return $this.html(m.format());
           }
         });
-        return $('input[type=file]').bootstrapFileInput();
+        $('input[type=file]').bootstrapFileInput();
+        $('select').selectpicker();
+        return true;
       };
       self.applyUrl = function() {
         var parts;
@@ -782,6 +1011,9 @@ Jinhyuk Lee at mintpresso.com
           self.menu(parts[2]);
         }
         if (parts.length > 3) {
+          if (parts[4] !== void 0) {
+            self.id(parts[4]);
+          }
           return self.page(parts[3]);
         } else {
           self._page('');
@@ -817,6 +1049,7 @@ Jinhyuk Lee at mintpresso.com
         if (route in _.Pages) {
           _.Pages[route](_.url).ajax({
             success: function(d, s, x) {
+              var key;
               if (x.status !== 200) {
                 return Messenger().post({
                   message: _(d),
@@ -831,12 +1064,69 @@ Jinhyuk Lee at mintpresso.com
                     return self.showMessage();
                   case 'status':
                     if (self.menu() === 'order') {
-                      return self.orderStatus.data(d);
+                      for (key in d) {
+                        d[key].$expanded = false;
+                      }
+                      return ko.mapping.fromJS(d, {}, self.orderStatus.data);
                     } else {
                       return self.pickupStatus.data(d);
                     }
                     break;
                   case 'add':
+                    if (self.menu() === 'order') {
+                      $.when(_.Pages.orderAddVerb(_.url).ajax(), _.Pages.orderAddType(_.url).ajax()).done(function(verbs, types) {
+                        var a, b, v, _i, _j, _len, _len1, _ref, _ref1, _results;
+                        self.orderAdd.types(types[0]);
+                        self.orderAdd.verbs(verbs[0]);
+                        self.orderAdd.source.push('Count ');
+                        self.orderAdd.source.push('Count how ');
+                        self.orderAdd.source.push('Count how many ');
+                        self.orderAdd.source.push('Count how many times ');
+                        self.orderAdd.source.push('Count how many times does');
+                        self.orderAdd.source.push('Count how many times does a ');
+                        _ref = self.orderAdd.types();
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                          a = _ref[_i];
+                          self.orderAdd.source.push("Count how many " + a.name);
+                          self.orderAdd.source.push("Count how many times does a " + a.name);
+                          self.orderAdd.source.push("Count how many " + a.name + " did ");
+                          _ref1 = self.orderAdd.verbs();
+                          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                            v = _ref1[_j];
+                            self.orderAdd.source.push("Count how many " + a.name + " did " + v.verb + " ");
+                            self.orderAdd.source.push("Count how many " + a.name + " did " + v.verb + " some ");
+                            self.orderAdd.source.push("Count how many times does a " + a.name + " " + v.verb);
+                            self.orderAdd.source.push("Count how many times does a " + a.name + " " + v.verb + " some ");
+                            self.orderAdd.source.push("Count how many times does a " + a.name + " " + v.verb + " for each ");
+                          }
+                          _results.push((function() {
+                            var _k, _len2, _ref2, _results1;
+                            _ref2 = self.orderAdd.types();
+                            _results1 = [];
+                            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                              b = _ref2[_k];
+                              _results1.push((function() {
+                                var _l, _len3, _ref3, _results2;
+                                _ref3 = self.orderAdd.verbs();
+                                _results2 = [];
+                                for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+                                  v = _ref3[_l];
+                                  self.orderAdd.source.push("Count how many " + a.name + " did " + v.verb + " some " + b.name);
+                                  self.orderAdd.source.push("Count how many times does a " + a.name + " " + v.verb + " some " + b.name);
+                                  _results2.push(self.orderAdd.source.push("Count how many times does a " + a.name + " " + v.verb + " for each " + b.name));
+                                }
+                                return _results2;
+                              })());
+                            }
+                            return _results1;
+                          })());
+                        }
+                        return _results;
+                      });
+                    } else {
+
+                    }
                     return true;
                   case 'export':
                     break;
