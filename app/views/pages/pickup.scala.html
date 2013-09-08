@@ -1,0 +1,28 @@
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.pickup"))("white") {
+  <meta name="panel" content="data">
+
+  <div id="panel">
+    @menu("order")
+    <div id="submenu">
+      <ul>
+        <li data-bind="click: page.bind($data, 'list'), css: { active: page() == 'list'}">
+          <span>Pickups</span>
+          <p>See all your pickups.</p>
+        </li>
+        <li data-bind="click: page.bind($data, 'add'), css: { active: page() == 'add'}">
+          <span>Add New Pickup</span>
+          <p>Decide how to deal with your order.</p>
+        </li>
+      </ul>
+    </div>
+    <div id="content" data-bind="">
+      <div class="condensed" data-bind="visible: page() == ''"></div>
+      <div class="wide" data-bind="visible: page() == 'list', template: { name: 'list-template', data: pickupList.data(), as: 'items', if: pickupList.data(), afterRender: pickupList.afterRender } "></div>
+      <div class="condensed" data-bind="visible: page() == 'add', template: { name: 'add-template', data: pickupAdd.data, afterRender: pickupAdd.afterRender } "></div>
+    </div>
+    <script type="text/html" id="list-template">@pickupList()</script>
+    <script type="text/html" id="add-template">@pickupAdd()</script>
+  </div>
+} 

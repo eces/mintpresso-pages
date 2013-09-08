@@ -52,14 +52,14 @@
       <tr>
         <td>
           <span data-bind="text: $subject.$type"></span>
-          <strong><span data-bind="text: $subject.$id"></span></strong>
+          <strong><span data-bind="text: $subject.$id"></span><span data-bind="text: $subject.$no, visible: $subject.$id.length == 0"></span></strong>
           <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$subject.$expanded; _(!_()) }">&nbsp;<i data-bind="css: { 'icon-caret-down': $subject.$expanded() === false, 'icon-caret-up': $subject.$expanded() === true }"></i>&nbsp;</button>
 <pre class="language-javascript" data-bind="visible: $subject.$expanded() === true" style="text-indent: -16pt;"><code class="language-javascript" data-bind="html: JSON.stringify($subject, function(k,v){if(k!='$type')return v;}, '  ')"></code></pre>
         </td>
         <td style="text-align: center;"><span data-bind="text: $verb"></span></td>
         <td>
           <span data-bind="text: $object.$type"></span>
-          <strong><span data-bind="text: $object.$id"></span></strong>
+          <strong><span data-bind="text: $object.$id"></span><span data-bind="text: $object.$no, visible: $object.$id.length == 0"></span></strong>
           <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$object.$expanded; _(!_()) }">&nbsp;<i data-bind="css: { 'icon-caret-down': $object.$expanded() === false, 'icon-caret-up': $object.$expanded() === true }"></i>&nbsp;</button>
 <pre class="language-javascript" data-bind="visible: $object.$expanded() === true" style="text-indent: -16pt;"><code class="language-javascript" data-bind="html: JSON.stringify($object, function(k,v){if(k!='$type')return v;}, '  ')"></code></pre>
         </td>

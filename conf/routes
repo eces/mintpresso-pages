@@ -52,8 +52,15 @@ DELETE  /:url/order/:no             controllers.Pages.orderDelete(url: String, n
 GET     /:url/order                 controllers.Pages.order(url: String, path="")
 GET     /:url/order*path            controllers.Pages.order(url: String, path: String)
 
+GET     /:url/pickup/list.json      controllers.Pages.pickupList(url: String)
+GET     /:url/pickup/add.json       controllers.Pages.pickupAdd(url: String)
+POST    /:url/pickup/update         controllers.Pages.pickupAddUpdate(url: String)
+PUT     /:url/pickup/start/:no      controllers.Pages.pickupListStart(url: String, no: Long)
+PUT     /:url/pickup/pause/:no      controllers.Pages.pickupListPause(url: String, no: Long)
+DELETE  /:url/pickup/:no            controllers.Pages.pickupDelete(url: String, no: Long)
 GET     /:url/pickup                controllers.Pages.pickup(url: String, path="")
 GET     /:url/pickup*path           controllers.Pages.pickup(url: String, path: String)
+
 
 GET     /:url/support               controllers.Pages.support(url: String, path="")
 GET     /:url/support*path          controllers.Pages.support(url: String, path: String)

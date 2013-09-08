@@ -17,13 +17,21 @@ title.collect=Collect - Pages - Mintpresso | Realtime Analytics
 title.collect.search=Search - Collection - Pages - Mintpresso | Realtime Analytics
 title.collect.import=Import - Collection - Pages - Mintpresso | Realtime Analytics
 title.collect.export=Export - Collection - Pages - Mintpresso | Realtime Analytics
+title.order=Order - Pages - Mintpresso | Realtime Analytics
+title.order.status=Status - Order - Pages - Mintpresso | Realtime Analytics
+title.order.add=Add New - Order - Pages - Mintpresso | Realtime Analytics
+title.pickup=Pickup - Pages - Mintpresso | Realtime Analytics
+title.pickup.list=List - Pickup - Pages - Mintpresso | Realtime Analytics
+title.pickup.add=Add New - Pickup - Pages - Mintpresso | Realtime Analytics
 
 signup.button=Sign Up for MINTPRESSO
 signup.button.done=Signed <i class="icon-check-sign"></i>
 signup.done.redirect=Redirecting to sign in...
 
 email.duplicate=Email is already taken
-code.expired=Code is expired. Request code agian.
+code.expired=Code is expired. Request code again.
+key.label.secret=You can't use 'secret' as label.
+key.label.empty=Please type key label.
 
 form.empty=Please fill the form
 form.empty.email=Please type your email address

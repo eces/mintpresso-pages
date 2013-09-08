@@ -13,7 +13,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import play.api.libs.ws.Response
 
-import models.User
+import models.{User, Key}
 import play.api.libs.concurrent.Execution.Implicits._
 
 object Users extends Controller with Secured {
@@ -89,7 +89,42 @@ object Users extends Controller with Secured {
                   conn.post(user.toTypedJson)
                 }.map { r2 =>
                   if(r2.status == 201){
-                    Created
+                    val createdUser = User(r2.json)
+                    val key = new Key("", 0L, List("*"), List(""), List("read_model", "search_model", "create_model", "update_model", "delete_model", "search_status", "create_status", "delete_status", "manage_order", "manage_pickup"))
+                    Async {
+                      Mintpresso(s"/key") withConnection { conn =>
+                        conn.post(key.toTypedJson) map { r1 =>
+                          if(r1.status == 201){
+                            val createdKey = Key(r1.json)
+                            createdKey.id = "secret__" + Crypto.encryptAES(createdUser.no + " " + createdKey.no)
+                            Async {
+                              Mintpresso(s"/user/${createdUser.no}/issue/key/${createdKey.no}").post map { r2 =>
+                                if(r2.status == 201){
+                                  Async {
+                                    Mintpresso(s"/key/${createdKey.no}") withConnection { conn =>
+                                      conn.put(createdKey.toTypedJson) map { r3 =>
+                                        if(r3.status == 201){
+                                          Created("apply.done")
+                                        }else{
+                                          // error
+                                          Ok("apply.fail")
+                                        }
+                                      }
+                                    }
+                                  }
+                                }else{
+                                  // error
+                                  Ok("apply.fail")
+                                }
+                              }
+                            }
+                          }else{
+                            // error
+                            Ok("apply.fail")
+                          }
+                        }
+                      }
+                    }
                   }else{
                     Ok("try.again")
                   }

@@ -1,0 +1,204 @@
+@()(implicit request: RequestHeader, flash: Flash)
+<div class="container">
+  <div class="pull-right right">
+    <div class="btn-group" data-toggle="buttons-checkbox" data-bind="template: { data: $root.pickupAdd.mode() }">
+      <button type="button" class="btn" data-bind="css: { active: $data == 'basic' }, click: function(){ $root.pickupAdd.mode('basic') }">Basic</button>
+      <button type="button" class="btn" data-bind="css: { active: $data == 'advanced' }, click: function($this){ $root.pickupAdd.mode('advanced'); }">Advanced</button>
+    </div>
+  </div>
+  <h1>ADD NEW PICKUP</h1>
+  <ul>
+    <li>One order can have multiple pickups.</li>
+  </ul>
+  <hr />
+
+  <form class="form-inline" data-bind="submit: $root.pickupAdd.create">
+    <div data-bind="visible: $root.pickupAdd.mode() == 'basic' ">
+      <input type="text" data-bind="value: title" placeholder="Pickup name (display on logs and list)" />
+      <select data-bind="value: $root.pickupAdd.selectedOrder, options: $root.pickupAdd.orders, optionsText: 'value', optionsCaption: 'Choose an order' " title="Choose order" data-width="270px">
+      </select>
+      <hr />
+      <input type="text" data-bind="value: $root.pickupAdd.basicQuery, valueUpdate: 'afterkeydown' " class="input-block-level" id="basicQuery" />
+    </div>
+    <div data-bind="visible: $root.pickupAdd.mode() == 'advanced' ">
+      <textarea rows="10" class="input-block-level" data-bind="value: $root.pickupAdd.advancedQuery"></textarea>
+    </div>
+    @*
+    <label class="control-label">Source data from </label>
+    <div class="controls">
+      <div class="btn-group" data-toggle="buttons-checkbox" data-bind="template: { data: dataType() }">
+        <button type="button" class="btn" data-bind="css: { active: $data == 'model' }, click: function(){ $parent.dataType('model') }">Model</button>
+        <button type="button" class="btn" data-bind="css: { active: $data == 'status' }, click: function($this){ $parent.dataType('status'); }">Status</button>
+      </div>
+      by searching 
+      <input type="text" data-bind="value: dataQuery" placeholder="data query" />
+    </div>
+    <hr />
+    <button data-bind="click: function(){ plans.removeAll(); }" class="btn btn-primary input-medium pull-right"> <i class="icon-reply"></i> Revert</button>
+    *@
+
+        @*
+    <div class="row">
+      <div class="control-group">
+        <button data-bind="click: $root.orderAdd.add" class="btn btn-success span2"><i class="icon-plus"></i> Add more step</button>
+        
+      </div>
+    </div>
+        *@
+    <hr />
+
+    @*
+    <div class="controls" data-bind="visible: dataType() == 'status' ">
+      <label class="control-label">Save a result by </label><br />
+      <select data-bind="value: resultType " title="Choose a result type" data-width="50%">
+        <option value="model-merge-subject">Writing a value into each subject model</option>
+        <option value="model-merge-object">Writing a value into each object model</option>
+        <option value="status-create">Creating new status with a value</option>
+      </select>
+      as form of
+      <input type="text" class="span3" data-bind="value: resultQuery" placeholder="result query" />
+    </div>
+    <div class="controls" data-bind="visible: dataType() == 'model' ">
+    Save a result on Pickup.
+    </div>
+    <hr />
+    *@
+
+    <button type="submit" class="btn btn-success pull-right input-medium">Create</button>
+    
+  @*
+  <form class="form-horizontal form-inline" data-bind="submit: $root.orderAdd.create">
+    <div class="control-group">
+      <label class="control-label">Source data from </label>
+      <div class="controls">
+        <select data-bind="value: dataType" title="Choose a data type">
+          <option value="model">Model</option>
+          <option value="status">Status</option>
+        </select>
+        by searching 
+        <input type="text" data-bind="value: dataQuery" placeholder="data query" />
+      </div>
+    </div>
+    <div data-bind="foreach: plans">
+      <div class="control-group">
+        <label class="control-label">
+          <select data-bind="value: key" title="Choose a plan" class="span2">
+            <option value="count">Count</option>
+            <option value="sum">Sum</option>
+          </select>
+        </label>
+        <div class="controls">
+          <input type="text" class="input-block-level" data-bind="value: value" placeholder="path tovalue" />
+        </div>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">Result data</label>
+      <div class="controls">
+        <select data-bind="value: resultType" title="Choose a result type" data-width="100%">
+          <option value="model-merge-subject">Write a value into each subject model.</option>
+          <option value="model-merge-object">Write a value into each object model.</option>
+          <option value="status-create">Create new status with a value.</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">Result data format</label>
+      <div class="controls">
+        <input type="text" class="input-block-level" data-bind="value: resultQuery" placeholder="result query" />
+      </div>
+    </div>
+    @*
+    <div class="control-group">
+      <label class="control-label">Plan Type</label>
+      <div class="controls controls-list">
+        <label class="radio">
+        <input type="radio" name="planType" value="number" data-bind="checked: planType">
+        <h4>Basic numbers</h4>
+        Counts models or edges, calculates average or standard deviation.
+      </label>
+      <label class="radio">
+        <input type="radio" name="planType" value="recommend" data-bind="checked: planType">
+        <h4>Recommendation</h4>
+        Suggests preferrable candidates by defined case such as item to user, user to user.
+      </label>
+      <label class="radio">
+        <input type="radio" name="planType" value="graph" data-bind="checked: planType">
+        <h4>Graph manipulation</h4>
+        Merges or cleans a model or an edge automatically by defined plan. Also can used for neighborhood aggregation, weight repopulation.
+      </label>
+      </div>
+    </div>
+    <hr />  
+    <div class="control-group" data-bind="visible: planType() == 'number' ">
+      <label class="control-label">Available Plans</label>
+      <div class="controls">
+        
+      </div>
+    </div>
+    <hr />  
+    *@
+  @*
+    <hr />  
+    <div class="" data-bind="foreach: plans(), visible: resultType() == 'number'">
+      <select data-bind="options: availableKeys, value: action, optionsText: function(item){ return _('plan.action.'+item)}, optionsCaption: 'Choose a type' " class=""></select>
+
+      <span data-bind="if: String(action()).endsWith('date')">
+        <span data-bind="template: { afterRender: $root.orderAdd.optionsAfterRender }">
+          <select data-bind="options: availableDateOperators, value: operator, optionsCaption: 'Choose an operator'" class=""></select>
+        </span>
+      </span>
+
+      <span data-bind=" if: action() == 'type' ">
+        <span data-bind="template: { afterRender: $root.orderAdd.optionsAfterRender }">
+          <select data-bind="options: availableStringOperators, value: operator, optionsCaption: 'Choose an operator', optionsAfterRender: $parent.optionsAfterRender " class=""></select>
+        </span>
+      </span>
+
+      <span data-bind=" if: action() == 'id' ">
+        <span data-bind="template: { afterRender: $root.orderAdd.optionsAfterRender }">
+          <select data-bind="options: availableStringOperators, value: operator, optionsCaption: 'Choose an operator' " class=""></select>
+        </span>
+      </span>
+
+      <span data-bind=" if: action() == 'json' ">
+        <input type="text" data-bind="value: key, visible: action() == 'json'" placeholder="type json path to find" />
+        <span data-bind="template: { afterRender: $root.orderAdd.optionsAfterRender }">
+          <select data-bind="options: availableOperators, value: operator, optionsCaption: 'Choose an operator'" class=""></select>
+        </span>
+      </span>
+
+      <span data-bind=" if: action() && operator() && availableDateOperators().indexOf(operator()) != -1 ">
+        <input type="datetime" data-bind="value: value" class="" placeholder="type a value" />
+      </span>
+
+      <span data-bind=" if: action() && operator() && availableDateOperators().indexOf(operator()) == -1 ">
+        <input type="text" data-bind="value: value" class="" placeholder="type a value" />
+      </span>
+
+      <span data-bind=" if: action() && operator() && value() ">
+        <button class="btn"><i class="icon-plus"></i> Add</button>
+        <button class="btn"><i class="icon-minus"></i> Remove</button>
+      </span>
+      
+    </div>
+    
+    <h4>Node or Edge</h4>
+    <hr />
+    
+    <h4>Type, Verb , Date, Json field, Conditions, is number, .. line mix filters + apply/event (pickup isn't necessary for graph manipulation)</h4>
+    <hr />
+    
+    <h4>Preferred Response Time</h4>
+    <hr />
+    
+    <h4>Title, Descrption, Note for scientist</h4>
+    <hr />
+    
+    <h4>Log threshold</h4>
+    <hr />
+
+  *@
+
+  </form>
+</div>

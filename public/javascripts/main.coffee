@@ -467,6 +467,12 @@ jQuery ->
         value = arguments[1]
         key.url.remove value
       save: (key) ->
+        if key.label() is 'secret'
+          Messenger().post { message: _('key.label.secret'), type: 'info' }
+          return false
+        if key.label().length is 0
+          Messenger().post { message: _('key.label.empty'), type: 'info' }
+          return false
         # _.currentSave = key.label()
         _.Pages.accountApiKeyUpdate(_.url).ajax
           contentType: 'application/json'
@@ -789,10 +795,193 @@ jQuery ->
     # .extend { throttle: 400 }
 
 
-    self.pickupStatus =
+    self.pickupList =
       data: ko.observable()
       afterRender: ->
         self.prepareComponents()
+      start: (item) ->
+        _.Pages.pickupListStart(_.url, item.$no()).ajax {
+          success: (d, s, x) ->
+            if x.status is 202
+              item.state 'running'
+            else
+              # 200 or 204
+              Messenger().post { message: _('pickup.start.fail'), type: 'error' }
+          error: ->
+            Messenger().post { message: _('pickup.start.fail'), type: 'error' }
+        }
+        true
+      pause: (item) ->
+        if not confirm _('confirm.pickup.pause')
+          return false
+        _.Pages.pickupListPause(_.url, item.$no()).ajax {
+          success: (d, s, x) ->
+            if x.status is 202
+              item.state 'paused'
+            else
+              # 200 or 204
+              Messenger().post { message: _('pickup.pause.fail'), type: 'error' }
+          error: ->
+            Messenger().post { message: _('pickup.pause.fail'), type: 'error' }
+        }
+        true
+
+    self.pickupAdd =
+      source: []
+      verbs: ko.observableArray()
+      types: ko.observableArray()
+      basicQuery: ko.observable()
+      advancedQuery: ko.observable """
+{
+  "orderNo": 0,
+  "resultType": "",
+  "resultQuery": "",
+  "plans": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "title": "",
+  "state": "paused"
+}
+"""
+      mode: ko.observable 'basic'
+      orders: ko.observableArray()
+      selectedOrder: ko.observable()
+      data: 
+        orderNo: ko.observable 0
+        resultType: ko.observable ''
+        resultQuery: ko.observable ''
+        plans: ko.observableArray []
+        title: ko.observable ''
+        state: ko.observable 'paused'
+
+      afterRender: ->
+        # $('select').selectpicker();
+        q = $('#basicQuery')
+        q.typeahead {
+          source: self.pickupAdd.source
+          items: 10
+          minLength: 0
+          matcher: (item) ->
+            p1 = item.split(' ').length
+            p2 = this.query.split(' ').length
+            # and (itemParts.length-1) <= queryParts.length
+            # console.log item, p1, p2
+            if item.indexOf('$verb') isnt -1
+              i = item.split(' ').indexOf('$verb')
+              q = this.query.split(' ')
+              q[i] = '$verb'
+              q = q.join(' ')
+              if item.toUpperCase().startsWith(q.toUpperCase()) and Math.max(p1-2,0) <= p2
+                true
+              else
+                false
+            else if item.indexOf('$value') isnt -1
+              i = item.split(' ').indexOf('$value')
+              q = this.query.split(' ')
+              q[i] = '$value'
+              q = q.join(' ')
+              if item.toUpperCase().startsWith(q.toUpperCase()) and Math.max(p1-2,0) <= p2
+                true
+              else
+                false
+            else
+              if item.toUpperCase().startsWith(this.query.toUpperCase()) and Math.max(p1-2,0) <= p2
+                true
+              else
+                false
+          updater: (item) ->
+            if item.indexOf('$verb') isnt -1 or item.indexOf('$value') isnt -1
+              return this.query
+            else
+              return item
+        }
+        q.focus();
+
+      create: ->
+        data = self.pickupAdd
+        request = data.data
+        json = null
+
+        if data.mode() is 'basic'
+          q = data.basicQuery()
+          if q is undefined or q.length is 0
+            Messenger().post { message: _('form.basicQuery.empty'), type: 'info' }
+            return false
+          else if q[q.length-1] is ' '
+            Messenger().post { message: _('form.basicQuery.incomplete'), type: 'info' }
+            return false
+          q = q.split ' '
+          switch q.length
+            # add new status that user listened music
+            when 7
+              request.resultType 'status'
+              request.resultQuery q[4] + ' ' + q[5] + ' ' + q[6]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'add'
+                value: ''
+              }
+            # add new json value to user as recommended_users
+            when 8
+              request.resultType 'model'
+              request.resultQuery q[5]
+              request.plans.removeAll()
+              request.plans.push {
+                key: 'add'
+                value: q[7]
+              }
+            else
+              Messenger().post { message: _('form.basicQuery.incomplete'), type: 'info' }
+              return false
+          request.orderNo = data.selectedOrder().key
+          json = JSON.parse ko.toJSON request
+          # data = JSON.parse d
+        else if data.mode() is 'advanced'
+          try
+            json = JSON.parse data.advancedQuery()
+          catch e
+            Messenger().post { message: _('form.advancedQuery.invalid'), type: 'error' }
+            return false
+        
+        else
+          Messenger().post { message: _('form.empty'), type: 'error' }
+          return false
+
+        # check empty
+        if not json.resultType.length
+          Messenger().post { message: _('form.resultType.empty'), type: 'error' }
+          return false
+        if not json.resultQuery.length
+          Messenger().post { message: _('form.resultQuery.empty'), type: 'error' }
+          return false
+        if not json.state.length
+          Messenger().post { message: _('form.pickup.state.empty'), type: 'error' }
+          return false
+        if not json.title.length
+          Messenger().post { message: _('form.pickup.title.empty'), type: 'error' }
+          return false
+
+        # console.log json
+        # return false
+        _.Pages.pickupAddUpdate(_.url).ajax {
+          contentType: 'application/json'
+          data: JSON.stringify(json)
+          success: (d, s, x) ->
+            console.log d,s
+            if x.status is 201
+              Messenger().post { message: _(d), type: 'success' }
+              location.href = _.Pages.pickup(_.url, '/list').url
+            else
+              Messenger().post { message: _(d), type: 'error' }
+          error: (x, s, r) ->
+            console.log r,s
+            Messenger().post { message: _('error.' + x.status), type: 'error' }
+        }
+        false
+
 
     self.usage =
       data: ko.observable()
@@ -881,21 +1070,13 @@ jQuery ->
                       d[key].$expanded = false
                     ko.mapping.fromJS d, {}, self.orderStatus.data
                     # console.log d
-                  else
-                    self.pickupStatus.data d
+                when 'list'
+                  if self.menu() is 'pickup'
+                    for key of d
+                      d[key].$expanded = false
+                    ko.mapping.fromJS d, {}, self.pickupList.data
                 when 'add'
                   if self.menu() is 'order'
-                    # _.Pages.orderAddVerb(_.url).ajax {
-                    #   success: (d, s, x) ->
-                    #     self.orderAdd.verbs d
-                    # }
-                    # console.log self.orderAdd.types()
-                    # _.Pages.orderAddType(_.url).ajax {
-                    #   success: (d, s, x) ->
-                    #     self.orderAdd.types d
-                    #     console.log self.orderAdd.types()
-                    # }
-
                     $.when(
                       _.Pages.orderAddVerb(_.url).ajax(),
                       _.Pages.orderAddType(_.url).ajax()
@@ -923,7 +1104,37 @@ jQuery ->
                             self.orderAdd.source.push "Count how many #{a.name} did #{v.verb} some #{b.name}"
                             self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} some #{b.name}"
                             self.orderAdd.source.push "Count how many times does a #{a.name} #{v.verb} for each #{b.name}"
+                  else if self.menu() is 'pickup'
+                    # ko.mapping.fromJS d, {}, self.pickupAdd.orders
+                    a = []
+                    for item in d
+                      a.push {
+                        key: item.$no
+                        value: "##{item.$no} - #{item.title}."
+                      }
+                    ko.mapping.fromJS a, {}, self.pickupAdd.orders
 
+                    $.when(
+                      _.Pages.orderAddType(_.url).ajax()
+                    ).done (types) ->
+                      self.pickupAdd.source.push 'Add '
+                      self.pickupAdd.source.push 'Add new '
+                      self.pickupAdd.source.push 'Add new status '
+                      self.pickupAdd.source.push 'Add new status that '
+                      self.pickupAdd.source.push 'Add new json '
+                      self.pickupAdd.source.push 'Add new json value '
+                      self.pickupAdd.source.push 'Add new json value to '
+                      for a in types
+                        self.pickupAdd.source.push "Add new json value to #{a.name} "
+                        self.pickupAdd.source.push "Add new json value to #{a.name} as "
+                        self.pickupAdd.source.push "Add new json value to #{a.name} as $value"
+                        self.pickupAdd.source.push "Add new status that #{a.name} "
+                        self.pickupAdd.source.push "Add new status that #{a.name} $verb "
+                        for b in types
+                          self.pickupAdd.source.push "Add new status that #{a.name} $verb #{b.name}"
+                    # add new status that s v o
+                    # add new json value to user as recommended_users
+                    # self.prepareComponents()
                   else
                     # self.pickupAdd.data d
                   true

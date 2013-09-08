@@ -27,7 +27,7 @@ object Pages extends Controller with Secured {
   }
   def accountApiKey(url: String) = SignedUrl(url) { implicit request => user =>
     Async {
-      Mintpresso(s"/user/${user.no}/issue/key").get map { r1 =>
+      Mintpresso(s"/user/${user.no}/issue/key?newest=updated").get map { r1 =>
         if(r1.status == 200){
           val keys = (r1.json \\ "$object")
           Ok( keys.foldLeft(Json.arr()) { (a, b) => 
@@ -72,15 +72,16 @@ object Pages extends Controller with Secured {
               Json.obj(
                 "name" -> "manage_pickup",
                 "value" -> scopes.contains("manage_pickup")
-              ),
-              Json.obj(
-                "name" -> "read_type",
-                "value" -> scopes.contains("read_type")
-              ),
-              Json.obj(
-                "name" -> "read_verb",
-                "value" -> scopes.contains("read_verb")
               )
+              // ,
+              // Json.obj(
+              //   "name" -> "read_type",
+              //   "value" -> scopes.contains("read_type")
+              // ),
+              // Json.obj(
+              //   "name" -> "read_verb",
+              //   "value" -> scopes.contains("read_verb")
+              // )
             )
             val label = (b \ "$id").as[String].split("__")(0)
             val urls = (b \ "url").as[List[String]].foldLeft(Json.arr()) { (a, b) =>
@@ -303,7 +304,6 @@ object Pages extends Controller with Secured {
         }
       }
     }
-    
   }
   def orderStatusStart(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
     Async {
@@ -320,7 +320,6 @@ object Pages extends Controller with Secured {
   def orderStatusPause(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
     Async {
       Mintpresso(s"/order/${no}/cancel").get map { r1 =>
-        Logger.debug(r1.body + r1.status)
         r1.status match {
           case 202 => Accepted
           case 200 => Ok
@@ -375,6 +374,96 @@ object Pages extends Controller with Secured {
       }
     }
   }
-  def pickup(url: String, path: String) = TODO
+  def pickup(url: String, path: String) = SignedUrl(url) { implicit request => user =>
+    Ok(views.html.pages.pickup(""))
+  }
+  def pickupList(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/user/${user.no}/request/pickup").get map { r1 =>
+        if(r1.status == 200){
+          Ok((r1.json \\ "$object").foldLeft(Json.arr()){ (a, b) =>
+            a.append((b))
+          })
+        }else{
+          Ok(Json.arr())
+        }
+      }
+    }
+  }
+  def pickupAdd(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/user/${user.no}/request/order").get map { r1 =>
+        if(r1.status == 200){
+          Ok((r1.json \\ "$object").foldLeft(Json.arr()){ (a, b) =>
+            a.append((b))
+          })
+        }else{
+          Ok(Json.arr())
+        }
+      }
+    }
+  }
+  def pickupAddUpdate(url: String) = JsonAction(url) { implicit request => user =>
+    val json = request.body.as[JsObject]
+    Async {
+      Mintpresso("/pickup").withConnection { conn =>
+        conn.post(Json.obj("pickup" -> json))
+      } map { r1 =>
+        if(r1.status == 201){
+          val pickupNo = (r1.json \ "pickup" \ "$no").as[Long]
+          Async {
+            Mintpresso(s"/user/${user.no}/request/pickup/${pickupNo}").post map { r2 =>
+              if(r2.status == 201){
+                Async {
+                  val orderNo = (json \ "orderNo").as[Long]
+                  Mintpresso(s"/order/${orderNo}/callback/pickup/${pickupNo}").post map { r3 =>
+                    if(r3.status == 201){
+                      Created("apply.done")
+                    }else{
+                      Ok("apply.fail")        
+                    }
+                  }
+                }
+              }else{
+                Logger.info(r1.body)
+                Ok("apply.fail")        
+              }
+            }
+          }
+        }else{
+          Logger.info(r1.body)
+          Ok("apply.fail")
+        }
+      }
+    }
+  }
+  def pickupDelete(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Ok
+  }
+  def pickupListStart(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/pickup/${no}/prepare").get map { r1 =>
+        r1.status match {
+          case 202 => Accepted
+          case 200 => Ok
+          case 404 => NoContent
+          case _ => BadRequest
+        }
+      }
+    }
+  }
+  def pickupListPause(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/pickup/${no}/cancel").get map { r1 =>
+        Logger.debug("cancel " + r1.body + r1.status)
+        r1.status match {
+          case 202 => Accepted
+          case 200 => Ok
+          case 404 => NoContent
+          case _ => BadRequest
+        }
+      }
+    }
+  }
   def support(url: String, path: String) = TODO
 }

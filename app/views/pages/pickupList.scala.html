@@ -1,13 +1,13 @@
 @()(implicit request: RequestHeader, flash: Flash)
 <div class="container">
   <div id="selector">
-    <a href="@routes.Pages.order(Application.getUrl, "/add")" class="btn btn-success">Add new order</a>
+    <a href="@routes.Pages.pickup(Application.getUrl, "/add")" class="btn btn-success">Add new pickup</a>
   </div>
-  <h1>STATUS</h1>
+  <h1>LIST</h1>
   <table class="table table-hover">
     <thead>
       <tr>
-        <td>Order #</td>
+        <td>Pickup #</td>
         <td>Title</td>
         <td>State</td>
         <td>Last Edited</td>
@@ -26,19 +26,18 @@
           <span data-bind="text: state, style: { backgroundColor: state() == 'running' ? '#16A085' : '#D35400' }" class="label label-inverse"></span>
         </td>
         <td><time ago data-bind="text: $updatedAt"></time></td>
-        <td><time ago data-bind="text: $referencedAt, visible: $updatedAt() != $referencedAt()"></time><span data-bind="visible: $updatedAt() == $referencedAt()">-</span></td>
+        <td><time ago data-bind="text: $referencedAt, visible: $updatedAt() != $referencedAt()"></time><span data-bind="visible: $updatedAt() == $referencedAt()"> - </span></td>
         <td>
           <div class="btn-group typo-capital bold">
-            <button data-bind="click: $root.orderStatus.start.bind($root, $data), visible: state() == 'paused'" class="btn btn-small"> <i class="icon-play"></i> Start</button>
-            <button data-bind="click: $root.orderStatus.pause.bind($root, $data), visible: state() == 'running' " class="btn btn-small"> <i class="icon-pause"></i> Pause</button>
-            <button data-bind="click: $root.orderStatus.delete.bind($root, $data)" class="btn btn-small" disabled="disabled"> <i class="icon-remove"></i> Delete</button>
+            <button data-bind="click: $root.pickupList.start.bind($root, $data), visible: state() == 'paused'" class="btn btn-small"> <i class="icon-play"></i> Start</button>
+            <button data-bind="click: $root.pickupList.pause.bind($root, $data), visible: state() == 'running' " class="btn btn-small"> <i class="icon-pause"></i> Pause</button>
             <button class="btn btn-small" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$expanded; _(!_()) }">&nbsp;<i data-bind="css: { 'icon-caret-down': $expanded() === false, 'icon-caret-up': $expanded() === true }"></i>&nbsp;</button>
           </div>
         </td>
       </tr>
       <tr data-bind="visible: $expanded() === true">
         <td colspan="7" style="border: 0">
-<pre class="language-javascript" style="text-indent: -16pt;"><code class="language-javascript" data-bind="text: JSON.stringify(ko.toJS($root.orderStatus.data()[$index()]), function(k,v){if(!k.startsWith('$')){return v}}, '  ')"></code></pre>
+<pre class="language-javascript" style="text-indent: -16pt;"><code class="language-javascript" data-bind="text: JSON.stringify(ko.toJS($root.pickupList.data()[$index()]), function(k,v){if(!k.startsWith('$')){return v}}, '  ')"></code></pre>
         </td>
       </tr>
     </tbody>

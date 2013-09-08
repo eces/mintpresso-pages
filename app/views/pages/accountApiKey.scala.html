@@ -15,13 +15,13 @@
         <label class="control-label">API Key</label>
         <div class="controls controls-list">
           <input type="text" data-bind="value: $id" disabled="disabled" class="span4" placeholder="This will be shown after save.">
-          <button type="button" class="btn" data-bind="click: $root.apiKey.delete, visible: $id().length > 0">Delete</button>
+          <button type="button" class="btn" data-bind="click: $root.apiKey.delete, visible: $id().length > 0 && label() != 'secret' ">Delete</button>
         </div>
       </div>
       <div class="control-group">
         <label class="control-label">Label</label>
         <div class="controls">
-          <input type="text" data-bind="value: label, uniqueName: true">
+          <input type="text" name="keyLabel" data-bind="value: label, uniqueName: true">
         </div>
       </div>
       <div class="control-group">
@@ -53,14 +53,14 @@
           </select>
         </div>
       </div>
-      <div class="control-group" data-bind="visible: $createdAt > 0">
+      <div class="control-group" data-bind="">
         <label class="control-label"></label>
         <div class="controls">
-          <span>Last updated <time ago data-bind="text: $updatedAt" /></span>, and
+          <span>Last updated <time ago data-bind="text: $updatedAt" /></span>,
           <span>created <time ago data-bind="text: $createdAt" /></span>.
         </div>
       </div>
-      <div class="row right">
+      <div class="row right" data-bind="visible: label() != 'secret'">
         <button type="submit" class="btn btn-primary" data-bind="text: $root.applyButton">Apply changes</button>
       </div>
     </form>

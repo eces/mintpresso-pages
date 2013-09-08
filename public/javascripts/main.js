@@ -617,6 +617,20 @@ Jinhyuk Lee at mintpresso.com
           return key.url.remove(value);
         },
         save: function(key) {
+          if (key.label() === 'secret') {
+            Messenger().post({
+              message: _('key.label.secret'),
+              type: 'info'
+            });
+            return false;
+          }
+          if (key.label().length === 0) {
+            Messenger().post({
+              message: _('key.label.empty'),
+              type: 'info'
+            });
+            return false;
+          }
           _.Pages.accountApiKeyUpdate(_.url).ajax({
             contentType: 'application/json',
             data: ko.toJSON(key),
@@ -971,10 +985,245 @@ Jinhyuk Lee at mintpresso.com
           });
         }
       };
-      self.pickupStatus = {
+      self.pickupList = {
         data: ko.observable(),
         afterRender: function() {
           return self.prepareComponents();
+        },
+        start: function(item) {
+          _.Pages.pickupListStart(_.url, item.$no()).ajax({
+            success: function(d, s, x) {
+              if (x.status === 202) {
+                return item.state('running');
+              } else {
+                return Messenger().post({
+                  message: _('pickup.start.fail'),
+                  type: 'error'
+                });
+              }
+            },
+            error: function() {
+              return Messenger().post({
+                message: _('pickup.start.fail'),
+                type: 'error'
+              });
+            }
+          });
+          return true;
+        },
+        pause: function(item) {
+          if (!confirm(_('confirm.pickup.pause'))) {
+            return false;
+          }
+          _.Pages.pickupListPause(_.url, item.$no()).ajax({
+            success: function(d, s, x) {
+              if (x.status === 202) {
+                return item.state('paused');
+              } else {
+                return Messenger().post({
+                  message: _('pickup.pause.fail'),
+                  type: 'error'
+                });
+              }
+            },
+            error: function() {
+              return Messenger().post({
+                message: _('pickup.pause.fail'),
+                type: 'error'
+              });
+            }
+          });
+          return true;
+        }
+      };
+      self.pickupAdd = {
+        source: [],
+        verbs: ko.observableArray(),
+        types: ko.observableArray(),
+        basicQuery: ko.observable(),
+        advancedQuery: ko.observable("{\n  \"orderNo\": 0,\n  \"resultType\": \"\",\n  \"resultQuery\": \"\",\n  \"plans\": [\n    {\n      \"key\": \"\",\n      \"value\": \"\"\n    }\n  ],\n  \"title\": \"\",\n  \"state\": \"paused\"\n}"),
+        mode: ko.observable('basic'),
+        orders: ko.observableArray(),
+        selectedOrder: ko.observable(),
+        data: {
+          orderNo: ko.observable(0),
+          resultType: ko.observable(''),
+          resultQuery: ko.observable(''),
+          plans: ko.observableArray([]),
+          title: ko.observable(''),
+          state: ko.observable('paused')
+        },
+        afterRender: function() {
+          var q;
+          q = $('#basicQuery');
+          q.typeahead({
+            source: self.pickupAdd.source,
+            items: 10,
+            minLength: 0,
+            matcher: function(item) {
+              var i, p1, p2;
+              p1 = item.split(' ').length;
+              p2 = this.query.split(' ').length;
+              if (item.indexOf('$verb') !== -1) {
+                i = item.split(' ').indexOf('$verb');
+                q = this.query.split(' ');
+                q[i] = '$verb';
+                q = q.join(' ');
+                if (item.toUpperCase().startsWith(q.toUpperCase()) && Math.max(p1 - 2, 0) <= p2) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else if (item.indexOf('$value') !== -1) {
+                i = item.split(' ').indexOf('$value');
+                q = this.query.split(' ');
+                q[i] = '$value';
+                q = q.join(' ');
+                if (item.toUpperCase().startsWith(q.toUpperCase()) && Math.max(p1 - 2, 0) <= p2) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else {
+                if (item.toUpperCase().startsWith(this.query.toUpperCase()) && Math.max(p1 - 2, 0) <= p2) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            },
+            updater: function(item) {
+              if (item.indexOf('$verb') !== -1 || item.indexOf('$value') !== -1) {
+                return this.query;
+              } else {
+                return item;
+              }
+            }
+          });
+          return q.focus();
+        },
+        create: function() {
+          var data, e, json, q, request;
+          data = self.pickupAdd;
+          request = data.data;
+          json = null;
+          if (data.mode() === 'basic') {
+            q = data.basicQuery();
+            if (q === void 0 || q.length === 0) {
+              Messenger().post({
+                message: _('form.basicQuery.empty'),
+                type: 'info'
+              });
+              return false;
+            } else if (q[q.length - 1] === ' ') {
+              Messenger().post({
+                message: _('form.basicQuery.incomplete'),
+                type: 'info'
+              });
+              return false;
+            }
+            q = q.split(' ');
+            switch (q.length) {
+              case 7:
+                request.resultType('status');
+                request.resultQuery(q[4] + ' ' + q[5] + ' ' + q[6]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'add',
+                  value: ''
+                });
+                break;
+              case 8:
+                request.resultType('model');
+                request.resultQuery(q[5]);
+                request.plans.removeAll();
+                request.plans.push({
+                  key: 'add',
+                  value: q[7]
+                });
+                break;
+              default:
+                Messenger().post({
+                  message: _('form.basicQuery.incomplete'),
+                  type: 'info'
+                });
+                return false;
+            }
+            request.orderNo = data.selectedOrder().key;
+            json = JSON.parse(ko.toJSON(request));
+          } else if (data.mode() === 'advanced') {
+            try {
+              json = JSON.parse(data.advancedQuery());
+            } catch (_error) {
+              e = _error;
+              Messenger().post({
+                message: _('form.advancedQuery.invalid'),
+                type: 'error'
+              });
+              return false;
+            }
+          } else {
+            Messenger().post({
+              message: _('form.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.resultType.length) {
+            Messenger().post({
+              message: _('form.resultType.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.resultQuery.length) {
+            Messenger().post({
+              message: _('form.resultQuery.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.state.length) {
+            Messenger().post({
+              message: _('form.pickup.state.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          if (!json.title.length) {
+            Messenger().post({
+              message: _('form.pickup.title.empty'),
+              type: 'error'
+            });
+            return false;
+          }
+          _.Pages.pickupAddUpdate(_.url).ajax({
+            contentType: 'application/json',
+            data: JSON.stringify(json),
+            success: function(d, s, x) {
+              console.log(d, s);
+              if (x.status === 201) {
+                Messenger().post({
+                  message: _(d),
+                  type: 'success'
+                });
+                return location.href = _.Pages.pickup(_.url, '/list').url;
+              } else {
+                return Messenger().post({
+                  message: _(d),
+                  type: 'error'
+                });
+              }
+            },
+            error: function(x, s, r) {
+              console.log(r, s);
+              return Messenger().post({
+                message: _('error.' + x.status),
+                type: 'error'
+              });
+            }
+          });
+          return false;
         }
       };
       self.usage = {
@@ -1049,7 +1298,7 @@ Jinhyuk Lee at mintpresso.com
         if (route in _.Pages) {
           _.Pages[route](_.url).ajax({
             success: function(d, s, x) {
-              var key;
+              var a, item, key, _i, _len;
               if (x.status !== 200) {
                 return Messenger().post({
                   message: _(d),
@@ -1068,8 +1317,14 @@ Jinhyuk Lee at mintpresso.com
                         d[key].$expanded = false;
                       }
                       return ko.mapping.fromJS(d, {}, self.orderStatus.data);
-                    } else {
-                      return self.pickupStatus.data(d);
+                    }
+                    break;
+                  case 'list':
+                    if (self.menu() === 'pickup') {
+                      for (key in d) {
+                        d[key].$expanded = false;
+                      }
+                      return ko.mapping.fromJS(d, {}, self.pickupList.data);
                     }
                     break;
                   case 'add':
@@ -1118,6 +1373,45 @@ Jinhyuk Lee at mintpresso.com
                                 }
                                 return _results2;
                               })());
+                            }
+                            return _results1;
+                          })());
+                        }
+                        return _results;
+                      });
+                    } else if (self.menu() === 'pickup') {
+                      a = [];
+                      for (_i = 0, _len = d.length; _i < _len; _i++) {
+                        item = d[_i];
+                        a.push({
+                          key: item.$no,
+                          value: "#" + item.$no + " - " + item.title + "."
+                        });
+                      }
+                      ko.mapping.fromJS(a, {}, self.pickupAdd.orders);
+                      $.when(_.Pages.orderAddType(_.url).ajax()).done(function(types) {
+                        var b, _j, _len1, _results;
+                        self.pickupAdd.source.push('Add ');
+                        self.pickupAdd.source.push('Add new ');
+                        self.pickupAdd.source.push('Add new status ');
+                        self.pickupAdd.source.push('Add new status that ');
+                        self.pickupAdd.source.push('Add new json ');
+                        self.pickupAdd.source.push('Add new json value ');
+                        self.pickupAdd.source.push('Add new json value to ');
+                        _results = [];
+                        for (_j = 0, _len1 = types.length; _j < _len1; _j++) {
+                          a = types[_j];
+                          self.pickupAdd.source.push("Add new json value to " + a.name + " ");
+                          self.pickupAdd.source.push("Add new json value to " + a.name + " as ");
+                          self.pickupAdd.source.push("Add new json value to " + a.name + " as $value");
+                          self.pickupAdd.source.push("Add new status that " + a.name + " ");
+                          self.pickupAdd.source.push("Add new status that " + a.name + " $verb ");
+                          _results.push((function() {
+                            var _k, _len2, _results1;
+                            _results1 = [];
+                            for (_k = 0, _len2 = types.length; _k < _len2; _k++) {
+                              b = types[_k];
+                              _results1.push(self.pickupAdd.source.push("Add new status that " + a.name + " $verb " + b.name));
                             }
                             return _results1;
                           })());
