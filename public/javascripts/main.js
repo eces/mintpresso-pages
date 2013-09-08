@@ -37,6 +37,15 @@ Jinhyuk Lee at mintpresso.com
     }
   };
 
+  
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+;
+
   jQuery(function() {
     var $body, $meta, content, event, pagesViewModel;
     $('input, textarea').placeholder();
@@ -115,17 +124,18 @@ Jinhyuk Lee at mintpresso.com
           return this._page();
         },
         write: function(value) {
-          var parameter;
+          var query;
           if (self._page() !== value) {
             self._page(value);
             if (value.length > 0) {
-              parameter = '';
-              if (self.id() !== void 0 && String(self.id()).length > 0) {
-                parameter = '/' + self.id();
+              if (Array('search').indexOf(self._page()) !== -1) {
+                query = location.search;
+              } else {
+                query = '';
               }
               History.pushState({
                 timestamp: moment().seconds()
-              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + parameter);
+              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + query);
             }
           }
           return true;
@@ -194,6 +204,7 @@ Jinhyuk Lee at mintpresso.com
         apikey: ko.observable(''),
         queries: ko.observable(''),
         secretKey: '',
+        binded: false,
         template: function() {
           if (self.search.dataType() === 'model') {
             return 'model-template';
@@ -208,9 +219,13 @@ Jinhyuk Lee at mintpresso.com
         },
         revert: function() {
           self.search.queries('');
-          return self.search.data.removeAll();
+          self.search.data([]);
+          self.search.dataType('');
+          self.search.itemString('0 item');
+          return self.search.responseTime('0');
         },
-        afterRender: function() {
+        afterRender: function(a, b) {
+          var $q;
           self.search.secretKey = $('#secretKey').html();
           if (self.search.secretKey.length === 0) {
             Messenger().post({
@@ -219,8 +234,27 @@ Jinhyuk Lee at mintpresso.com
               })
             });
           }
-          $('input[name=q]').focus();
-          return Prism.highlightElement($('#search table pre'), true);
+          $q = $('input[name=q]');
+          $q.focus();
+          if (self.search.queries().length === 0 && location.search.length > 0) {
+            self.search.queries(getParameterByName('q'));
+            self.search.refresh();
+          }
+          Prism.highlightElement($('#search table pre'), true);
+          if (self.search.binded === false) {
+            History.Adapter.bind(window, 'statechange', function(e) {
+              var q, state;
+              state = History.getState();
+              q = getParameterByName('q');
+              if (self.search.queries() !== q) {
+                self.search.revert();
+                console.log('BIND');
+                self.search.queries(q);
+                return self.search.refresh();
+              }
+            });
+            return self.search.binded = true;
+          }
         }
       };
       self.search.query = function(callback) {
@@ -263,10 +297,13 @@ Jinhyuk Lee at mintpresso.com
             _.responseTime = Date.now();
             self.search.data([]);
             self.search.dataType('model');
+            History.pushState({
+              timestamp: -moment().seconds()
+            }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+'));
             if (json === null) {
               url = _.server + ("/" + parts[0] + "/" + parts[1] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))));
             } else {
-              url = _.server + ("/" + parts[0] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))));
+              url = _.server + ("/" + parts[0] + "?apikey=" + self.search.secretKey + "&json=" + (encodeURIComponent(JSON.stringify(json))) + "&offset=0&limit=100");
             }
             $.ajax({
               url: url,
@@ -347,6 +384,9 @@ Jinhyuk Lee at mintpresso.com
             self.search.data([]);
             self.search.dataType('status');
             url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "?apikey=" + self.search.secretKey);
+            History.pushState({
+              timestamp: -moment().seconds()
+            }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+'));
             $.ajax({
               url: url,
               type: 'GET',
@@ -436,6 +476,9 @@ Jinhyuk Lee at mintpresso.com
             _.responseTime = Date.now();
             self.search.data([]);
             self.search.dataType('status');
+            History.pushState({
+              timestamp: -moment().seconds()
+            }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+'));
             url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "?apikey=" + self.search.secretKey);
             $.ajax({
               url: url,
@@ -508,6 +551,9 @@ Jinhyuk Lee at mintpresso.com
             _.responseTime = Date.now();
             self.search.data([]);
             self.search.dataType('status');
+            History.pushState({
+              timestamp: -moment().seconds()
+            }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+'));
             url = _.server + ("/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "/" + parts[4] + "?apikey=" + self.search.secretKey);
             $.ajax({
               url: url,
@@ -1260,9 +1306,6 @@ Jinhyuk Lee at mintpresso.com
           self.menu(parts[2]);
         }
         if (parts.length > 3) {
-          if (parts[4] !== void 0) {
-            self.id(parts[4]);
-          }
           return self.page(parts[3]);
         } else {
           self._page('');
@@ -1290,6 +1333,9 @@ Jinhyuk Lee at mintpresso.com
         var route, state;
         state = History.getState();
         if (state.data.timestamp !== moment().seconds()) {
+          if (location.search.length) {
+            return false;
+          }
           if (self.applyUrl() === false) {
             return false;
           }

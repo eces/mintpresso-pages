@@ -22,6 +22,15 @@ String.prototype.capitalize = (lower) ->
     this.replace /(?:^|\s)\S/g, (a) ->
       return a.toUpperCase()
 
+`
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+`
+
 jQuery ->
   $('input, textarea').placeholder()
 
@@ -88,11 +97,12 @@ jQuery ->
           self._page value
           # ignore when pointing none page like '/account'
           if value.length > 0
-            parameter = ''
-            if self.id() isnt undefined and String(self.id()).length > 0
-              parameter = '/' + self.id()
+            if Array('search').indexOf(self._page()) isnt -1
+              query = location.search 
+            else
+              query = ''
             # change push state
-            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + parameter
+            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + query
         true
       owner: self
     }
@@ -155,6 +165,7 @@ jQuery ->
       apikey: ko.observable('')
       queries: ko.observable('')
       secretKey: ''
+      binded: false
       template: ->
         if self.search.dataType() is 'model'
           'model-template'
@@ -176,14 +187,35 @@ jQuery ->
         self.search.query self.search.queries()
       revert: ->
         self.search.queries ''
-        self.search.data.removeAll()
-      afterRender: ->
+        self.search.data []
+        self.search.dataType ''
+        self.search.itemString '0 item'
+        self.search.responseTime '0'
+        # if location.search.length isnt 0
+        #   History.replaceState {timestamp: -moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page()
+      afterRender: (a, b) ->
         self.search.secretKey = $('#secretKey').html()
         if self.search.secretKey.length is 0
           Messenger().post { message: _ 'secret.key.empty', type: 'error' }
-        $('input[name=q]').focus()
+        $q = $('input[name=q]')
+        $q.focus()
+        
+        if self.search.queries().length is 0 and location.search.length > 0
+          self.search.queries getParameterByName('q')
+          self.search.refresh()
+
         Prism.highlightElement $('#search table pre'), true
-          
+
+        if self.search.binded is false
+          History.Adapter.bind window, 'statechange', (e) ->
+            state = History.getState();
+            q = getParameterByName('q')
+            if self.search.queries() isnt q
+              self.search.revert()
+              console.log 'BIND'
+              self.search.queries q
+              self.search.refresh()
+          self.search.binded = true
 
     self.search.query = (callback) ->
       parts = []
@@ -214,10 +246,12 @@ jQuery ->
           self.search.data []
           self.search.dataType 'model'
 
+          History.pushState {timestamp: -moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+')
+
           if json is null
             url = _.server + "/#{parts[0]}/#{parts[1]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
           else
-            url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}"
+            url = _.server + "/#{parts[0]}?apikey=#{self.search.secretKey}&json=#{encodeURIComponent(JSON.stringify(json))}&offset=0&limit=100"
           
           $.ajax {
             url: url
@@ -274,6 +308,8 @@ jQuery ->
           self.search.dataType 'status'
 
           url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}?apikey=#{self.search.secretKey}"
+
+          History.pushState {timestamp: -moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+')
 
           $.ajax {
             url: url
@@ -343,6 +379,8 @@ jQuery ->
           self.search.data []
           self.search.dataType 'status'
 
+          History.pushState {timestamp: -moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+')
+
           url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}?apikey=#{self.search.secretKey}"
           $.ajax {
             url: url
@@ -394,6 +432,8 @@ jQuery ->
           _.responseTime = Date.now()
           self.search.data []
           self.search.dataType 'status'
+
+          History.pushState {timestamp: -moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + '?q=' + parts.join('+')
 
           url = _.server + "/#{parts[0]}/#{parts[1]}/#{parts[2]}/#{parts[3]}/#{parts[4]}?apikey=#{self.search.secretKey}"
           
@@ -1012,11 +1052,11 @@ jQuery ->
       parts = location.pathname.split '/'
       self.menu parts[2] if parts.length > 2
       if parts.length > 3
-        if parts[4] isnt undefined
-          self.id parts[4] 
-        # else
-        #   self.id ''
         self.page parts[3]
+        # if parts[4] isnt undefined
+        #   self.id parts[4] 
+        # # else
+        # #   self.id ''
       else
         self._page ''
         false
@@ -1040,9 +1080,14 @@ jQuery ->
     # bind push state changes
     History.Adapter.bind window, 'statechange', (e) ->
       state = History.getState();
-
-      # not triggered by page.write, should be from history.back
+      # not triggered by page.write, should be from history.back or by hash/search query change.
       if state.data.timestamp isnt moment().seconds()
+        # prevent bubbling at menu > page > query string propagation.
+        # console.log state.data.timestamp
+        # f = self[self.page()].queryString
+        # f() if f isnt undefined
+        if location.search.length
+          return false
         if self.applyUrl() is false
           return false
 
