@@ -1,0 +1,31 @@
+@(secretKey: String)(implicit request: RequestHeader, flash: Flash)
+
+@single(Messages("title.support"))("white") {
+  <meta name="panel" content="data">
+
+  <div id="panel">
+    @menu("order")
+    <div id="submenu">
+      <ul>
+        <li>
+          <span>Live Conversation (Coming Soon)</span>
+          <p>Coming soon!</p>
+        </li>
+        <li>
+          <span>Customer Report (Coming Soon)</span>
+          <p>Coming soon!</p>
+        </li>
+      </ul>
+    </div>
+    <div id="content" data-bind="">
+      <div class="condensed" data-bind="visible: page() == ''">
+        <div class="container" id="search" data-bind="with: $root.search">
+          <h1>SUPPORT</h1>
+          <h4>Ask Anything and Learn Faster. Please email us any questions and suggestions. </h4>
+          <p>Every members in charge of each parts will review your voice. We have always replied all emails in 24 hours, and sometimes you may be invited to join a conversation. </p>
+          <a href="mailto:support@@mintpresso.com" class="btn">support@@mintpresso.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+} 

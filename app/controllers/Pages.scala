@@ -465,5 +465,7 @@ object Pages extends Controller with Secured {
       }
     }
   }
-  def support(url: String, path: String) = TODO
+  def support(url: String, path: String) = SignedUrl(url) { implicit request => user =>
+    Ok(views.html.pages.support(""))
+  }
 }
