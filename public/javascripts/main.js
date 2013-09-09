@@ -123,19 +123,24 @@ function getParameterByName(name) {
         read: function() {
           return this._page();
         },
-        write: function(value) {
-          var query;
-          if (self._page() !== value) {
-            self._page(value);
-            if (value.length > 0) {
-              if (Array('search').indexOf(self._page()) !== -1) {
-                query = location.search;
-              } else {
-                query = '';
+        write: function(value, model, event) {
+          var query, url;
+          if (event !== void 0 && event.metaKey === true) {
+            url = '/' + _.url + '/' + self.menu() + '/' + value;
+            window.open(url, '_blank');
+          } else {
+            if (self._page() !== value) {
+              self._page(value);
+              if (value.length > 0) {
+                if (Array('search').indexOf(self._page()) !== -1) {
+                  query = location.search;
+                } else {
+                  query = '';
+                }
+                History.pushState({
+                  timestamp: moment().seconds()
+                }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + query);
               }
-              History.pushState({
-                timestamp: moment().seconds()
-              }, _('title.' + self.menu() + '.' + $.camelCase(self._page())), '/' + _.url + '/' + self.menu() + '/' + self._page() + query);
             }
           }
           return true;

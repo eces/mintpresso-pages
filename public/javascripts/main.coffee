@@ -90,19 +90,23 @@ jQuery ->
       read: () ->
         return this._page()
 
-      write: (value) ->
-        # do nothing if page isn't change, let's use non-self referring value '_page()'
-        if self._page() isnt value
-          # update
-          self._page value
-          # ignore when pointing none page like '/account'
-          if value.length > 0
-            if Array('search').indexOf(self._page()) isnt -1
-              query = location.search 
-            else
-              query = ''
-            # change push state
-            History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + query
+      write: (value, model, event) ->
+        if event isnt undefined and event.metaKey is true
+          url = '/' + _.url + '/' + self.menu() + '/' + value
+          window.open url, '_blank'
+        else
+          # do nothing if page isn't change, let's use non-self referring value '_page()'
+          if self._page() isnt value
+            # update
+            self._page value
+            # ignore when pointing none page like '/account'
+            if value.length > 0
+              if Array('search').indexOf(self._page()) isnt -1
+                query = location.search 
+              else
+                query = ''
+              # change push state
+              History.pushState {timestamp: moment().seconds() }, _('title.' + self.menu() + '.' + $.camelCase(self._page()) ), '/' + _.url + '/' + self.menu() + '/' + self._page() + query
         true
       owner: self
     }
