@@ -787,6 +787,9 @@ function getParameterByName(name) {
           return ko.mapping.fromJS(data, {}, self.apiKey.data);
         }
       };
+      self.developerConsole = {
+        data: ko.observableArray()
+      };
       self.orderStatus = {
         data: ko.observableArray(),
         create: function() {
@@ -1285,13 +1288,29 @@ function getParameterByName(name) {
       };
       self.prepareComponents = function() {
         $('time').each(function(k, v) {
-          var $this, m;
+          var $this, m, n;
           $this = $(v);
           if ($this.is('[ago]')) {
             m = moment(Number($this.html()));
             $this.html(m.fromNow());
             $this.attr('datetime', m.format());
             $this.attr('title', m.format());
+            return $this.tooltip({
+              placement: 'bottom'
+            });
+          } else if ($this.is('[duration]')) {
+            n = Number($this.html());
+            $this.html(moment.duration(n, 'ms').humanize());
+            $this.attr('datetime', n + 'ms');
+            $this.attr('title', n + 'ms');
+            return $this.tooltip({
+              placement: 'bottom'
+            });
+          } else if ($this.is('[ms]')) {
+            n = Number($this.html());
+            $this.html(n + 'ms');
+            $this.attr('datetime', n + 'ms');
+            $this.attr('title', moment.duration(n, 'ms').humanize());
             return $this.tooltip({
               placement: 'bottom'
             });

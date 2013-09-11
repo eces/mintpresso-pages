@@ -95,6 +95,7 @@ object Application extends Controller with Secured {
         routes.javascript.Pages.accountApiKey,
         routes.javascript.Pages.accountApiKeyUpdate,
         routes.javascript.Pages.accountApiKeyDelete,
+        routes.javascript.Pages.accountDeveloperConsole,
         routes.javascript.Pages.collect,
         routes.javascript.Pages.collectSearch,
         routes.javascript.Pages.collectImport,

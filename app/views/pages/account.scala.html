@@ -19,6 +19,10 @@
           <span>API Key Management</span>
           <p>Secure your application by issuing read-only key and revoking no more used keys.</p>
         </li>
+        <li data-bind="click: page.bind($data, 'developer-console'), css: { active: page() == 'developer-console'}">
+          <span>Developer Console</span>
+          <p>Inspect all requests collected from your application by log threshold, also get notified ongoing error rates.</p>
+        </li>
         <a href="@routes.Users.signout"><li><span>Sign out</span> <i class="icon-signout icon-flip-horizontal"></i></li></a>
       </ul>
     </div>
@@ -27,9 +31,11 @@
       <div class="condensed" data-bind="visible: page() == 'usage', template: { name: 'usage-template', data: usage.data(), if: usage.data() } "></div>
       <div class="condensed" data-bind="visible: page() == 'plans-and-billing', template: { name: 'plans-template', data: plansAndBilling.data(), if: plansAndBilling.data() } "></div>
       <div class="condensed" data-bind="visible: page() == 'api-key', template: { name: 'api-key-template', data: apiKey.data(), if: apiKey.data(), as: 'keys', afterRender: prepareComponents } "></div>
+      <div class="wide" data-bind="visible: page() == 'developer-console', template: { name: 'developer-console-template', data: developerConsole.data(), if: developerConsole.data(), as: 'logs', afterRender: prepareComponents } "></div>
     </div>
     <script type="text/html" id="usage-template">@accountUsage()</script>
     <script type="text/html" id="plans-template">@accountPlansAndBilling()</script>
     <script type="text/html" id="api-key-template">@accountApiKey()</script>
+    <script type="text/html" id="developer-console-template">@accountDeveloperConsole()</script>
   </div>
 } 

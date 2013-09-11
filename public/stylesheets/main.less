@@ -1004,6 +1004,49 @@ button {
   }
 }
 
+#log {
+  padding: 20px 0;
+  h6 {
+    background-color: lighten(@wet-asphalt, 30%);
+    color: #fff;
+    padding: 3px 0;
+    margin: 0 20px 10px 20px;
+    text-transform: uppercase;
+    .border-radius(3px);
+  }
+  tr:nth-child(2n) {
+    td {
+      border-top: 0; 
+      padding-bottom: 40px;
+      // &:hover {
+      //   background-color: lighten(@wet-asphalt, 63%) !important;
+      // }
+    }
+  }
+  tr:nth-child(2n-1) {
+    background-color: lighten(@wet-asphalt, 63%);
+    td {
+      // &:hover {
+      //   background-color: lighten(@wet-asphalt, 58%) !important;
+      // }
+      
+    }
+  }
+  thead tr {
+    background-color: #fff !important;
+  }
+  //   div:nth-child(1){
+  //     color: mix(@wet-asphalt, #f1f4f7, 65%);
+  //   }
+  //   div:nth-child(2){
+  //     color: lighten(@wet-asphalt, 30%);
+  //   }
+  //   div:nth-child(3){
+  //     color: lighten(@wet-asphalt, 30%);
+  //   }
+  // }
+}
+
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 

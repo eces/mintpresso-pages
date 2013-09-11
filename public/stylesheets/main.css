@@ -947,6 +947,29 @@ button.active span.label-number {
 #pricing div.row div:nth-child(3) {
   color: #7795b4;
 }
+#log {
+  padding: 20px 0;
+}
+#log h6 {
+  background-color: #7795b4;
+  color: #fff;
+  padding: 3px 0;
+  margin: 0 20px 10px 20px;
+  text-transform: uppercase;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#log tr:nth-child(2n) td {
+  border-top: 0;
+  padding-bottom: 40px;
+}
+#log tr:nth-child(2n-1) {
+  background-color: #e4eaf0;
+}
+#log thead tr {
+  background-color: #fff !important;
+}
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 /* Special class on .container surrounding .navbar, used for positioning it into place. */

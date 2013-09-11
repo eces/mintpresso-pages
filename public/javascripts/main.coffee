@@ -600,6 +600,9 @@ jQuery ->
       load: (data) ->
         ko.mapping.fromJS(data, {}, self.apiKey.data)
 
+    self.developerConsole =
+      data: ko.observableArray()
+
     self.orderStatus =
       data: ko.observableArray()
       create: ->
@@ -1044,6 +1047,22 @@ jQuery ->
           $this.tooltip {
             placement: 'bottom'
           }
+        else if $this.is '[duration]'
+          n = Number($this.html())
+          $this.html moment.duration( n, 'ms' ).humanize()
+          $this.attr 'datetime', n + 'ms'
+          $this.attr 'title', n + 'ms'
+          $this.tooltip {
+            placement: 'bottom'
+          }
+        else if $this.is '[ms]'
+          n = Number($this.html())
+          $this.html n + 'ms'
+          $this.attr 'datetime', n + 'ms'
+          $this.attr 'title', moment.duration( n, 'ms' ).humanize()
+          $this.tooltip {
+            placement: 'bottom'
+          }
         else
           m = moment( Number($this.html()) )
           $this.html m.format()
@@ -1188,7 +1207,9 @@ jQuery ->
                     # self.pickupAdd.data d
                   true
                 when 'export' then 
-                else self[ $.camelCase(self.page()) ].data d
+                else
+                  # console.log d
+                  self[ $.camelCase(self.page()) ].data d
           error: (x, s, r) ->
             msg = Messenger().post {
               message: r

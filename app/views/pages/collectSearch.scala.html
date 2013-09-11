@@ -1,6 +1,19 @@
 @(secretKey: String)(implicit request: RequestHeader, flash: Flash)
 <div class="container" id="search" data-bind="with: $root.search">
   <p class="pull-right" id="secretKey">@secretKey</p>
+  @*
+  <p class="pull-right" style="clear: right">
+    <select data-width="200px">
+      <option>Created Newer to Older</option>
+      <option>Updated Newer to Older</option>
+      <option>Referenced Newer to Older</option>
+    </select>
+    <select data-width="100px">
+      <option>0 - 100</option>
+      <option>101 - 200</option>
+    </select>
+  </p>
+  *@
   <h1>SEARCH</h1>
   <form data-bind="submit: query">
     <div class="input-append">
@@ -40,12 +53,15 @@
   <script type="text/html" id="status-template">
     <thead>
       <tr>
-        <td style="width: 30%;">subject</td>
+        <td style="width: 27.5%;">subject</td>
         <td style="width: 10%; text-align: center;">verb</td>
-        <td style="width: 30%;">object</td>
+        <td style="width: 27.5%;">object</td>
         <td style="width: 10%; text-align: center;">json</td>
-        <td style="width: 10%;">created at</td>
-        <td style="width: 10%;">updated at</td>
+        <td style="width: 12.5%; ">created at </td>
+        @*
+        <td style="width: 12.5%; text-decoration: underline;">created at <i class="icon-caret-down"></i> </td>
+        *@
+        <td style="width: 12.5%;">updated at</td>
       </tr>
     </thead>
     <tbody data-bind="foreach: items">

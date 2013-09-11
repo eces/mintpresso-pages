@@ -216,6 +216,19 @@ object Pages extends Controller with Secured {
       }
     }
   }
+  def accountDeveloperConsole(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/user/${user.no}/log/request").get map { r1 =>
+        if(r1.status == 200){
+          Ok( (r1.json \\ "$object").foldLeft(Json.arr()){ (a, b) =>
+            a.append(b)
+          })
+        }else{
+          Ok(Json.arr())
+        }
+      }
+    }
+  }
   def collect(url: String, path: String) = SignedUrl(url) { implicit request => user =>
     Async {
       Mintpresso(s"/user/${user.no}/issue/key").get map { r1 =>
