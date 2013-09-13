@@ -100,9 +100,21 @@ textarea.editable:hover {
 textarea.editable:hover[disabled=disabled] {
   cursor: initial;
 }
+span.text small.muted {
+  color: #999;
+}
 span.selected {
   background: #C3CF98;
   color: #fff;
+}
+span.badge.number {
+  background-color: #7795b4;
+  color: #fff;
+  padding: 3px 7px;
+  margin: 0 0px 0px 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 span.good {
   background: #C3CF98;
@@ -960,12 +972,18 @@ button.active span.label-number {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+#log tr:nth-child(2n) {
+  background-color: #fff;
+}
 #log tr:nth-child(2n) td {
   border-top: 0;
   padding-bottom: 40px;
 }
 #log tr:nth-child(2n-1) {
   background-color: #e4eaf0;
+}
+#log .break {
+  word-break: break-all;
 }
 #log thead tr {
   background-color: #fff !important;

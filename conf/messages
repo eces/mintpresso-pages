@@ -100,4 +100,17 @@ error.404=Page Not Found
 error.500=Internal Server Error
 
 confirm.delete=Delete can't be undo, want to proceed?
-confirm.order.pause=Order will no loger update the result that makes your pickup outdated, want to proceed?
+confirm.order.pause=Order will no longer update the result that makes your pickup outdated, want to proceed?
+confirm.pickup.pause=Pickup will be outdated, want to proceed?
+
+node.empty=Not found any node.
+node.type.invalid=Model types specified in a request and the types loaded from database aren't match.
+edge.found=Found edge(s).
+edge.empty=Not found any edge.
+edge.object.empty=No object selected.
+edge.subject.empty=No subject selected.
+edge.node.empty=Both subject and object models are not found.
+edge.add=Storage accepted edge create operation.
+edge.add.fail=Storage not accepted the operation. It's been reported automatically.
+edge.delete=Storage accepted edge delete operatoin.
+edge.delete.fail=Storage not accepted the operation. It's been reported automatically.

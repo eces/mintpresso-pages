@@ -601,6 +601,7 @@ jQuery ->
         ko.mapping.fromJS(data, {}, self.apiKey.data)
 
     self.developerConsole =
+      threshold: ko.observable 'all'
       data: ko.observableArray()
 
     self.orderStatus =

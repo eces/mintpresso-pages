@@ -1,9 +1,26 @@
 @()(implicit request: RequestHeader, flash: Flash)
 <div class="container">
   <div class="pull-right">
-    <select>
-      <option>All requests</option>
+    @*
+    <select data-bind="value: $root.developerConsole.threshold">
+      <option value="all">No Filter</option>
+      <option data-divider="true"></option>
+      <option value="debug" data-subtext="all captures">Debug</option>
+      <option value="info" data-subtext="from alerts">Information</option>
+      <option value="warn" data-subtext="from abnormal incidents">Warning</option>
+      <option value="error" data-subtext="caused by exceptions">Error</option>
     </select>
+    *@
+    <div class="btn-group" data-toggle="buttons-checkbox" data-bind="template: { data: $root.developerConsole.threshold() }">
+      @*
+      <span class="badge number">133</span>
+      *@
+      <button type="button" class="btn typo-capital" data-bind="css: { active: $data == 'all' }, click: function(){ $root.developerConsole.threshold('all') }">All</button>
+      <button type="button" class="btn typo-capital" data-bind="css: { active: $data == 'debug' }, click: function(){ $root.developerConsole.threshold('debug') }">Debug </button>
+      <button type="button" class="btn typo-capital" data-bind="css: { active: $data == 'info' }, click: function(){ $root.developerConsole.threshold('info') }">Infomation</button>
+      <button type="button" class="btn typo-capital" data-bind="css: { active: $data == 'warn' }, click: function(){ $root.developerConsole.threshold('warn') }">Warning</button>
+      <button type="button" class="btn typo-capital" data-bind="css: { active: $data == 'error' }, click: function(){ $root.developerConsole.threshold('error') }">Error</button>
+    </div>
   </div>
   <h1>Developer Console</h1>
   <table class="table table-hover" id="log">
@@ -15,26 +32,26 @@
         <td></td>
         <td>Message</td>
         <td></td>
-        <td width="100px">Requested At</td>
+        <td>Requested At</td>
       </tr>
     </thead>
     <tbody data-bind="foreach: { data: logs, as: 'log' }">
-      <tr>
+      <tr data-bind="visible: ($root.developerConsole.threshold() == 'all' || $root.developerConsole.threshold() == log.threshold)">
         <td>
           <span data-bind="text: log.threshold"></span>
         </td>
-        <td colspan="3">
+        <td colspan="3" class="break">
           <span data-bind="text: log.uri"></span>
         </td>
         <td colspan="2">
-          <span data-bind="text: message"></span>
+          <span data-bind="text: log.message"></span>
           (<span data-bind="text: trace"></span>)
         </td>
         <td>
           <time data-bind="text: requestedAt" ago></time>
         </td>
       </tr>
-      <tr>
+      <tr data-bind="visible: ($root.developerConsole.threshold() == 'all' || $root.developerConsole.threshold() == log.threshold)">
         <td>
           <h5>Case #</h5>
           <span data-bind="text: $no"></span>
@@ -59,7 +76,7 @@
           <h5>API Key</h5>
           <span data-bind="text: apiKey"></span>
         </td>
-        <td>
+        <td class="break">
           <h5>StackTrace</h5>
           <span data-bind="text: stackTrace"></span>
         </td>

@@ -788,6 +788,7 @@ function getParameterByName(name) {
         }
       };
       self.developerConsole = {
+        threshold: ko.observable('all'),
         data: ko.observableArray()
       };
       self.orderStatus = {
