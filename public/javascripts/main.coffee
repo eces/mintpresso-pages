@@ -208,8 +208,6 @@ jQuery ->
           self.search.queries getParameterByName('q')
           self.search.refresh()
 
-        Prism.highlightElement $('#search table pre'), true
-
         if self.search.binded is false
           History.Adapter.bind window, 'statechange', (e) ->
             state = History.getState();
@@ -274,11 +272,13 @@ jQuery ->
                   self.search.itemString "#{len} items"
                   for key of d
                     d[key].$type = parts[0]
+                    d[key].$expanded = ko.observable false
                   self.search.data d
                 else if res is '[object Object]'
                   self.search.itemString '1 item'
                   t = Object.keys(d)[0]
                   d[t].$type = parts[0]
+                  d[t].$expanded = ko.observable true
                   self.search.data [d[t]]
                 else
                   Messenger().post { message: _ 'query.response.invalid', type: 'error' }
@@ -293,6 +293,7 @@ jQuery ->
             complete: ->
               $('input[name=q]').focus()
               self.prepareComponents()
+              Prism.highlightAll false
           }
 
         when 3
@@ -348,6 +349,7 @@ jQuery ->
             complete: ->
               $('input[name=q]').focus()
               self.prepareComponents()
+              Prism.highlightAll false
           }
 
         when 4
@@ -417,8 +419,10 @@ jQuery ->
               self.search.responseTime( Date.now() - _.responseTime )
               self.search.itemString "(#{_('response.'+x.status)}) - 0 item"
             complete: ->
+
               $('input[name=q]').focus()
               self.prepareComponents()
+              Prism.highlightAll false
           }
         when 5
           if not isNaN Number parts[0]
@@ -474,6 +478,7 @@ jQuery ->
             complete: ->
               $('input[name=q]').focus()
               self.prepareComponents()
+              Prism.highlightAll false
           }
 
         else

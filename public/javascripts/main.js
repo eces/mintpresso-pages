@@ -245,7 +245,6 @@ function getParameterByName(name) {
             self.search.queries(getParameterByName('q'));
             self.search.refresh();
           }
-          Prism.highlightElement($('#search table pre'), true);
           if (self.search.binded === false) {
             History.Adapter.bind(window, 'statechange', function(e) {
               var q, state;
@@ -328,12 +327,14 @@ function getParameterByName(name) {
                     self.search.itemString("" + len + " items");
                     for (key in d) {
                       d[key].$type = parts[0];
+                      d[key].$expanded = ko.observable(false);
                     }
                     return self.search.data(d);
                   } else if (res === '[object Object]') {
                     self.search.itemString('1 item');
                     t = Object.keys(d)[0];
                     d[t].$type = parts[0];
+                    d[t].$expanded = ko.observable(true);
                     return self.search.data([d[t]]);
                   } else {
                     return Messenger().post({
@@ -356,7 +357,8 @@ function getParameterByName(name) {
               },
               complete: function() {
                 $('input[name=q]').focus();
-                return self.prepareComponents();
+                self.prepareComponents();
+                return Prism.highlightAll(false);
               }
             });
             break;
@@ -431,7 +433,8 @@ function getParameterByName(name) {
               },
               complete: function() {
                 $('input[name=q]').focus();
-                return self.prepareComponents();
+                self.prepareComponents();
+                return Prism.highlightAll(false);
               }
             });
             break;
@@ -524,7 +527,8 @@ function getParameterByName(name) {
               },
               complete: function() {
                 $('input[name=q]').focus();
-                return self.prepareComponents();
+                self.prepareComponents();
+                return Prism.highlightAll(false);
               }
             });
             break;
@@ -599,7 +603,8 @@ function getParameterByName(name) {
               },
               complete: function() {
                 $('input[name=q]').focus();
-                return self.prepareComponents();
+                self.prepareComponents();
+                return Prism.highlightAll(false);
               }
             });
             break;
