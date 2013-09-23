@@ -413,6 +413,7 @@ function getParameterByName(name) {
                     self.search.itemString("" + len + " item");
                   }
                   for (key in d) {
+                    d[key].$expanded = ko.observable(false);
                     d[key].$subject.$type = parts[0];
                     d[key].$subject.$expanded = ko.observable(false);
                     d[key].$object.$type = parts[2];
@@ -507,6 +508,7 @@ function getParameterByName(name) {
                     self.search.itemString("" + len + " item");
                   }
                   for (key in d) {
+                    d[key].$expanded = ko.observable(false);
                     d[key].$subject.$type = parts[0];
                     d[key].$subject.$expanded = ko.observable(false);
                     d[key].$object.$type = parts[2];
@@ -583,6 +585,7 @@ function getParameterByName(name) {
                     self.search.itemString("" + len + " item");
                   }
                   for (key in d) {
+                    d[key].$expanded = ko.observable(false);
                     d[key].$subject.$type = parts[0];
                     d[key].$subject.$expanded = ko.observable(false);
                     d[key].$object.$type = parts[2];

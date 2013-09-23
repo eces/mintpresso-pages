@@ -66,7 +66,7 @@
         <td style="width: 27.5%;">subject</td>
         <td style="width: 10%; text-align: center;">verb</td>
         <td style="width: 27.5%;">object</td>
-        <td style="width: 10%; text-align: center;">json</td>
+        <td style="width: 5%; text-align: center;">json</td>
         <td style="width: 12.5%; ">created at </td>
         @*
         <td style="width: 12.5%; text-decoration: underline;">created at <i class="icon-caret-down"></i> </td>
@@ -79,15 +79,17 @@
         <td>
           <span data-bind="text: $subject.$type"></span>
           <strong><span data-bind="text: $subject.$id"></span><span data-bind="text: $subject.$no, visible: $subject.$id.length == 0"></span></strong>
-          <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$subject.$expanded; $data.$object.$expanded(false); _(!_()) }, css: { 'btn-inverse': $subject.$expanded() === true }">&nbsp;<i data-bind="css: { 'icon-caret-down': $subject.$expanded() === false, 'icon-caret-up': $subject.$expanded() === true }"></i>&nbsp;</button>
+          <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$subject.$expanded; $data.$object.$expanded(false); $data.$expanded(false); _(!_()) }, css: { 'btn-inverse': $subject.$expanded() === true }">&nbsp;<i data-bind="css: { 'icon-caret-down': $subject.$expanded() === false, 'icon-caret-up': $subject.$expanded() === true }"></i>&nbsp;</button>
         </td>
         <td style="text-align: center;"><span data-bind="text: $verb"></span></td>
         <td>
           <span data-bind="text: $object.$type"></span>
           <strong><span data-bind="text: $object.$id"></span><span data-bind="text: $object.$no, visible: $object.$id.length == 0"></span></strong>
-          <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$object.$expanded; $data.$subject.$expanded(false); _(!_()) }, css: { 'btn-inverse': $object.$expanded() === true }">&nbsp;<i data-bind="css: { 'icon-caret-down': $object.$expanded() === false, 'icon-caret-up': $object.$expanded() === true }"></i>&nbsp;</button>
+          <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$object.$expanded; $data.$subject.$expanded(false); $data.$expanded(false); _(!_()) }, css: { 'btn-inverse': $object.$expanded() === true }">&nbsp;<i data-bind="css: { 'icon-caret-down': $object.$expanded() === false, 'icon-caret-up': $object.$expanded() === true }"></i>&nbsp;</button>
         </td>
-        <td style="text-align: center;" data-bind="foreach: Object.keys($data)"> <span data-bind="text: $data, visible: !$data.startsWith('$')" class="label label-inverse"></span> </td>
+        <td>
+          <button class="btn btn-mini pull-right" style="font-size: 9pt" data-bind="click: function($data){ var _ = $data.$expanded; $data.$object.$expanded(false); $data.$subject.$expanded(false); _(!_()) }, css: { 'btn-inverse': $expanded() === true }">&nbsp;<i data-bind="css: { 'icon-caret-down': $expanded() === false, 'icon-caret-up': $expanded() === true }"></i>&nbsp;</button>
+        </td>
         <td><time ago data-bind="text: $createdAt"></time></td>
         <td><time ago data-bind="text: $updatedAt"></time></td>
       </tr>
@@ -99,6 +101,11 @@
       <tr data-bind="visible: $object.$expanded() === true">
         <td colspan="6" style="border: 0">
           <pre class="language-javascript" style="text-indent: -16pt;"><code class="language-javascript" data-bind="html: JSON.stringify($object, function(k,v){if(k!='$type')return v;}, '  ')"></code></pre>
+        </td>
+      </tr>
+      <tr data-bind="visible: $expanded() === true">
+        <td colspan="6" style="border: 0">
+          <pre class="language-javascript" style="text-indent: -16pt;"><code class="language-javascript" data-bind="html: JSON.stringify($data, function(k,v){if(k=='$subject'||k=='$object'){return {};}else{return v;}}, '  ')"></code></pre>
         </td>
       </tr>
     </tbody>
