@@ -1312,16 +1312,18 @@ function getParameterByName(name) {
           chart = null;
           min = Number.MAX_VALUE;
           max = Number.MIN_VALUE;
-          for (_i = 0, _len = temp.length; _i < _len; _i++) {
-            item = temp[_i];
-            data[0].values.push({
-              x: item.date,
-              y: item.value
-            });
+          if (temp.length > 2) {
+            for (_i = 0, _len = temp.length; _i < _len; _i++) {
+              item = temp[_i];
+              data[0].values.push({
+                x: item.date,
+                y: item.value
+              });
+            }
+            data[0].values.reverse();
+            left = data[0].values[1].y - data[0].values[0].y;
+            data[0].values.shift();
           }
-          data[0].values.reverse();
-          left = data[0].values[1].y - data[0].values[0].y;
-          data[0].values.shift();
           nv.addGraph(function() {
             chart = nv.models.historicalBarChart();
             chart.x(function(d, i) {

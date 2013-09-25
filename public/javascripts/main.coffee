@@ -1082,17 +1082,18 @@ jQuery ->
         min = Number.MAX_VALUE
         max = Number.MIN_VALUE
 
-        for item in temp
-          data[0].values.push { x: item.date, y: item.value }
-        #   switch item.threshold
-        #     when 'debug' then data[0].values.push { x: item.date, y: item.value }
-        #     when 'error' then data[1].values.push { x: item.date, y: item.value }
-        #     when 'warning' then data[2].values.push { x: item.date, y: item.value }
-        #     when 'info' then data[3].values.push { x: item.date, y: item.value }
-        data[0].values.reverse()
+        if temp.length > 2
+          for item in temp
+            data[0].values.push { x: item.date, y: item.value }
+          #   switch item.threshold
+          #     when 'debug' then data[0].values.push { x: item.date, y: item.value }
+          #     when 'error' then data[1].values.push { x: item.date, y: item.value }
+          #     when 'warning' then data[2].values.push { x: item.date, y: item.value }
+          #     when 'info' then data[3].values.push { x: item.date, y: item.value }
+          data[0].values.reverse()
 
-        left = data[0].values[1].y - data[0].values[0].y
-        data[0].values.shift()
+          left = data[0].values[1].y - data[0].values[0].y
+          data[0].values.shift()
 
         nv.addGraph () -> 
           chart = nv.models.historicalBarChart()

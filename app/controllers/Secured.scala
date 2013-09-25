@@ -30,7 +30,7 @@ trait Secured {
   def getUrl(implicit request: RequestHeader): String = {
     request.session.get("url").getOrElse("")
   }
-  def signed(implicit request: RequestHeader): Boolean = {
+  def signin(implicit request: RequestHeader): Boolean = {
   	request.session.get("no").map { no =>
   	  true
   	} getOrElse {
@@ -38,7 +38,7 @@ trait Secured {
   	}
   }
   def Signed(f: Request[AnyContent] => User => Result) = Action { implicit request =>
-    if(signed){
+    if(signin){
       f(request)(getUser)
     }else{
       Results.Redirect(routes.Application.signin).flashing(
@@ -49,7 +49,7 @@ trait Secured {
   }
 
   def SignedUrl(url: String)(f: Request[AnyContent] => User => Result) = Action { implicit request =>
-    if(signed){
+    if(signin){
       if( request.session.get("url").getOrElse("") == url){
         f(request)(getUser)
       }else{
@@ -68,7 +68,7 @@ trait Secured {
   }
 
   def JsonAction(url: String)(f: Request[play.api.libs.json.JsValue] => User => Result) = Action(play.api.mvc.BodyParsers.parse.json) { implicit request =>
-    if(signed){
+    if(signin){
       if( request.session.get("url").getOrElse("") == url){
         f(request)(getUser)
       }else{
@@ -87,7 +87,7 @@ trait Secured {
   }
 
   def FormDataAction(url: String)(f: Request[play.api.mvc.MultipartFormData[play.api.libs.Files.TemporaryFile]] => User => Result) = Action(play.api.mvc.BodyParsers.parse.multipartFormData) { implicit request =>
-    if(signed){
+    if(signin){
       if( request.session.get("url").getOrElse("") == url){
         f(request)(getUser)
       }else{
