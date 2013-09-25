@@ -25,6 +25,7 @@ GET     /jsMessages                 controllers.Application.javascriptMessages
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+GET     /:url/account/usage/request.json  controllers.Pages.accountUsageConcurrentRequest(url: String)
 GET     /:url/account/usage.json    controllers.Pages.accountUsage(url: String)
 GET     /:url/account/api-key.json  controllers.Pages.accountApiKey(url: String)
 POST    /:url/account/api-key       controllers.Pages.accountApiKeyUpdate(url: String)

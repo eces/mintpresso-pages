@@ -29,7 +29,7 @@ object Application extends Controller with Secured {
             "override" -> "true"
           )
         case _ =>
-          Redirect(routes.Pages.account(getUrl, ""))
+          Redirect(routes.Pages.account(getUrl, "/usage"))
       }
     } getOrElse {
       Ok(views.html.login())
@@ -91,6 +91,7 @@ object Application extends Controller with Secured {
         routes.javascript.Users.findPassword,
         routes.javascript.Pages.account,
         routes.javascript.Pages.accountUsage,
+        routes.javascript.Pages.accountUsageConcurrentRequest,
         routes.javascript.Pages.accountPlansAndBilling,
         routes.javascript.Pages.accountApiKey,
         routes.javascript.Pages.accountApiKeyUpdate,

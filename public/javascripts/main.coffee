@@ -137,7 +137,7 @@ jQuery ->
           password: self.password
         success: (d, s, x) ->
           if x.status is 202
-            location.href = _.Pages.account(d, "").url
+            location.href = _.Pages.account(d, "/usage").url
           else if x.status is 201
             Messenger().post {
               message: _ d
@@ -1041,6 +1041,134 @@ jQuery ->
 
     self.usage =
       data: ko.observable()
+      afterRender: () ->
+        # console.log 'draw', self.usage.data()
+
+        dateAndValues = {}
+        temp = self.usage.data().request
+        now = Date.now()
+
+        values =
+          error: []
+          warn: []
+          debug: []
+          info: []
+
+        data = [
+          {
+            key: "Success",
+            color: "orange",
+            values: []
+          }
+          # {
+          #   key: "Error",
+          #   color: "red",
+          #   values: []
+          # }
+          # {
+          #   key: "Warning",
+          #   color: "orange",
+          #   values: []
+          # }
+          # {
+          #   key: "Data Processing",
+          #   color: "ocean",
+          #   values: []
+          # }
+        ]
+
+
+        chart = null
+        min = Number.MAX_VALUE
+        max = Number.MIN_VALUE
+
+        for item in temp
+          data[0].values.push { x: item.date, y: item.value }
+        #   switch item.threshold
+        #     when 'debug' then data[0].values.push { x: item.date, y: item.value }
+        #     when 'error' then data[1].values.push { x: item.date, y: item.value }
+        #     when 'warning' then data[2].values.push { x: item.date, y: item.value }
+        #     when 'info' then data[3].values.push { x: item.date, y: item.value }
+        data[0].values.reverse()
+
+        left = data[0].values[1].y - data[0].values[0].y
+        data[0].values.shift()
+
+        nv.addGraph () -> 
+          chart = nv.models.historicalBarChart()
+          chart.x (d,i) ->
+            (d.x/1000).toFixed(0)*1000
+          chart.y (d,i) ->
+            if data[0].values[i-1] isnt undefined
+              # request is trigger every seconds for admin account.
+              # v = Math.max(d.y - data[0].values[i-1].y - 2, 0)
+              v = Math.max(d.y - data[0].values[i-1].y, 0)
+              if i is 0
+                left = v
+              return v
+            else
+              left
+              # if i is 0
+              # else
+              #   d.y
+            # console.log 'min: ', d.y
+            #   min = Math.min(d.y, min)
+            #   return data[0].values[i+1].y - d.y
+            # else
+            #   v = min - d.y
+            #   min = Math.min(d.y, min)
+            #   return v
+            # d.y
+
+          chart.xAxis.tickFormat (d) ->
+            m = moment(d)
+            m.format('mm:ss')
+
+          chart.yAxis.tickFormat(d3.format(',d'));
+
+          chart.showXAxis(true).showYAxis(true).rightAlignYAxis(true).margin({right: 90, left: 20, bottom: 20})
+
+          d3.select('#requestGraph svg')
+              .datum(data)
+              .transition().duration(500)
+              .call(chart);
+          # nv.utils.windowResize(chart.update);
+
+          return chart;
+
+        setInterval () ->
+          # console.log data[0].values.length
+          _.Pages.accountUsageConcurrentRequest(_.url).ajax
+            cache: false
+            success: (d, s, x) ->
+              # console.log d, s
+              # console.log d.request[0].value, min
+              if x.status is 200 and d.request.length > 0
+                # if min < d.request[0].value
+                item = {
+                  x: Date.now() 
+                  # y: min - d.request[0].value
+                  y: d.request[0].value
+                }
+                data[0].values.push item
+                # switch item.threshold
+                #   when 'debug' then data[0].values.push item
+                #   when 'error' then data[1].values.push item
+                #   when 'warning' then data[2].values.push item
+                #   when 'info' then data[3].values.push item
+              else
+                console.log 'no data'
+              true
+            complete: () ->
+              if data[0].values.length > 50
+                data[0].values.shift();    
+              chart.update()
+              true
+          true
+        , 1000
+
+
+        true
 
     self.plansAndBilling =
       data: ko.observable()

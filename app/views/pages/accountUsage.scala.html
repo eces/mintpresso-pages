@@ -12,12 +12,16 @@
   </div>
   <hr />
   <div class="row">
-    <div class="span3">
+    <div class="span2">
       <h5 style="opacity:0.5">CONCURRENT REQUEST LOAD</h5>
       <h2>0</h2>
     </div>
-    <div class="span4">
-      
+    <div class="span4" id="requestGraph" style="margin-left: 20px;">
+      @*
+      <span data-bind="text: request.length"></span>
+      <div data-bind="html: JSON.stringify(request)"></div>
+      *@
+      <svg style="width: 620px; height: 170px;"></svg>
     </div>
   </div>
   <hr />

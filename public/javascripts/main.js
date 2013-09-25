@@ -173,7 +173,7 @@ function getParameterByName(name) {
           },
           success: function(d, s, x) {
             if (x.status === 202) {
-              return location.href = _.Pages.account(d, "").url;
+              return location.href = _.Pages.account(d, "/usage").url;
             } else if (x.status === 201) {
               Messenger().post({
                 message: _(d),
@@ -1290,7 +1290,96 @@ function getParameterByName(name) {
         }
       };
       self.usage = {
-        data: ko.observable()
+        data: ko.observable(),
+        afterRender: function() {
+          var chart, data, dateAndValues, item, left, max, min, now, temp, values, _i, _len;
+          dateAndValues = {};
+          temp = self.usage.data().request;
+          now = Date.now();
+          values = {
+            error: [],
+            warn: [],
+            debug: [],
+            info: []
+          };
+          data = [
+            {
+              key: "Success",
+              color: "orange",
+              values: []
+            }
+          ];
+          chart = null;
+          min = Number.MAX_VALUE;
+          max = Number.MIN_VALUE;
+          for (_i = 0, _len = temp.length; _i < _len; _i++) {
+            item = temp[_i];
+            data[0].values.push({
+              x: item.date,
+              y: item.value
+            });
+          }
+          data[0].values.reverse();
+          left = data[0].values[1].y - data[0].values[0].y;
+          data[0].values.shift();
+          nv.addGraph(function() {
+            chart = nv.models.historicalBarChart();
+            chart.x(function(d, i) {
+              return (d.x / 1000).toFixed(0) * 1000;
+            });
+            chart.y(function(d, i) {
+              var v;
+              if (data[0].values[i - 1] !== void 0) {
+                v = Math.max(d.y - data[0].values[i - 1].y, 0);
+                if (i === 0) {
+                  left = v;
+                }
+                return v;
+              } else {
+                return left;
+              }
+            });
+            chart.xAxis.tickFormat(function(d) {
+              var m;
+              m = moment(d);
+              return m.format('mm:ss');
+            });
+            chart.yAxis.tickFormat(d3.format(',d'));
+            chart.showXAxis(true).showYAxis(true).rightAlignYAxis(true).margin({
+              right: 90,
+              left: 20,
+              bottom: 20
+            });
+            d3.select('#requestGraph svg').datum(data).transition().duration(500).call(chart);
+            return chart;
+          });
+          setInterval(function() {
+            _.Pages.accountUsageConcurrentRequest(_.url).ajax({
+              cache: false,
+              success: function(d, s, x) {
+                if (x.status === 200 && d.request.length > 0) {
+                  item = {
+                    x: Date.now(),
+                    y: d.request[0].value
+                  };
+                  data[0].values.push(item);
+                } else {
+                  console.log('no data');
+                }
+                return true;
+              },
+              complete: function() {
+                if (data[0].values.length > 50) {
+                  data[0].values.shift();
+                }
+                chart.update();
+                return true;
+              }
+            });
+            return true;
+          }, 1000);
+          return true;
+        }
       };
       self.plansAndBilling = {
         data: ko.observable()

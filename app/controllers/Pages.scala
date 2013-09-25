@@ -20,8 +20,48 @@ object Pages extends Controller with Secured {
     Ok(views.html.pages.account())    
   }
   def accountUsage(url: String) = SignedUrl(url) { implicit request => user =>
-    Ok(Json.obj())
+    Async {
+      Mintpresso(s"/user/${user.no}/logs/request?newest=created&limit=52").get map { r1 =>
+        if(r1.status == 200){
+          Ok(Json.obj(
+            "request" -> r1.json.as[List[JsObject]].foldLeft(Json.arr()) { (a, b) =>
+              a.append(Json.obj(
+                  "value" -> (b \ "value").as[Long],
+                  "threshold" -> (b \ "$object" \ "threshold").as[String],
+                  "date" -> (b \ "$createdAt").as[Long]
+                ))
+            }
+          ))
+        }else{
+          Ok(Json.obj(
+            "request" -> Json.arr()
+          ))
+        }
+      }
+    }
   }
+  def accountUsageConcurrentRequest(url: String) = SignedUrl(url) { implicit request => user =>
+    Async {
+      Mintpresso(s"/user/${user.no}/logs/request?newest=created&limit=1").get map { r1 =>
+        if(r1.status == 200){
+          Ok(Json.obj(
+            "request" -> r1.json.as[List[JsObject]].foldLeft(Json.arr()) { (a, b) =>
+              a.append(Json.obj(
+                  "value" -> (b \ "value").as[Long],
+                  "threshold" -> (b \ "$object" \ "threshold").as[String],
+                  "date" -> (b \ "$createdAt").as[Long]
+                ))
+            }
+          ))
+        }else{
+          Ok(Json.obj(
+            "request" -> Json.arr()
+          ))
+        }
+      }
+    }
+  }
+
   def accountPlansAndBilling(url: String) = SignedUrl(url) { implicit request => user =>
     Ok(Json.obj())
   }
@@ -65,13 +105,17 @@ object Pages extends Controller with Secured {
                 "name" -> "delete_status",
                 "value" -> scopes.contains("delete_status")
               ),
+              // Json.obj(
+              //   "name" -> "manage_order",
+              //   "value" -> scopes.contains("manage_order")
+              // ),
+              // Json.obj(
+              //   "name" -> "manage_pickup",
+              //   "value" -> scopes.contains("manage_pickup")
+              // )
               Json.obj(
-                "name" -> "manage_order",
-                "value" -> scopes.contains("manage_order")
-              ),
-              Json.obj(
-                "name" -> "manage_pickup",
-                "value" -> scopes.contains("manage_pickup")
+                "name" -> "read_pickup",
+                "value" -> scopes.contains("read_pickup")
               )
               // ,
               // Json.obj(
@@ -468,7 +512,6 @@ object Pages extends Controller with Secured {
   def pickupListPause(url: String, no: Long) = SignedUrl(url) { implicit request => user =>
     Async {
       Mintpresso(s"/pickup/${no}/cancel").get map { r1 =>
-        Logger.debug("cancel " + r1.body + r1.status)
         r1.status match {
           case 202 => Accepted
           case 200 => Ok
