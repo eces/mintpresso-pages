@@ -1081,6 +1081,7 @@ jQuery ->
         chart = null
         min = Number.MAX_VALUE
         max = Number.MIN_VALUE
+        left = 0
 
         if temp.length > 2
           for item in temp
@@ -1163,6 +1164,7 @@ jQuery ->
             complete: () ->
               if data[0].values.length > 50
                 data[0].values.shift();    
+              left = data[0].values[1].y - data[0].values[0].y
               chart.update()
               true
           true
